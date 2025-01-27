@@ -16,6 +16,8 @@
             <div class="flex items-center justify-center min-h-screen w-full px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
                 <div
                     class="mt-7 w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
+                    <x-auth-session-status class="mb-4" :status="session('status')" />
+
                     <div class="p-4 sm:p-7">
                         <div class="text-center">
                             <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Selamat Datang</h1>
@@ -50,7 +52,7 @@
 
                             <div
                                 class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:me-6 after:flex-1 after:border-t after:border-gray-200 after:ms-6 dark:text-neutral-500 dark:before:border-neutral-600 dark:after:border-neutral-600">
-                                Or</div>
+                                Atau</div>
 
                             <!-- Form -->
                             <form method="POST" action="{{ route('login') }}">
