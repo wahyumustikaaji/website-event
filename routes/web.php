@@ -8,6 +8,14 @@ Route::get('/', function () {
     return view('home.index');
 });
 
+Route::get('/pricing', function () {
+    return view('home.pricing');
+});
+
+Route::get('/event', function () {
+    return view('home.event');
+});
+
 Route::controller(SocialiteController::class)->group(function () {
     Route::get('auth/google', 'googleLogin')->name('auth.google');
     Route::get('auth/google-callback', 'googleAuthentication')->name('auth.google-callback');

@@ -19,6 +19,7 @@
 <body class="font-sans text-gray-900 antialiased">
     @include('components.navbar')
     {{ $slot }}
+    @include('components.footer')
 </body>
 
 </html>
