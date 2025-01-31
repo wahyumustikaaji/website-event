@@ -12,6 +12,10 @@ Route::get('/pricing', function () {
     return view('home.pricing');
 });
 
+Route::get('/events', function () {
+    return view('home.events');
+});
+
 Route::get('/event', function () {
     return view('home.event');
 });
