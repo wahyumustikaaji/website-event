@@ -24,134 +24,142 @@
                                 alt="Blog Image">
                         </figure>
 
-                        <div class="mt-8">
-                            <div>
-                                <h3 class="block text-xl font-bold text-gray-800 dark:text-white">Diselenggarakan Oleh
-                                </h3>
-                                <div class="border-t w-full mt-2 mb-3"></div>
-                            </div>
+                        <div class="lg:block hidden">
+                            <div class="mt-8">
+                                <div>
+                                    <h3 class="block text-xl font-bold text-gray-800 dark:text-white">Diselenggarakan
+                                        Oleh
+                                    </h3>
+                                    <div class="border-t w-full mt-2 mb-3"></div>
+                                </div>
 
-                            <!-- Avatar Media -->
-                            <div class="flex justify-between items-center mb-6">
-                                <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
-                                    <div class="shrink-0">
-                                        <img class="size-10 rounded-full"
-                                            src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                                            alt="Avatar">
-                                    </div>
+                                <!-- Avatar Media -->
+                                <div class="flex justify-between items-center mb-6">
+                                    <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+                                        <div class="shrink-0">
+                                            <img class="size-10 rounded-full"
+                                                src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+                                                alt="Avatar">
+                                        </div>
 
-                                    <div class="grow">
-                                        <div class="flex justify-between items-center gap-x-2">
-                                            <div>
-                                                <!-- Tooltip -->
-                                                <div
-                                                    class="hs-tooltip [--trigger:hover] [--placement:bottom] inline-block">
+                                        <div class="grow">
+                                            <div class="flex justify-between items-center gap-x-2">
+                                                <div>
+                                                    <!-- Tooltip -->
                                                     <div
-                                                        class="hs-tooltip-toggle sm:mb-1 block text-start cursor-pointer">
-                                                        <span class="font-semibold text-gray-800 dark:text-neutral-200">
-                                                            Leyla Ludic
-                                                        </span>
+                                                        class="hs-tooltip [--trigger:hover] [--placement:bottom] inline-block">
+                                                        <div
+                                                            class="hs-tooltip-toggle sm:mb-1 block text-start cursor-pointer">
+                                                            <span
+                                                                class="font-semibold text-gray-800 dark:text-neutral-200">
+                                                                Leyla Ludic
+                                                            </span>
 
-                                                        <!-- Dropdown Card -->
-                                                        <div class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 max-w-xs cursor-default bg-gray-900 divide-y divide-gray-700 shadow-lg rounded-xl dark:bg-neutral-950 dark:divide-neutral-700"
-                                                            role="tooltip">
-                                                            <!-- Body -->
-                                                            <div class="p-4 sm:p-5">
-                                                                <div
-                                                                    class="mb-2 flex w-full sm:items-center gap-x-5 sm:gap-x-3">
-                                                                    <div class="shrink-0">
-                                                                        <img class="size-8 rounded-full"
-                                                                            src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                                                                            alt="Avatar">
-                                                                    </div>
+                                                            <!-- Dropdown Card -->
+                                                            <div class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 max-w-xs cursor-default bg-gray-900 divide-y divide-gray-700 shadow-lg rounded-xl dark:bg-neutral-950 dark:divide-neutral-700"
+                                                                role="tooltip">
+                                                                <!-- Body -->
+                                                                <div class="p-4 sm:p-5">
+                                                                    <div
+                                                                        class="mb-2 flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+                                                                        <div class="shrink-0">
+                                                                            <img class="size-8 rounded-full"
+                                                                                src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+                                                                                alt="Avatar">
+                                                                        </div>
 
-                                                                    <div class="grow">
-                                                                        <p
-                                                                            class="text-lg font-semibold text-gray-200 dark:text-neutral-200">
-                                                                            Leyla Ludic
-                                                                        </p>
+                                                                        <div class="grow">
+                                                                            <p
+                                                                                class="text-lg font-semibold text-gray-200 dark:text-neutral-200">
+                                                                                Leyla Ludic
+                                                                            </p>
+                                                                        </div>
                                                                     </div>
+                                                                    <p
+                                                                        class="text-sm text-gray-400 dark:text-neutral-400">
+                                                                        Leyla is a Customer Success Specialist at
+                                                                        Preline
+                                                                        and spends her time speaking
+                                                                        to in-house recruiters all over the world.
+                                                                    </p>
                                                                 </div>
-                                                                <p class="text-sm text-gray-400 dark:text-neutral-400">
-                                                                    Leyla is a Customer Success Specialist at Preline
-                                                                    and spends her time speaking
-                                                                    to in-house recruiters all over the world.
-                                                                </p>
+                                                                <!-- End Body -->
                                                             </div>
-                                                            <!-- End Body -->
+                                                            <!-- End Dropdown Card -->
                                                         </div>
-                                                        <!-- End Dropdown Card -->
                                                     </div>
+                                                    <!-- End Tooltip -->
                                                 </div>
-                                                <!-- End Tooltip -->
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- End Avatar Media -->
-                        </div>
-
-                        <div class="mt-8">
-                            <div>
-                                <h3 class="block text-xl font-bold text-gray-800 dark:text-white">197 Peserta Terdaftar
-                                </h3>
-                                <div class="border-t w-full mt-2 mb-3"></div>
+                                <!-- End Avatar Media -->
                             </div>
 
-                            <div class="flex -space-x-2">
-                                <div class="hs-tooltip inline-block">
-                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                        alt="Avatar">
-                                    <span
-                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                        role="tooltip">
-                                        James
-                                    </span>
+                            <div class="mt-8">
+                                <div>
+                                    <h3 class="block text-xl font-bold text-gray-800 dark:text-white">197 Peserta
+                                        Terdaftar
+                                    </h3>
+                                    <div class="border-t w-full mt-2 mb-3"></div>
                                 </div>
-                                <div class="hs-tooltip inline-block">
-                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1531927557220-a9e23c1e4794?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                        alt="Avatar">
-                                    <span
-                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                        role="tooltip">
-                                        Maria
-                                    </span>
-                                </div>
-                                <div class="hs-tooltip inline-block">
-                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80"
-                                        alt="Avatar">
-                                    <span
-                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                        role="tooltip">
-                                        Anna
-                                    </span>
-                                </div>
-                                <div class="hs-tooltip inline-block">
-                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                        alt="Avatar">
-                                    <span
-                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                        role="tooltip">
-                                        Brian
-                                    </span>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">Dwi Sri Wahyuni , Rahma Wati dan
-                                195
-                                lainnya
-                            </p>
-                        </div>
 
-                        <div class="mt-8">
-                            <a class="inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-                                href="#">
-                                # Seni dan Budaya
-                            </a>
+                                <div class="flex -space-x-2">
+                                    <div class="hs-tooltip inline-block">
+                                        <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                            src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+                                            alt="Avatar">
+                                        <span
+                                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                            role="tooltip">
+                                            James
+                                        </span>
+                                    </div>
+                                    <div class="hs-tooltip inline-block">
+                                        <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                            src="https://images.unsplash.com/photo-1531927557220-a9e23c1e4794?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+                                            alt="Avatar">
+                                        <span
+                                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                            role="tooltip">
+                                            Maria
+                                        </span>
+                                    </div>
+                                    <div class="hs-tooltip inline-block">
+                                        <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                            src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80"
+                                            alt="Avatar">
+                                        <span
+                                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                            role="tooltip">
+                                            Anna
+                                        </span>
+                                    </div>
+                                    <div class="hs-tooltip inline-block">
+                                        <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                            src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+                                            alt="Avatar">
+                                        <span
+                                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                            role="tooltip">
+                                            Brian
+                                        </span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">Dwi Sri Wahyuni , Rahma Wati
+                                    dan
+                                    195
+                                    lainnya
+                                </p>
+                            </div>
+
+                            <div class="mt-8">
+                                <a class="inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                                    href="#">
+                                    # Seni dan Budaya
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -257,6 +265,142 @@
                             </p>
                             <p class="text-base text-gray-800 dark:text-neutral-200">Jl. Pakuan No.38, RT.04/RW.08,
                                 Tegallega, Kecamatan Bogor Tengah, Kota Bogor, Jawa Barat 16129, Indonesia</p>
+                        </div>
+                    </div>
+
+                    <div class="lg:hidden">
+                        <div class="mt-8">
+                            <div>
+                                <h3 class="block text-xl font-bold text-gray-800 dark:text-white">Diselenggarakan
+                                    Oleh
+                                </h3>
+                                <div class="border-t w-full mt-2 mb-3"></div>
+                            </div>
+
+                            <!-- Avatar Media -->
+                            <div class="flex justify-between items-center mb-6">
+                                <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+                                    <div class="shrink-0">
+                                        <img class="size-10 rounded-full"
+                                            src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+                                            alt="Avatar">
+                                    </div>
+
+                                    <div class="grow">
+                                        <div class="flex justify-between items-center gap-x-2">
+                                            <div>
+                                                <!-- Tooltip -->
+                                                <div
+                                                    class="hs-tooltip [--trigger:hover] [--placement:bottom] inline-block">
+                                                    <div
+                                                        class="hs-tooltip-toggle sm:mb-1 block text-start cursor-pointer">
+                                                        <span class="font-semibold text-gray-800 dark:text-neutral-200">
+                                                            Leyla Ludic
+                                                        </span>
+
+                                                        <!-- Dropdown Card -->
+                                                        <div class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 max-w-xs cursor-default bg-gray-900 divide-y divide-gray-700 shadow-lg rounded-xl dark:bg-neutral-950 dark:divide-neutral-700"
+                                                            role="tooltip">
+                                                            <!-- Body -->
+                                                            <div class="p-4 sm:p-5">
+                                                                <div
+                                                                    class="mb-2 flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+                                                                    <div class="shrink-0">
+                                                                        <img class="size-8 rounded-full"
+                                                                            src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+                                                                            alt="Avatar">
+                                                                    </div>
+
+                                                                    <div class="grow">
+                                                                        <p
+                                                                            class="text-lg font-semibold text-gray-200 dark:text-neutral-200">
+                                                                            Leyla Ludic
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <p class="text-sm text-gray-400 dark:text-neutral-400">
+                                                                    Leyla is a Customer Success Specialist at
+                                                                    Preline
+                                                                    and spends her time speaking
+                                                                    to in-house recruiters all over the world.
+                                                                </p>
+                                                            </div>
+                                                            <!-- End Body -->
+                                                        </div>
+                                                        <!-- End Dropdown Card -->
+                                                    </div>
+                                                </div>
+                                                <!-- End Tooltip -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Avatar Media -->
+                        </div>
+
+                        <div class="mt-8">
+                            <div>
+                                <h3 class="block text-xl font-bold text-gray-800 dark:text-white">197 Peserta
+                                    Terdaftar
+                                </h3>
+                                <div class="border-t w-full mt-2 mb-3"></div>
+                            </div>
+
+                            <div class="flex -space-x-2">
+                                <div class="hs-tooltip inline-block">
+                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                        src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+                                        alt="Avatar">
+                                    <span
+                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                        role="tooltip">
+                                        James
+                                    </span>
+                                </div>
+                                <div class="hs-tooltip inline-block">
+                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                        src="https://images.unsplash.com/photo-1531927557220-a9e23c1e4794?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+                                        alt="Avatar">
+                                    <span
+                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                        role="tooltip">
+                                        Maria
+                                    </span>
+                                </div>
+                                <div class="hs-tooltip inline-block">
+                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                        src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80"
+                                        alt="Avatar">
+                                    <span
+                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                        role="tooltip">
+                                        Anna
+                                    </span>
+                                </div>
+                                <div class="hs-tooltip inline-block">
+                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
+                                        src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+                                        alt="Avatar">
+                                    <span
+                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
+                                        role="tooltip">
+                                        Brian
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">Dwi Sri Wahyuni , Rahma Wati
+                                dan
+                                195
+                                lainnya
+                            </p>
+                        </div>
+
+                        <div class="mt-8">
+                            <a class="inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                                href="#">
+                                # Seni dan Budaya
+                            </a>
                         </div>
                     </div>
                 </div>
