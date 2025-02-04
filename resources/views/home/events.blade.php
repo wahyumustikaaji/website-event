@@ -71,7 +71,7 @@
                                     {{ $events->title }}
                                 </h3>
                                 <p class="mt-3 text-gray-600 dark:text-neutral-400">
-                                    {{ $events->formatted_event_date_and_time }}
+                                    {{ $events->formatted_event_date }}, {{ $events->formatted_event_time_start }}
                                 </p>
                                 <p class="mt-1 text-gray-600 dark:text-neutral-400">
                                     {{ $events->location_name }}
@@ -100,7 +100,7 @@
                 <!-- End Title -->
 
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-                    @foreach ($category as $category)
+                    @foreach ($category->take(8) as $category)
                     @if ($category->events_count > 0)
                     <a href="/category/{{ $category->slug }}"
                         class="p-4 border border-gray-200 rounded-lg dark:border-neutral-700 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 ease-in-out">

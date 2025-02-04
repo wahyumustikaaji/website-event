@@ -15,6 +15,7 @@ Route::get('/pricing', function () {
 
 Route::get('/events', [EventController::class, 'events']);
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('event.show');
+Route::post('/event/{slug}/register', [EventController::class, 'register'])->name('event.register');
 Route::get('/category/{slug}', [EventController::class, 'showByCategory'])->name('category.show');
 
 Route::controller(SocialiteController::class)->group(function () {
