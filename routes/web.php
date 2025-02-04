@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
@@ -12,13 +13,9 @@ Route::get('/pricing', function () {
     return view('home.pricing');
 });
 
-Route::get('/events', function () {
-    return view('home.events');
-});
-
-Route::get('/event', function () {
-    return view('home.event');
-});
+Route::get('/events', [EventController::class, 'events']);
+Route::get('/event/{slug}', [EventController::class, 'show'])->name('event.show');
+Route::get('/category/{slug}', [EventController::class, 'showByCategory'])->name('category.show');
 
 Route::controller(SocialiteController::class)->group(function () {
     Route::get('auth/google', 'googleLogin')->name('auth.google');

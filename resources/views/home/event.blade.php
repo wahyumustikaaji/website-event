@@ -19,8 +19,7 @@
                     <!-- Kolom Gambar -->
                     <div class="lg:max-w-md w-full">
                         <figure>
-                            <img class="w-full h-80 object-cover rounded-xl mb-8"
-                                src="https://images.unsplash.com/photo-1670272505340-d906d8d77d03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+                            <img class="w-full h-80 object-cover rounded-xl mb-8" src="{{ $event->image }}"
                                 alt="Blog Image">
                         </figure>
 
@@ -38,8 +37,7 @@
                                     <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
                                         <div class="shrink-0">
                                             <img class="size-10 rounded-full"
-                                                src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                                                alt="Avatar">
+                                                src="{{ $event->creator->profile_photo_url}}" alt="Avatar">
                                         </div>
 
                                         <div class="grow">
@@ -52,7 +50,7 @@
                                                             class="hs-tooltip-toggle sm:mb-1 block text-start cursor-pointer">
                                                             <span
                                                                 class="font-semibold text-gray-800 dark:text-neutral-200">
-                                                                Leyla Ludic
+                                                                {{ $event->creator->name }}
                                                             </span>
 
                                                             <!-- Dropdown Card -->
@@ -71,7 +69,7 @@
                                                                         <div class="grow">
                                                                             <p
                                                                                 class="text-lg font-semibold text-gray-200 dark:text-neutral-200">
-                                                                                Leyla Ludic
+                                                                                {{ $event->creator->name }}
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -99,65 +97,43 @@
 
                             <div class="mt-8">
                                 <div>
-                                    <h3 class="block text-xl font-bold text-gray-800 dark:text-white">197 Peserta
+                                    <h3 class="block text-xl font-bold text-gray-800 dark:text-white">{{
+                                        $event->participants->count() }} Peserta
                                         Terdaftar
                                     </h3>
                                     <div class="border-t w-full mt-2 mb-3"></div>
                                 </div>
 
                                 <div class="flex -space-x-2">
+                                    @foreach ($event->participants as $participant)
                                     <div class="hs-tooltip inline-block">
                                         <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                            src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                            alt="Avatar">
+                                            src="{{ $participant->user->avatar_url }}" alt="Avatar">
                                         <span
                                             class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
                                             role="tooltip">
-                                            James
+                                            {{ $participant->user->name }}
                                         </span>
                                     </div>
-                                    <div class="hs-tooltip inline-block">
-                                        <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                            src="https://images.unsplash.com/photo-1531927557220-a9e23c1e4794?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                            alt="Avatar">
-                                        <span
-                                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                            role="tooltip">
-                                            Maria
-                                        </span>
-                                    </div>
-                                    <div class="hs-tooltip inline-block">
-                                        <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                            src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80"
-                                            alt="Avatar">
-                                        <span
-                                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                            role="tooltip">
-                                            Anna
-                                        </span>
-                                    </div>
-                                    <div class="hs-tooltip inline-block">
-                                        <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                            src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                            alt="Avatar">
-                                        <span
-                                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                            role="tooltip">
-                                            Brian
-                                        </span>
-                                    </div>
+                                    @endforeach
                                 </div>
-                                <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">Dwi Sri Wahyuni , Rahma Wati
-                                    dan
-                                    195
-                                    lainnya
+                                <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">
+                                    @foreach ($event->participants->take(2) as $index => $participant)
+                                    <span>{{ $participant->user->name }}</span>
+                                    @if ($index == 0)
+                                    ,
+                                    @endif
+                                    @endforeach
+                                    @if ($event->participants->count() > 2)
+                                    dan {{ $event->participants->count() - 2 }} lainnya
+                                    @endif
                                 </p>
                             </div>
 
                             <div class="mt-8">
                                 <a class="inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-                                    href="#">
-                                    # Seni dan Budaya
+                                    href="/category/{{ $category->slug }}">
+                                    # {{ $event->category->name }}
                                 </a>
                             </div>
                         </div>
@@ -166,7 +142,7 @@
                     <!-- Kolom Konten -->
                     <div class="w-full">
                         <h2 class="text-4xl md:text-5xl font-bold dark:text-white">
-                            Announcing a free plan for small teams
+                            {{ $event->title }}
                         </h2>
                         <!-- Card Date -->
                         <div class="flex items-center gap-x-3 mt-8">
@@ -189,9 +165,13 @@
                                 </svg>
                             </div>
                             <div class="grow">
-                                <h4 class="font-medium text-lg text-gray-800 dark:text-neutral-200">Sabtu, 1
-                                    Februari</h4>
-                                <p class="text-sm text-gray-500 dark:text-neutral-500">9.00 - 11.45
+                                <h4 class="font-medium text-lg text-gray-800 dark:text-neutral-200">{{
+                                    $event->formatted_event_date }}</h4>
+                                <p class="text-sm text-gray-500 dark:text-neutral-500">{{
+                                    $event->formatted_event_time_start
+                                    }} - {{
+                                    $event->formatted_event_time_end
+                                    }}
                                 </p>
                             </div>
                         </div>
@@ -207,9 +187,19 @@
                                 </svg>
                             </div>
                             <div class="grow">
-                                <h4 class="font-medium text-lg text-gray-800 dark:text-neutral-200">Sabtu, 1
-                                    Februari</h4>
-                                <p class="text-sm text-gray-500 dark:text-neutral-500">9.00 - 11.45
+                                <a target="_blank"
+                                    href="https://www.google.com/maps?q={{ urlencode($event->location_name) }}+{{ urlencode($event->address) }}"
+                                    class="font-medium group text-lg text-gray-800 dark:text-neutral-200 flex items-center gap-1">{{
+                                    $event->location_name
+                                    }}
+                                    <svg class="rotate-45 text-gray-400 group-hover:text-black group-hover:scale-105 transition-all duration-300 ease-in-out"
+                                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="M13 7.828V20h-2V7.828l-5.364 5.364l-1.414-1.414L12 4l7.778 7.778l-1.414 1.414z" />
+                                    </svg>
+                                </a>
+                                <p class="text-sm text-gray-500 dark:text-neutral-500">{{ Str::limit($event->address,
+                                    70, '...') }}
                                 </p>
                             </div>
                         </div>
@@ -245,13 +235,7 @@
                                 </h2>
                                 <div class="border-t w-full mt-2 mb-3"></div>
                             </div>
-                            <p class="text-base text-gray-800 dark:text-neutral-200">As we've grown, we've seen how
-                                Preline has helped companies such
-                                as Spotify, Microsoft, Airbnb, Facebook, and Intercom bring their designers closer
-                                together to create amazing
-                                things. We've also learned that when the culture of sharing is brought in earlier, the
-                                better teams adapt and
-                                communicate with one another.</p>
+                            <p class="text-base text-gray-800 dark:text-neutral-200">{{ $event->body }}</p>
                         </div>
 
                         <div class="mt-8">
@@ -261,10 +245,14 @@
                                 <div class="border-t w-full mt-2 mb-3"></div>
                             </div>
 
-                            <p class="block text-base font-bold text-gray-800 dark:text-white mb-1">FKIP IPB Univeristy
+                            <p class="block text-base font-bold text-gray-800 dark:text-white mb-1">{{
+                                $event->location_name }}
                             </p>
-                            <p class="text-base text-gray-800 dark:text-neutral-200">Jl. Pakuan No.38, RT.04/RW.08,
-                                Tegallega, Kecamatan Bogor Tengah, Kota Bogor, Jawa Barat 16129, Indonesia</p>
+                            <p class="text-base text-gray-800 dark:text-neutral-200 mb-3">{{ $event->address }}</p>
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253840.4913164089!2d106.66470501931336!3d-6.229720928900819!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2sJakarta%2C%20Daerah%20Khusus%20Ibukota%20Jakarta!5e0!3m2!1sid!2sid!4v1738656582035!5m2!1sid!2sid"
+                                width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
 
@@ -295,7 +283,7 @@
                                                     <div
                                                         class="hs-tooltip-toggle sm:mb-1 block text-start cursor-pointer">
                                                         <span class="font-semibold text-gray-800 dark:text-neutral-200">
-                                                            Leyla Ludic
+                                                            {{ $event->creator->name }}
                                                         </span>
 
                                                         <!-- Dropdown Card -->
@@ -314,7 +302,7 @@
                                                                     <div class="grow">
                                                                         <p
                                                                             class="text-lg font-semibold text-gray-200 dark:text-neutral-200">
-                                                                            Leyla Ludic
+                                                                            {{ $event->creator->name }}
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -341,65 +329,43 @@
 
                         <div class="mt-8">
                             <div>
-                                <h3 class="block text-xl font-bold text-gray-800 dark:text-white">197 Peserta
+                                <h3 class="block text-xl font-bold text-gray-800 dark:text-white">{{
+                                    $event->participants->count() }} Peserta
                                     Terdaftar
                                 </h3>
                                 <div class="border-t w-full mt-2 mb-3"></div>
                             </div>
 
                             <div class="flex -space-x-2">
+                                @foreach ($event->participants as $participant)
                                 <div class="hs-tooltip inline-block">
                                     <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                        alt="Avatar">
+                                        src="{{ $participant->user->avatar_url }}" alt="Avatar">
                                     <span
                                         class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
                                         role="tooltip">
-                                        James
+                                        {{ $participant->user->name }}
                                     </span>
                                 </div>
-                                <div class="hs-tooltip inline-block">
-                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1531927557220-a9e23c1e4794?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                        alt="Avatar">
-                                    <span
-                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                        role="tooltip">
-                                        Maria
-                                    </span>
-                                </div>
-                                <div class="hs-tooltip inline-block">
-                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80"
-                                        alt="Avatar">
-                                    <span
-                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                        role="tooltip">
-                                        Anna
-                                    </span>
-                                </div>
-                                <div class="hs-tooltip inline-block">
-                                    <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                        src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                                        alt="Avatar">
-                                    <span
-                                        class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
-                                        role="tooltip">
-                                        Brian
-                                    </span>
-                                </div>
+                                @endforeach
                             </div>
-                            <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">Dwi Sri Wahyuni , Rahma Wati
-                                dan
-                                195
-                                lainnya
+                            <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">
+                                @foreach ($event->participants->take(2) as $index => $participant)
+                                <span>{{ $participant->user->name }}</span>
+                                @if ($index == 0)
+                                ,
+                                @endif
+                                @endforeach
+                                @if ($event->participants->count() > 2)
+                                dan {{ $event->participants->count() - 2 }} lainnya
+                                @endif
                             </p>
                         </div>
 
                         <div class="mt-8">
                             <a class="inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-                                href="#">
-                                # Seni dan Budaya
+                                href="/category/{{ $category->slug }}">
+                                # {{ $event->category->name }}
                             </a>
                         </div>
                     </div>

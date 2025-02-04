@@ -55,7 +55,9 @@
                 <!-- Grid -->
                 <div class="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
                     <!-- Card -->
-                    <a class="group block rounded-xl overflow-hidden focus:outline-none" href="/event">
+                    @foreach ($popularEvents as $events )
+                    <a class="group block rounded-xl overflow-hidden focus:outline-none"
+                        href="/event/{{ $events->slug }}">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
                             <div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
                                 <img class="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl"
@@ -66,113 +68,18 @@
                             <div class="grow">
                                 <h3
                                     class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300 dark:group-hover:text-white">
-                                    Acara Pembukaan Bulan Literasi Kripto 2025
+                                    {{ $events->title }}
                                 </h3>
                                 <p class="mt-3 text-gray-600 dark:text-neutral-400">
-                                    Sel, 9 Feb, 19.00
+                                    {{ $events->formatted_event_date_and_time }}
                                 </p>
                                 <p class="mt-1 text-gray-600 dark:text-neutral-400">
-                                    FKIP IPB Univeristy
+                                    {{ $events->location_name }}
                                 </p>
                             </div>
                         </div>
                     </a>
-                    <!-- End Card -->
-
-                    <!-- Card -->
-                    <a class="group block rounded-xl overflow-hidden focus:outline-none" href="#">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-                            <div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
-                                <img class="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl"
-                                    src="https://images.unsplash.com/photo-1668906093328-99601a1aa584?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&q=80"
-                                    alt="Blog Image">
-                            </div>
-
-                            <div class="grow">
-                                <h3
-                                    class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300 dark:group-hover:text-white">
-                                    Onsite
-                                </h3>
-                                <p class="mt-3 text-gray-600 dark:text-neutral-400">
-                                    Optimize your in-person experience with best-in-class capabilities like badge
-                                    printing
-                                    and lead
-                                    retrieval
-                                </p>
-                                <p
-                                    class="mt-4 inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 group-hover:underline group-focus:underline font-medium dark:text-blue-500">
-                                    Read more
-                                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                    <!-- End Card -->
-
-                    <!-- Card -->
-                    <a class="group block rounded-xl overflow-hidden focus:outline-none" href="#">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-                            <div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
-                                <img class="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl"
-                                    src="https://images.unsplash.com/photo-1567016526105-22da7c13161a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&q=80"
-                                    alt="Blog Image">
-                            </div>
-
-                            <div class="grow">
-                                <h3
-                                    class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300 dark:group-hover:text-white">
-                                    The complete guide to OKRs
-                                </h3>
-                                <p class="mt-3 text-gray-600 dark:text-neutral-400">
-                                    How to make objectives and key results work for your company
-                                </p>
-                                <p
-                                    class="mt-4 inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 group-hover:underline group-focus:underline font-medium dark:text-blue-500">
-                                    Read more
-                                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                    <!-- End Card -->
-
-                    <!-- Card -->
-                    <a class="group block rounded-xl overflow-hidden focus:outline-none" href="#">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-                            <div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
-                                <img class="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl"
-                                    src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&q=80"
-                                    alt="Blog Image">
-                            </div>
-
-                            <div class="grow">
-                                <h3
-                                    class="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300 dark:group-hover:text-white">
-                                    People program models
-                                </h3>
-                                <p class="mt-3 text-gray-600 dark:text-neutral-400">
-                                    Six approaches to bringing your People strategy to life
-                                </p>
-                                <p
-                                    class="mt-4 inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 group-hover:underline group-focus:underline font-medium dark:text-blue-500">
-                                    Read more
-                                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
+                    @endforeach
                     <!-- End Card -->
                 </div>
                 <!-- End Grid -->
@@ -193,24 +100,24 @@
                 <!-- End Title -->
 
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-                    <a href=""
+                    @foreach ($category as $category)
+                    @if ($category->events_count > 0)
+                    <a href="/category/{{ $category->slug }}"
                         class="p-4 border border-gray-200 rounded-lg dark:border-neutral-700 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 ease-in-out">
-                        <svg class="shrink-0 size-10 mb-3 text-pink-500" xmlns="http://www.w3.org/2000/svg" width="400"
-                            height="400" viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M22 11a4 4 0 0 0-2-3.48A3 3 0 0 0 20 7a3 3 0 0 0-3-3h-.18A3 3 0 0 0 12 2.78A3 3 0 0 0 7.18 4H7a3 3 0 0 0-3 3a3 3 0 0 0 0 .52a4 4 0 0 0-.55 6.59A4 4 0 0 0 7 20h.18A3 3 0 0 0 12 21.22A3 3 0 0 0 16.82 20H17a4 4 0 0 0 3.5-5.89A4 4 0 0 0 22 11M11 8.55a5 5 0 0 0-.68-.32a1 1 0 0 0-.64 1.9A2 2 0 0 1 11 12v1.55a5 5 0 0 0-.68-.32a1 1 0 0 0-.64 1.9A2 2 0 0 1 11 17v2a1 1 0 0 1-1 1a1 1 0 0 1-.91-.6a4 4 0 0 0 .48-.33a1 1 0 1 0-1.28-1.54A2 2 0 0 1 7 18a2 2 0 0 1-2-2a2 2 0 0 1 .32-1.06A4 4 0 0 0 6 15a1 1 0 0 0 0-2a1.8 1.8 0 0 1-.69-.13A2 2 0 0 1 5 9.25a3 3 0 0 0 .46.35a1 1 0 1 0 1-1.74a.9.9 0 0 1-.34-.33A.9.9 0 0 1 6 7a1 1 0 0 1 1-1a.8.8 0 0 1 .21 0a4 4 0 0 0 .19.47a1 1 0 0 0 1.37.37a1 1 0 0 0 .36-1.34A1.06 1.06 0 0 1 9 5a1 1 0 0 1 2 0Zm7.69 4.32A1.8 1.8 0 0 1 18 13a1 1 0 0 0 0 2a4 4 0 0 0 .68-.06A2 2 0 0 1 19 16a2 2 0 0 1-2 2a2 2 0 0 1-1.29-.47a1 1 0 0 0-1.28 1.54a4 4 0 0 0 .48.33a1 1 0 0 1-.91.6a1 1 0 0 1-1-1v-2a2 2 0 0 1 1.32-1.87a1 1 0 0 0-.64-1.9a5 5 0 0 0-.68.32V12a2 2 0 0 1 1.32-1.87a1 1 0 0 0-.64-1.9a5 5 0 0 0-.68.32V5a1 1 0 0 1 2 0a1.06 1.06 0 0 1-.13.5a1 1 0 0 0 .36 1.37a1 1 0 0 0 1.37-.37a4 4 0 0 0 .19-.5a.8.8 0 0 1 .21 0a1 1 0 0 1 1 1a1 1 0 0 1-.17.55a.9.9 0 0 1-.33.31a1 1 0 0 0 1 1.74a2.7 2.7 0 0 0 .5-.35a2 2 0 0 1-.27 3.62Z" />
-                        </svg>
+                        {!! $category->icon !!}
 
                         <p class="font-semibold text-base text-gray-800 dark:text-neutral-200">
-                            Artificial Intelligence
+                            {{ $category->name }}
                         </p>
 
                         <p class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
-                            200 Acara
+                            {{ $category->events_count }} Acara
                         </p>
                     </a>
+                    @endif
+                    @endforeach
 
-                    <a href=""
+                    {{-- <a href=""
                         class="p-4 border border-gray-200 rounded-lg dark:border-neutral-700 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 ease-in-out">
                         <svg class="shrink-0 size-10 mb-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" width="400"
                             height="400" viewBox="0 0 32 32">
@@ -264,7 +171,7 @@
                         <p class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
                             200 Acara
                         </p>
-                    </a>
+                    </a> --}}
                 </div>
             </div>
             <!-- End Grid -->
