@@ -33,6 +33,8 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Default password
             'google_id' => null,
+            'is_premium' => $isPremium = $this->faker->boolean(20), // 20% kemungkinan menjadi Pro
+            'subscription_expires_at' => $isPremium ? now()->addMonths(rand(1, 12)) : null,
             'remember_token' => Str::random(10),
         ];
     }

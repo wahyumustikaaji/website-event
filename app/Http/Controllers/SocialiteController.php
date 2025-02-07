@@ -25,7 +25,7 @@ class SocialiteController extends Controller
 
             if ($user) {
                 Auth::login($user);
-                return redirect()->route('dashboard');
+                return redirect()->route('events');
             } else {
                 $userData = User::create([
                     'name' => $googleUser->name,
@@ -36,7 +36,7 @@ class SocialiteController extends Controller
 
                 if ($userData) {
                     Auth::login($userData);
-                    return redirect()->route('dashboard');
+                    return redirect()->route('events');
                 }
             }
         } catch (Exception $e) {

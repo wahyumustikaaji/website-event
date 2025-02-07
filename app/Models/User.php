@@ -46,4 +46,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isPro(): bool
+    {
+        return $this->is_premium && ($this->subscription_expires_at === null || $this->subscription_expires_at->isFuture());
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

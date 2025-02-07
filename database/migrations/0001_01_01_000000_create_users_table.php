@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('google_id')->nullable();
+            $table->boolean('is_premium')->default(false); // Free = false, Pro = true
+            $table->timestamp('subscription_expires_at')->nullable(); // NULL jika Free
             $table->rememberToken();
             $table->timestamps();
         });

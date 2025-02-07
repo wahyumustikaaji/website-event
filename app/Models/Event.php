@@ -26,6 +26,11 @@ class Event extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function cityCategory()
+    {
+        return $this->belongsTo(CityCategory::class, 'city_category_id');
+    }
+
     // Relasi dengan User (Pembuat)
     public function creator()
     {

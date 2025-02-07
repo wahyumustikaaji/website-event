@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CityCategory;
 use App\Models\Event;
 use App\Models\EventParticipant;
 use Illuminate\Support\Facades\Auth;
@@ -20,14 +21,16 @@ class EventController extends Controller
         $events = Event::all();
 
         $category = Category::withCount('events')->get()->sortByDesc('events_count');
+        $citycategory = CityCategory::withCount('events')->get()->sortByDesc('events_count');
 
-        return view('home.events', ['events' => $events, 'popularEvents' => $popularEvents, 'category' => $category,]);
+        return view('home.events', ['events' => $events, 'popularEvents' => $popularEvents, 'category' => $category, 'citycategory' => $citycategory]);
     }
 
     public function show($slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $category = $event->category;
+        $citycategory = $event->citycategory;
         $user = Auth::user();
 
         // Cek apakah user sudah terdaftar dalam event
@@ -41,6 +44,7 @@ class EventController extends Controller
         return view('home.event', [
             'event' => $event,
             'category' => $category,
+            'citycategory' => $citycategory,
             'isRegistered' => $isRegistered
         ]);
     }
@@ -52,6 +56,10 @@ class EventController extends Controller
 
         if (!$user) {
             return redirect()->route('login')->with('error', 'Silakan login untuk mendaftar.');
+        }
+
+        if ($event->ticket_quantity == 0) {
+            return redirect()->back()->with('error', 'Tiket sudah habis.');
         }
 
         $isRegistered = EventParticipant::where('event_id', $event->id)
@@ -67,6 +75,8 @@ class EventController extends Controller
             'user_id' => $user->id
         ]);
 
+        $event->decrement('ticket_quantity');
+
         return redirect()->back()->with('success', 'Berhasil Mendaftar Event!');
     }
 
@@ -78,6 +88,18 @@ class EventController extends Controller
 
         return view('home.category', [
             'category' => $category,
+            'events' => $events
+        ]);
+    }
+
+    public function showByCityCategory($slug)
+    {
+        $citycategory = CityCategory::where('slug', $slug)->firstOrFail();
+
+        $events = Event::where('category_id', $citycategory->id)->get();
+
+        return view('home.city-category', [
+            'citycategory' => $citycategory,
             'events' => $events
         ]);
     }
