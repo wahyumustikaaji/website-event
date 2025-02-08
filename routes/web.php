@@ -32,6 +32,7 @@ Route::get('/dashboard', [EventCrudController::class, 'dashboard'])
 Route::get('/create-event', [EventCrudController::class, 'createEvent'])
     ->middleware(['auth', 'verified'])
     ->name('create-event');
+Route::post('/create-event', [EventCrudController::class, 'store'])->name('events.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

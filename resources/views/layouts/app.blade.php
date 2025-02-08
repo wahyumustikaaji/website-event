@@ -14,23 +14,6 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        .ProseMirror:focus {
-            outline: none;
-        }
-
-        .tiptap ul p,
-        .tiptap ol p {
-            display: inline;
-        }
-
-        [data-hs-file-upload-preview] img {
-            width: 500px;
-            height: 500px;
-            object-fit: cover;
-        }
-    </style>
 </head>
 
 <body class="font-sans antialiased">
@@ -53,177 +36,44 @@
     </div> --}}
 
     @include('components.sidebar')
+
+    <div id="hs-subscription-with-image"
+        class="hs-overlay hidden w-full h-full fixed top-0 left-0 z-[90] overflow-x-hidden overflow-y-auto bg-black bg-opacity-50">
+        <div
+            class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
+            <div class="relative flex flex-col bg-white shadow-lg rounded-xl dark:bg-neutral-900">
+
+                <div class="aspect-w-16 aspect-h-8">
+                    <img class="w-full object-cover rounded-t-xl"
+                        src="https://images.unsplash.com/photo-1648747067020-73f77da74e8f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+                        alt="Modal Hero Image">
+                </div>
+
+                <div class="p-4 sm:p-10 text-center overflow-y-auto">
+                    <h3 id="hs-subscription-with-image-label"
+                        class="mb-2 text-2xl font-bold text-gray-800 dark:text-neutral-200">
+                        Yeahhhh 🎉
+                    </h3>
+                    <p class="text-gray-500 dark:text-neutral-500">
+                        Event kamu berhasil dibuat! Kamu dapat melihat dan mengelolanya di dashboard.
+                    </p>
+
+                    <div class="mt-6 flex justify-center gap-x-4">
+                        <button type="button"
+                            class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                            onclick="window.location.href='/event/{{ session('slug') }}'">
+                            Preview Event
+                        </button>
+                        <a class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400"
+                            href="/dashboard">
+                            Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
-
-<script>
-    (function() {
-  const { element } = HSFileUpload.getInstance('#hs-file-upload-with-limited-file-size', true);
-
-  element.dropzone.options.maxFiles = 1;
-
-  element.dropzone.on("addedfile", function(file) {
-    const errorMessage = document.getElementById("upload-error");
-
-    // Hapus file sebelumnya jika ada file baru yang diunggah
-    if (element.dropzone.files.length > 1) {
-      element.dropzone.removeFile(element.dropzone.files[0]);
-    }
-
-    // Validasi ukuran file (2MB)
-    if (file.size > element.concatOptions.maxFilesize * 1024 * 1024) {
-      element.dropzone.removeFile(file);
-      errorMessage.textContent = "Ukuran file terlalu besar! Maksimum 2MB.";
-      errorMessage.classList.remove("hidden");
-    } else {
-      errorMessage.classList.add("hidden");
-    }
-  });
-
-  element.dropzone.on("error", function(file, response) {
-    const errorMessage = document.getElementById("upload-error");
-
-    // Hapus file jika terjadi error
-    element.dropzone.removeFile(file);
-
-    // Tampilkan pesan error
-    errorMessage.textContent = "File tidak valid! Harap unggah gambar dengan ukuran maksimal 2MB.";
-    errorMessage.classList.remove("hidden");
-  });
-
-})();
-</script>
-
-<script type="importmap">
-    {
-    "imports": {
-      "https://esm.sh/v135/prosemirror-model@1.19.3/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs",
-      "https://esm.sh/v135/prosemirror-model@1.19.4/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs",
-      "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs",
-      "https://esm.sh/v135/prosemirror-model@1.21.0/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs",
-      "https://esm.sh/v135/prosemirror-model@1.22.1/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs",
-      "https://esm.sh/v135/prosemirror-model@1.23.0/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs"
-    }
-  }
-</script>
-
-<script type="module">
-    import { Editor } from 'https://esm.sh/@tiptap/core';
-  import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
-  import Placeholder from 'https://esm.sh/@tiptap/extension-placeholder';
-  import Paragraph from 'https://esm.sh/@tiptap/extension-paragraph';
-  import Bold from 'https://esm.sh/@tiptap/extension-bold';
-  import Underline from 'https://esm.sh/@tiptap/extension-underline';
-  import Link from 'https://esm.sh/@tiptap/extension-link';
-  import BulletList from 'https://esm.sh/@tiptap/extension-bullet-list';
-  import OrderedList from 'https://esm.sh/@tiptap/extension-ordered-list';
-  import ListItem from 'https://esm.sh/@tiptap/extension-list-item';
-  import Blockquote from 'https://esm.sh/@tiptap/extension-blockquote';
-
-  const editor = new Editor({
-    element: document.querySelector('#hs-editor-tiptap [data-hs-editor-field]'),
-    editorProps: {
-      attributes: {
-        class: 'relative min-h-40 p-3'
-      }
-    },
-    extensions: [
-      StarterKit.configure({
-        history: false
-      }),
-      Placeholder.configure({
-        placeholder: 'Add a message, if you\'d like.',
-        emptyNodeClass: 'before:text-gray-500'
-      }),
-      Paragraph.configure({
-        HTMLAttributes: {
-          class: 'text-inherit text-gray-800 dark:text-neutral-200'
-        }
-      }),
-      Bold.configure({
-        HTMLAttributes: {
-          class: 'font-bold'
-        }
-      }),
-      Underline,
-      Link.configure({
-        HTMLAttributes: {
-          class: 'inline-flex items-center gap-x-1 text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-white'
-        }
-      }),
-      BulletList.configure({
-        HTMLAttributes: {
-          class: 'list-disc list-inside text-gray-800 dark:text-white'
-        }
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          class: 'list-decimal list-inside text-gray-800 dark:text-white'
-        }
-      }),
-      ListItem.configure({
-        HTMLAttributes: {
-          class: 'marker:text-sm'
-        }
-      }),
-      Blockquote.configure({
-        HTMLAttributes: {
-          class: 'relative border-s-4 ps-4 sm:ps-6 dark:border-neutral-700 [&>p]:sm:text-lg'
-        }
-      })
-    ]
-  });
-  const actions = [
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-bold]',
-      fn: () => editor.chain().focus().toggleBold().run()
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-italic]',
-      fn: () => editor.chain().focus().toggleItalic().run()
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-underline]',
-      fn: () => editor.chain().focus().toggleUnderline().run()
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-strike]',
-      fn: () => editor.chain().focus().toggleStrike().run()
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-link]',
-      fn: () => {
-        const url = window.prompt('URL');
-        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-      }
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-ol]',
-      fn: () => editor.chain().focus().toggleOrderedList().run()
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-ul]',
-      fn: () => editor.chain().focus().toggleBulletList().run()
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-blockquote]',
-      fn: () => editor.chain().focus().toggleBlockquote().run()
-    },
-    {
-      id: '#hs-editor-tiptap [data-hs-editor-code]',
-      fn: () => editor.chain().focus().toggleCode().run()
-    }
-  ];
-
-  actions.forEach(({ id, fn }) => {
-    const action = document.querySelector(id);
-
-    if (action === null) return;
-
-    action.addEventListener('click', fn);
-  });
-</script>
 
 </html>

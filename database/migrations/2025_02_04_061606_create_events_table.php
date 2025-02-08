@@ -23,9 +23,11 @@ return new class extends Migration
             $table->string('address'); // Alamat lokasi
             $table->text('body');
             $table->dateTime('event_date'); // Tanggal dan waktu acara
+            $table->dateTime('end_date')->nullable();
             $table->time('start_time'); // Jam mulai
             $table->time('end_time'); // Jam berakhir
             $table->integer('ticket_quantity')->default(0); // Jumlah tiket tersedia
+            $table->unsignedBigInteger('views')->default(0);
             $table->timestamps();
         });
     }

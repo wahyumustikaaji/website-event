@@ -35,7 +35,7 @@
                     <!-- Buttons -->
                     <div class="mt-12 gap-3 flex justify-center">
                         <a class="py-3 px-4 w-full max-w-md inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-                            href="">
+                            href="/create-event">
                             Mulai Buat Event
                         </a>
                     </div>

@@ -13,11 +13,18 @@ class Event extends Model
     protected $fillable = [
         'title',
         'slug',
-        'image',
-        'creator_id',
         'category_id',
-        'location',
-        'body'
+        'city_category_id',
+        'creator_id',
+        'location_name',
+        'address',
+        'body',
+        'event_date',
+        'start_time',
+        'end_date',
+        'end_time',
+        'ticket_quantity',
+        'image'
     ];
 
     // Relasi dengan Category

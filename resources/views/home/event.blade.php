@@ -19,8 +19,8 @@
                     <!-- Kolom Gambar -->
                     <div class="lg:max-w-md w-full">
                         <figure>
-                            <img class="w-full h-[28rem] object-cover rounded-xl mb-8" src="{{ $event->image }}"
-                                alt="Blog Image">
+                            <img class="w-full h-[28rem] object-cover rounded-xl mb-8"
+                                src="{{asset('storage/'.$event->image)}}" alt="Blog Image">
                         </figure>
 
                         <div class="lg:block hidden">

@@ -26,7 +26,7 @@ class EventController extends Controller
         return view('home.events', ['events' => $events, 'popularEvents' => $popularEvents, 'category' => $category, 'citycategory' => $citycategory]);
     }
 
-    public function show($slug)
+    public function show($slug, Request $request)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
         $category = $event->category;
@@ -41,6 +41,14 @@ class EventController extends Controller
                 ->exists();
         }
 
+        // Meningkatkan jumlah views (hanya jika belum dikunjungi dalam sesi ini)
+        $viewedEvents = $request->session()->get('viewed_events', []);
+        if (!in_array($event->id, $viewedEvents)) {
+            $event->increment('views'); // Tambah views +1
+            $viewedEvents[] = $event->id;
+            $request->session()->put('viewed_events', $viewedEvents);
+        }
+
         return view('home.event', [
             'event' => $event,
             'category' => $category,
@@ -48,6 +56,7 @@ class EventController extends Controller
             'isRegistered' => $isRegistered
         ]);
     }
+
 
     public function register(Request $request, $slug)
     {
