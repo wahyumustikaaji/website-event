@@ -33,6 +33,7 @@ Route::get('/create-event', [EventCrudController::class, 'createEvent'])
     ->middleware(['auth', 'verified'])
     ->name('create-event');
 Route::post('/create-event', [EventCrudController::class, 'store'])->name('events.store');
+Route::delete('/event/{slug}', [EventCrudController::class, 'destroy'])->name('event.destroy');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -8,6 +8,7 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class EventCrudController extends Controller
 {
@@ -85,5 +86,19 @@ class EventCrudController extends Controller
                 ->withInput()
                 ->withErrors(['error' => 'Terjadi kesalahan saat membuat event. Silakan coba lagi.']);
         }
+    }
+
+    public function destroy(Request $request, $slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        // Hapus gambar jika ada
+        if ($event->image) {
+            Storage::delete('public/' . $event->image);
+        }
+
+        $event->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Event berhasil dihapus.');
     }
 }

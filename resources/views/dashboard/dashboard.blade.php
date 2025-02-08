@@ -86,13 +86,12 @@
                                     href="#">
                                     Edit
                                 </a>
-                                <a class="flex items-center gap-x-2 py-2 px-4 rounded-lg text-sm font-medium
-                                           bg-red-500 text-white shadow-md transition-all
-                                           hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400
-                                           active:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700
-                                           dark:focus:ring-red-500" href="#">
+                                <button
+                                    class="flex w-full items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm font-medium bg-red-500 text-white shadow-md transition-all hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 active:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-500"
+                                    data-id="{{ $events->slug }}" data-hs-overlay="#hs-danger-alert"
+                                    onclick="showDeleteModal(this)">
                                     Delete
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -104,4 +103,34 @@
         </div>
         <!-- End Grid -->
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        function showDeleteModal(button) {
+        let slug = button.getAttribute("data-id");
+        let deleteForm = document.getElementById("delete-form");
+
+        if (deleteForm) {
+        deleteForm.action = `/event/${slug}`;
+        }
+
+        let modal = document.getElementById("hs-danger-alert");
+        if (modal) {
+        modal.classList.remove("hidden");
+        }
+        }
+
+        let cancelButton = document.getElementById("cancel-delete");
+        if (cancelButton) {
+        cancelButton.addEventListener("click", function () {
+        let modal = document.getElementById("hs-danger-alert");
+        if (modal) {
+        modal.classList.add("hidden");
+        }
+        });
+        }
+
+        window.showDeleteModal = showDeleteModal; 
+        });
+    </script>
 </x-app-layout>
