@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\File;
 
 class RegisteredUserController extends Controller
 {
@@ -31,20 +32,29 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        // Ambil daftar gambar dari folder public/image/profile
+        $profileImages = File::files(public_path('image/profile'));
+
+        // Pilih gambar secara acak jika tersedia, jika tidak, gunakan gambar default
+        $randomImage = count($profileImages) > 0
+            ? 'image/profile/' . $profileImages[array_rand($profileImages)]->getFilename()
+            : 'image/profile/default.png'; // Pastikan ada default.png di folder tersebut
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'profile' => $randomImage, // Simpan path gambar ke database
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('events', absolute: false));
     }
 }

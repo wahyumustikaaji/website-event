@@ -250,7 +250,7 @@
                             Submit event
                         </h2>
                         <p class="mt-3 text-sm text-gray-600 dark:text-neutral-400">
-                            Untuk melanjutkan proses pengiriman formulir, kami perlu menyimpan data pribadi Anda.
+                            Untuk melanjutkan proses pengiriman formulir, kami perlu menyimpan data event Anda.
                         </p>
                         <p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">
                             Silakan centang kotak di bawah ini untuk memberikan izin kepada kami.
@@ -262,7 +262,7 @@
                                 id="af-submit-application-privacy-check">
                             <label for="af-submit-application-privacy-check"
                                 class="text-sm text-gray-500 ms-2 dark:text-neutral-400">
-                                Izinkan kami untuk memproses informasi Anda.
+                                Izinkan kami untuk memproses informasi event Anda.
                             </label>
                         </div>
                     </div>
@@ -290,7 +290,7 @@
                         const modal = document.querySelector('#hs-subscription-with-image');
                         if (modal && window.HSOverlay) {
                             HSOverlay.open(modal);
-                            
+
                             // Jalankan confetti
                             confetti({
                                 particleCount: 150,

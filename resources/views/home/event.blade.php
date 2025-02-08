@@ -37,7 +37,8 @@
                                     <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
                                         <div class="shrink-0">
                                             <img class="size-10 rounded-full"
-                                                src="{{ $event->creator->profile_photo_url}}" alt="Avatar">
+                                                src="{{ $event->creator->profile ? asset($event->creator->profile) : asset('image/profile/default.png') }}"
+                                                alt="Avatar">
                                         </div>
 
                                         <div class="grow">
@@ -62,7 +63,7 @@
                                                                         class="mb-2 flex w-full sm:items-center gap-x-5 sm:gap-x-3">
                                                                         <div class="shrink-0">
                                                                             <img class="size-8 rounded-full"
-                                                                                src="https://images.unsplash.com/photo-1669837401587-f9a4cfe3126e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+                                                                                src="{{ $event->creator->profile ? asset($event->creator->profile) : asset('image/profile/default.png') }}"
                                                                                 alt="Avatar">
                                                                         </div>
 
@@ -108,7 +109,8 @@
                                     @foreach ($event->participants->take(7) as $participant)
                                     <div class="hs-tooltip inline-block">
                                         <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
-                                            src="{{ $participant->user->avatar_url }}" alt="Avatar">
+                                            src="{{ $participant->user->profile ? asset($participant->user->profile) : asset('image/profile/default.png') }}"
+                                            alt="Avatar">
                                         <span
                                             class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 inline-block absolute invisible z-20 py-1.5 px-2.5 bg-gray-900 text-xs text-white rounded-lg dark:bg-neutral-700"
                                             role="tooltip">
@@ -152,7 +154,7 @@
                                         </svg>
                                         Share
                                     </button>
-                                    <div class="hs-dropdown-menu w-56 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden mb-1 z-10 bg-gray-900 shadow-md rounded-xl p-2 dark:bg-black"
+                                    <div class="hs-dropdown-menu w-56 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden mb-1 z-40 bg-gray-900 shadow-md rounded-xl p-2 dark:bg-black"
                                         role="menu" aria-orientation="vertical"
                                         aria-labelledby="hs-blog-article-share-dropdown">
                                         <a onclick="copyLink()"
