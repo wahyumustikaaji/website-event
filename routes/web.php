@@ -29,11 +29,12 @@ Route::get('/dashboard', [EventCrudController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::get('/create-event', [EventCrudController::class, 'createEvent'])
-    ->middleware(['auth', 'verified'])
-    ->name('create-event');
-Route::post('/create-event', [EventCrudController::class, 'store'])->name('events.store');
-Route::delete('/event/{slug}', [EventCrudController::class, 'destroy'])->name('event.destroy');
+Route::get('/create-event', [EventCrudController::class, 'createEvent'])->middleware(['auth', 'verified'])->name('create-event');
+Route::get('/my-event', [EventCrudController::class, 'myEvent'])->middleware(['auth', 'verified'])->name('my-event');
+Route::post('/create-event', [EventCrudController::class, 'store'])->middleware(['auth', 'verified'])->name('events.store');
+Route::get('/event/{slug}/edit', [EventCrudController::class, 'edit'])->middleware(['auth', 'verified'])->name('event.edit');
+Route::put('/event/{slug}', [EventCrudController::class, 'update'])->middleware(['auth', 'verified'])->name('event.update');
+Route::delete('/event/{slug}', [EventCrudController::class, 'destroy'])->middleware(['auth', 'verified'])->name('event.destroy');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

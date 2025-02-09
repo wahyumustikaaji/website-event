@@ -22,11 +22,23 @@ class EventCrudController extends Controller
         return view('dashboard.dashboard', compact('myevents'));
     }
 
+    public function myEvent()
+    {
+        $user = Auth::user();
+
+        $myeventsregistered = Event::whereHas('participants', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+
+        return view('dashboard.my-event', compact('myeventsregistered'));
+    }
+
     public function createEvent()
     {
         $categories = Category::all();
         $cityCategories = CityCategory::all();
-        return view('dashboard.create-event', compact('categories', 'cityCategories'));
+        $event = null;
+        return view('dashboard.create-event', compact('categories', 'cityCategories', 'event'));
     }
 
     public function store(Request $request)
@@ -34,7 +46,7 @@ class EventCrudController extends Controller
         try {
             $request->validate([
                 'title' => 'required|string|max:255',
-                'body' => 'required|string|max:500',
+                'body' => 'required|string|max:2000',
                 'category_id' => 'required|exists:categories,id',
                 'city_category_id' => 'required|exists:city_categories,id',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -86,6 +98,78 @@ class EventCrudController extends Controller
                 ->withInput()
                 ->withErrors(['error' => 'Terjadi kesalahan saat membuat event. Silakan coba lagi.']);
         }
+    }
+
+    public function edit($slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->creator_id !== Auth::user()->id) {
+            abort(403);
+        }
+
+        if ($event->event_date && $event->end_date) {
+            $event->event_date = \Carbon\Carbon::parse($event->event_date)->format('Y-m-d');
+            $event->end_date = \Carbon\Carbon::parse($event->end_date)->format('Y-m-d');
+        }
+
+        $categories = Category::all();
+        $cityCategories = CityCategory::all();
+
+        return view('dashboard.create-event', [
+            'event' => $event,
+            'categories' => $categories,
+            'cityCategories' => $cityCategories
+        ]);
+    }
+
+    public function update(Request $request, $slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->creator_id !== Auth::user()->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'city_category_id' => 'required|exists:city_categories,id',
+            'ticket_quantity' => 'required|integer|min:0',
+            'body' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'event_date' => 'required|date',
+            'start_time' => 'required',
+            'end_date' => 'required|date|after_or_equal:event_date',
+            'end_time' => 'required',
+            'location_name' => 'required|string|max:255',
+            'address' => 'required|string'
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+            $imagePath = $request->file('image')->store('events', 'public');
+        }
+
+        $event->update([
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'category_id' => $validated['category_id'],
+            'city_category_id' => $validated['city_category_id'],
+            'ticket_quantity' => $validated['ticket_quantity'],
+            'body' => $validated['body'],
+            'image' => $request->hasFile('image') ? $imagePath : $event->image,
+            'event_date' => $validated['event_date'],
+            'start_time' => $validated['start_time'],
+            'end_date' => $validated['end_date'],
+            'end_time' => $validated['end_time'],
+            'location_name' => $validated['location_name'],
+            'address' => $validated['address']
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Event berhasil diperbarui!');
     }
 
     public function destroy(Request $request, $slug)

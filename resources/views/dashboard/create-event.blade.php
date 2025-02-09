@@ -1,6 +1,7 @@
 <x-app-layout>
     <div class="relative z-10">
         <!-- Title -->
+        @if (!$event)
         <div class="max-w-2xl mb-5">
             <h2 class="text-2xl font-bold md:text-2xl md:leading-tight dark:text-white">Buat Event Baru</h2>
             <p class="mt-1 text-gray-600 dark:text-neutral-400 hidden lg:block">Buat event paling
@@ -8,19 +9,24 @@
                 jangan
                 lupa disebarkan!</p>
         </div>
+        @endif
         <!-- End Title -->
 
         <!-- Card Section -->
         <div class="max-w-[85rem] px-4 py-5 sm:px-6 lg:px-8 mx-auto">
             <!-- Card -->
             <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-neutral-900">
-                <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ $event ? route('event.update', $event->slug) : route('events.store') }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
+                    @if($event)
+                    @method('PUT')
+                    @endif
                     <!-- Section -->
                     <div class="grid sm:grid-cols-12 gap-2 sm:gap-4 py-8 pt-0 last:pb-0">
                         <div class="sm:col-span-12">
                             <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                                Detail Event
+                                {{ $event ? 'Edit Event' : 'Detail Event' }}
                             </h2>
                         </div>
                         <!-- End Col -->
@@ -33,6 +39,7 @@
                         </div>
                         <div class="sm:col-span-9">
                             <input id="name-event" name="title" type="text" required
+                                value="{{ old('title', $event ? $event->title : '') }}"
                                 class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
@@ -46,7 +53,8 @@
                             <select id="category-event" name="category_id" required
                                 class="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm rounded-lg">
                                 @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" {{ old('category_id', $event ? $event->category_id :
+                                    '') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -61,7 +69,9 @@
                             <select id="category-city" name="city_category_id" required
                                 class="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm rounded-lg">
                                 @foreach ($cityCategories as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                <option value="{{ $city->id }}" value="{{ $city->id }}" {{ old('city_id', $event ?
+                                    $event->city_id : '') == $city->id ? 'selected' : ''
+                                    }}>{{ $city->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -84,6 +94,7 @@
                             }'>
                                 <div class="w-full flex justify-between items-center gap-x-3">
                                     <input id="ticket-quantity"
+                                        value="{{ old('ticket_quantity', $event ? $event->ticket_quantity : '') }}"
                                         class="w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"
                                         style="-moz-appearance: textfield;" type="number"
                                         aria-roledescription="Number field" name="ticket_quantity" value="0"
@@ -128,7 +139,7 @@
                         <div class="sm:col-span-9">
                             <textarea id="body" name="body"
                                 class="py-2 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                rows="6" placeholder=""></textarea>
+                                rows="6" placeholder="">{{ old('body', $event ? $event->body : '') }}</textarea>
                         </div>
                         <!-- End Col -->
 
@@ -143,8 +154,13 @@
                         <!-- End Col -->
 
                         <div class="sm:col-span-9">
+                            @if($event && $event->image)
+                            <div class="mb-2">
+                                <img src="{{Storage::url($event->image)}}" alt="Poster Event" class="max-w-xs rounded">
+                            </div>
+                            @endif
                             <label for="image" class="sr-only">Choose file</label>
-                            <input type="file" name="image" id="image" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
+                            <input {{ $event ? '' : 'required' }} type="file" name="image" id="image" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
                                         file:bg-gray-50 file:border-0
                                         file:bg-gray-100 file:me-4
                                         file:py-2 file:px-4
@@ -175,8 +191,10 @@
                         <div class="sm:col-span-9">
                             <div class="sm:flex">
                                 <input id="date-start-event" name="event_date" type="date" required
+                                    value="{{ old('event_date', $event ? $event->event_date : '') }}"
                                     class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                                 <input id="time-start-event" name="start_time" type="time"
+                                    value="{{ old('start_time', $event ? $event->start_time : '') }}"
                                     class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                             </div>
                         </div>
@@ -193,9 +211,11 @@
                         <div class="sm:col-span-9">
                             <div class="sm:flex">
                                 <input id="date-end-event" name="end_date" type="date" required
+                                    value="{{ old('end_date', $event ? $event->end_date : '') }}"
                                     min="{{ '${document.getElementById(\'date-end-event\').value}' }}"
                                     class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                                 <input id="time-end-event" name="end_time" type="time"
+                                    value="{{ old('end_time', $event ? $event->end_time : '') }}"
                                     class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                             </div>
                         </div>
@@ -223,6 +243,7 @@
 
                         <div class="sm:col-span-9">
                             <input id="name-location" name="location_name" type="text" required
+                                value="{{ old('location_name', $event ? $event->location_name : '') }}"
                                 class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                         </div>
                         <!-- End Col -->
@@ -237,6 +258,7 @@
 
                         <div class="sm:col-span-9">
                             <input id="address" name="address" type="text" required
+                                value="{{ old('address', $event ? $event->address : '') }}"
                                 class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                         </div>
                         <!-- End Col -->
@@ -244,6 +266,7 @@
                     <!-- End Section -->
 
                     <!-- Section -->
+                    @if(!$event)
                     <div
                         class="py-8 first:pt-0 last:pb-0 border-t first:border-transparent border-gray-200 dark:border-neutral-700 dark:first:border-transparent">
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
@@ -266,11 +289,12 @@
                             </label>
                         </div>
                     </div>
+                    @endif
                     <!-- End Section -->
 
                     <button type="submit"
                         class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                        Buat Event
+                        {{ $event ? 'Update Event' : 'Buat Event'}}
                     </button>
                 </form>
             </div>

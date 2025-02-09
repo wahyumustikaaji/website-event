@@ -140,6 +140,11 @@
                                     # {{ $event->category->name }}
                                 </a>
 
+                                <div id="notification-success-copylink" role="alert"
+                                    class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-100 text-black px-6 py-2 rounded-lg shadow-lg z-40 hidden">
+                                    Link berhasil disalin!
+                                </div>
+
                                 <!-- Button -->
                                 <div class="hs-dropdown relative inline-flex">
                                     <button id="hs-blog-article-share-dropdown" type="button"
@@ -315,10 +320,17 @@
                                             </p>
 
                                             <div>
-                                                @if ($event->ticket_quantity == 0)
+                                                @if ($isExpired)
                                                 <div>
                                                     <span
-                                                        class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium bg-red-100 text-red-800 rounded-md dark:bg-red-500/10 dark:text-red-500">
+                                                        class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium bg-red-100 text-red-600 rounded-md dark:bg-red-500/10 dark:text-red-500">
+                                                        Event Selesai
+                                                    </span>
+                                                </div>
+                                                @elseif ($event->ticket_quantity == 0)
+                                                <div>
+                                                    <span
+                                                        class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium bg-red-100 text-red-600 rounded-md dark:bg-red-500/10 dark:text-red-500">
                                                         Tiket Habis
                                                     </span>
                                                 </div>
@@ -346,20 +358,26 @@
                                 </div>
 
                                 <div class="mt-5">
-                                    @if($event->ticket_quantity == 0)
-                                    <button type="button"
-                                        class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
-                                        disabled>
-                                        Tiket Habis
-                                    </button>
-                                    @elseif(Auth::check())
                                     @if($isRegistered)
                                     <button type="button"
                                         class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
                                         disabled>
                                         Terdaftar
                                     </button>
-                                    @elseif($event->creator_id == Auth::id())
+                                    @elseif($isExpired)
+                                    <button type="button"
+                                        class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
+                                        disabled>
+                                        Event Selesai
+                                    </button>
+                                    @elseif($event->ticket_quantity == 0)
+                                    <button type="button"
+                                        class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
+                                        disabled>
+                                        Tiket Habis
+                                    </button>
+                                    @elseif(Auth::check())
+                                    @if($event->creator_id == Auth::id())
                                     <button type="button"
                                         class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
                                         disabled>
@@ -548,11 +566,17 @@
             function copyLink() {
                 const currentUrl = window.location.href;
                 navigator.clipboard.writeText(currentUrl).then(() => {
-                  alert("Link berhasil disalin!");
+                    const notification = document.getElementById("notification-success-copylink");
+                    notification.classList.remove("hidden");
+
+                    // Sembunyikan notifikasi setelah 5 detik
+                    setTimeout(() => {
+                        notification.classList.add("hidden");
+                    }, 5000);
                 }).catch(err => {
-                  console.error("Gagal menyalin link: ", err);
+                    console.error("Gagal menyalin link: ", err);
                 });
-              }
+            }
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {

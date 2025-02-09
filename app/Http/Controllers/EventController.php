@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\CityCategory;
 use App\Models\Event;
 use App\Models\EventParticipant;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -32,6 +33,13 @@ class EventController extends Controller
         $category = $event->category;
         $citycategory = $event->citycategory;
         $user = Auth::user();
+        $eventDate = Carbon::parse($event->event_date)->format('Y-m-d');
+
+        // Gabungkan tanggal dengan waktu dari start_time
+        $eventStartDateTime = Carbon::parse($eventDate . ' ' . $event->start_time);
+
+        // Cek apakah waktu sudah lewat
+        $isExpired = $eventStartDateTime->isPast();
 
         // Cek apakah user sudah terdaftar dalam event
         $isRegistered = false;
@@ -53,7 +61,8 @@ class EventController extends Controller
             'event' => $event,
             'category' => $category,
             'citycategory' => $citycategory,
-            'isRegistered' => $isRegistered
+            'isRegistered' => $isRegistered,
+            'isExpired' => $isExpired
         ]);
     }
 

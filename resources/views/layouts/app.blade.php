@@ -46,8 +46,7 @@
             <div class="relative flex flex-col bg-white shadow-lg rounded-xl dark:bg-neutral-900">
 
                 <div class="aspect-w-16 aspect-h-8">
-                    <img class="w-full object-cover rounded-t-xl"
-                        src="https://images.unsplash.com/photo-1648747067020-73f77da74e8f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80"
+                    <img class="w-full object-cover rounded-t-xl" src="{{ asset('image/create-event.jpg') }}"
                         alt="Modal Hero Image">
                 </div>
 
