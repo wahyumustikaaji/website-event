@@ -44,7 +44,7 @@
             </div>
             @else
             @foreach ($myeventsregistered as $events )
-            <div
+            <a href="/event/{{ $events->slug }}"
                 class="group block rounded-xl overflow-hidden relative focus:outline-none border shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
                     <div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
@@ -53,10 +53,10 @@
                     </div>
 
                     <div class="grow">
-                        <a href="/event/{{ $events->slug }}" class=" text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300
-                            dark:group-hover:text-white hover:underline">
+                        <h3 class=" text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300
+                            dark:group-hover:text-white ">
                             {{ $events->title }}
-                        </a>
+                        </h3>
                         <p class="mt-3 text-gray-600 dark:text-neutral-400">
                             {{ $events->formatted_event_date }}, {{ $events->formatted_event_time_start }}
                         </p>
@@ -65,7 +65,7 @@
                         </p>
                     </div>
                 </div>
-            </div>
+            </a>
             @endforeach
             @endif
             <!-- End Card -->

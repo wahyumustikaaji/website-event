@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="grow">
-                        <a href="/event/{{ $events->slug }}" class=" text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300
+                        <a href="/detail-event/{{ $events->slug }}" class=" text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300
                             dark:group-hover:text-white hover:underline">
                             {{ $events->title }}
                         </a>

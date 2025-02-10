@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\CityCategory;
 use App\Models\Event;
+use App\Models\EventParticipant;
+use App\Models\EventVisitor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class EventCrudController extends Controller
 {
@@ -16,7 +19,6 @@ class EventCrudController extends Controller
     {
         $user = Auth::user();
 
-        // Ambil hanya event yang dibuat oleh user yang login
         $myevents = Event::where('creator_id', $user->id)->get();
 
         return view('dashboard.dashboard', compact('myevents'));
@@ -32,6 +34,49 @@ class EventCrudController extends Controller
 
         return view('dashboard.my-event', compact('myeventsregistered'));
     }
+
+    public function detailEvent($slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+        $category = $event->category;
+        $citycategory = $event->citycategory;
+        $eventParticipants = EventParticipant::where('event_id', $event->id)
+            ->with('user') // Mengambil informasi user yang mendaftar
+            ->get();
+        $viewsData = Event::select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('SUM(views) as total_views')
+        )
+            ->where('id', $event->id) // Filter berdasarkan event yang sedang dilihat
+            ->groupBy('date')
+            ->orderBy('date')
+            ->limit(12)
+            ->get();
+
+
+        $browserData = EventVisitor::select('device', DB::raw('COUNT(*) as total'))
+            ->where('event_id', $event->id) // Pastikan hanya mengambil data event yang sedang dilihat
+            ->groupBy('device')
+            ->get();
+
+        $bubbleData = [
+            'browsers' => $browserData->pluck('device'), // Nama browser
+            'totals' => $browserData->pluck('total') // Jumlah pengguna per browser
+        ];
+
+        return view('dashboard.detail-event', [
+            'event' => $event,
+            'bubbleData' => $bubbleData,
+            'eventParticipants' => $eventParticipants,
+            'category' => $category,
+            'citycategory' => $citycategory,
+            'chartData' => [
+                'dates' => $viewsData->pluck('date'),
+                'views' => $viewsData->pluck('total_views')
+            ]
+        ]);
+    }
+
 
     public function createEvent()
     {

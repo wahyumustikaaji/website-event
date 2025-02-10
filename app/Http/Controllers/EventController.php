@@ -6,9 +6,12 @@ use App\Models\Category;
 use App\Models\CityCategory;
 use App\Models\Event;
 use App\Models\EventParticipant;
+use App\Models\EventVisitor;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Jenssegers\Agent\Agent;
 
 class EventController extends Controller
 {
@@ -37,11 +40,8 @@ class EventController extends Controller
 
         // Gabungkan tanggal dengan waktu dari start_time
         $eventStartDateTime = Carbon::parse($eventDate . ' ' . $event->start_time);
-
-        // Cek apakah waktu sudah lewat
         $isExpired = $eventStartDateTime->isPast();
 
-        // Cek apakah user sudah terdaftar dalam event
         $isRegistered = false;
         if ($user) {
             $isRegistered = EventParticipant::where('event_id', $event->id)
@@ -50,12 +50,23 @@ class EventController extends Controller
         }
 
         // Meningkatkan jumlah views (hanya jika belum dikunjungi dalam sesi ini)
-        $viewedEvents = $request->session()->get('viewed_events', []);
-        if (!in_array($event->id, $viewedEvents)) {
-            $event->increment('views'); // Tambah views +1
-            $viewedEvents[] = $event->id;
-            $request->session()->put('viewed_events', $viewedEvents);
-        }
+        $event->increment('views');
+
+        // **Menyimpan Data Demografi Pengunjung**
+        $ip = $request->ip();
+        $agent = new Agent(); // Menggunakan Jenssegers\Agent untuk mendeteksi device/browser
+
+        // Ambil informasi lokasi berdasarkan IP (menggunakan API seperti ip-api.com atau geoplugin.net)
+        $location = Http::get("http://ip-api.com/json/{$ip}")->json();
+
+        EventVisitor::create([
+            'event_id' => $event->id,
+            'ip_address' => $ip,
+            'country' => $location['country'] ?? 'Unknown',
+            'city' => $location['city'] ?? 'Unknown',
+            'device' => $agent->isMobile() ? 'Mobile' : 'Desktop',
+            'browser' => $agent->browser(),
+        ]);
 
         return view('home.event', [
             'event' => $event,

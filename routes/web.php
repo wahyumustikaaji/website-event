@@ -31,6 +31,7 @@ Route::get('/dashboard', [EventCrudController::class, 'dashboard'])
 
 Route::get('/create-event', [EventCrudController::class, 'createEvent'])->middleware(['auth', 'verified'])->name('create-event');
 Route::get('/my-event', [EventCrudController::class, 'myEvent'])->middleware(['auth', 'verified'])->name('my-event');
+Route::get('/detail-event/{slug}', [EventCrudController::class, 'detailEvent'])->middleware(['auth', 'verified'])->name('detail-event');
 Route::post('/create-event', [EventCrudController::class, 'store'])->middleware(['auth', 'verified'])->name('events.store');
 Route::get('/event/{slug}/edit', [EventCrudController::class, 'edit'])->middleware(['auth', 'verified'])->name('event.edit');
 Route::put('/event/{slug}', [EventCrudController::class, 'update'])->middleware(['auth', 'verified'])->name('event.update');
