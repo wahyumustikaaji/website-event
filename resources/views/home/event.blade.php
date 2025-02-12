@@ -1,4 +1,5 @@
-<x-guest-layout>
+<x-guest-layout title="{{ $event->title }}" description="{{ $event->body }}" keywords="{{$event->category->name}}"
+    author="{{$event->creator->name}}" image="{{asset('storage/'.$event->image)}}">
     <!-- Hero -->
     <div class="relative overflow-hidden">
         <!-- Gradients -->
@@ -176,7 +177,7 @@
                                         </a>
                                         <div class="border-t border-gray-600 my-2 dark:border-neutral-800"></div>
                                         <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-400 hover:bg-white/10 focus:outline-none focus:bg-white/10 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:focus:bg-neutral-900"
-                                            href="#">
+                                            id="share-twitter" href="#" target="_blank">
                                             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="16"
                                                 height="16" fill="currentColor" viewBox="0 0 16 16">
                                                 <path
@@ -184,8 +185,9 @@
                                             </svg>
                                             Share on Twitter
                                         </a>
+
                                         <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-400 hover:bg-white/10 focus:outline-none focus:bg-white/10 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:focus:bg-neutral-900"
-                                            href="#">
+                                            id="share-facebook" href="#" target="_blank">
                                             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="16"
                                                 height="16" fill="currentColor" viewBox="0 0 16 16">
                                                 <path
@@ -193,8 +195,9 @@
                                             </svg>
                                             Share on Facebook
                                         </a>
+
                                         <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-400 hover:bg-white/10 focus:outline-none focus:bg-white/10 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:focus:bg-neutral-900"
-                                            href="#">
+                                            id="share-linkedin" href="#" target="_blank">
                                             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="16"
                                                 height="16" fill="currentColor" viewBox="0 0 16 16">
                                                 <path
@@ -327,6 +330,13 @@
                                                         Event Selesai
                                                     </span>
                                                 </div>
+                                                @elseif ($isOngoing)
+                                                <div>
+                                                    <span
+                                                        class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium bg-yellow-100 text-yellow-600 rounded-md dark:bg-yellow-100 dark:text-yellow-600">
+                                                        Event Berlangsung
+                                                    </span>
+                                                </div>
                                                 @elseif ($event->ticket_quantity == 0)
                                                 <div>
                                                     <span
@@ -382,6 +392,11 @@
                                         class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
                                         disabled>
                                         Anda Pemilik Acara
+                                    </button>
+                                    @elseif($isOngoing)
+                                    <button type="submit"
+                                        class="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                        Daftar
                                     </button>
                                     @else
                                     <button type="submit"
@@ -577,6 +592,16 @@
                     console.error("Gagal menyalin link: ", err);
                 });
             }
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+        const currentUrl = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent("Cek event ini!");
+
+        document.getElementById("share-twitter").href = `https://twitter.com/intent/tweet?url=${currentUrl}&text=${text}`;
+        document.getElementById("share-facebook").href = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
+        document.getElementById("share-linkedin").href = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
+    });
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {

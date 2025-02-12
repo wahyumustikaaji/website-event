@@ -1,4 +1,7 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Temukan & Ikuti Event Seru"
+    description="Spherevent adalah platform untuk menemukan dan mengikuti berbagai event menarik. Jelajahi acara terbaru, daftar dengan mudah, dan rasakan pengalaman yang tak terlupakan."
+    keywords="Event, Acara, Konser, Seminar, Workshop, Festival, Komunitas, Pameran, Tiket, Event Seru"
+    author="Tim Spherevent">
     <!-- Hero -->
     <div class="relative overflow-hidden">
         <!-- Gradients -->
@@ -121,7 +124,6 @@
 
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                     @foreach ($category->take(8) as $category)
-                    @if ($category->events_count > 0)
                     <a href="/category/{{ $category->slug }}"
                         class="p-4 border border-gray-200 rounded-lg dark:border-neutral-700 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 ease-in-out">
                         {!! $category->icon !!}
@@ -134,7 +136,6 @@
                             {{ $category->events_count }} Acara
                         </p>
                     </a>
-                    @endif
                     @endforeach
 
                     {{-- <a href=""
@@ -218,8 +219,7 @@
                             <div class="flex justify-between items-center gap-x-3">
                                 <div class="grow">
                                     <div class="flex items-center gap-x-3">
-                                        <img class="size-[38px] rounded-full"
-                                            src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+                                        <img class="size-[38px] rounded-full" src="{{$citycategory->image}}"
                                             alt="Avatar">
                                         <div class="grow">
                                             <h3

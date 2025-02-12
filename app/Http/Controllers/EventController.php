@@ -36,11 +36,15 @@ class EventController extends Controller
         $category = $event->category;
         $citycategory = $event->citycategory;
         $user = Auth::user();
-        $eventDate = Carbon::parse($event->event_date)->format('Y-m-d');
 
-        // Gabungkan tanggal dengan waktu dari start_time
-        $eventStartDateTime = Carbon::parse($eventDate . ' ' . $event->start_time);
-        $isExpired = $eventStartDateTime->isPast();
+        // Konversi start_date dan end_date ke format tanggal
+        $startDate = Carbon::parse($event->start_date);
+        $endDate = Carbon::parse($event->end_date);
+        $now = Carbon::now();
+
+        // Periksa status event berdasarkan tanggal
+        $isExpired = $now->greaterThan($endDate); // Event sudah selesai jika sekarang lebih dari end_date
+        $isOngoing = $now->between($startDate, $endDate); // Event berlangsung jika sekarang di antara start_date dan end_date
 
         $isRegistered = false;
         if ($user) {
@@ -73,10 +77,10 @@ class EventController extends Controller
             'category' => $category,
             'citycategory' => $citycategory,
             'isRegistered' => $isRegistered,
-            'isExpired' => $isExpired
+            'isExpired' => $isExpired,
+            'isOngoing' => $isOngoing,
         ]);
     }
-
 
     public function register(Request $request, $slug)
     {
@@ -125,7 +129,7 @@ class EventController extends Controller
     {
         $citycategory = CityCategory::where('slug', $slug)->firstOrFail();
 
-        $events = Event::where('category_id', $citycategory->id)->get();
+        $events = Event::where('city_category_id', $citycategory->id)->get();
 
         return view('home.city-category', [
             'citycategory' => $citycategory,
@@ -135,11 +139,22 @@ class EventController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('search');
+        // Tangkap query pencarian dari request
+        $search = $request->input('search');
+
+        // Mulai query untuk post (dengan sorting terbaru)
+        $query = Event::latest();
+
+        // Cek apakah parameter 'search' ada
+        if (!empty($search)) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        // Ambil hasil query dengan paginasi
+        $events = $query->paginate(20);
         $category = Category::all();
 
-        $events = Event::where('title', 'like', '%' . $query . '%')->simplePaginate(20);
-
-        return view('home.search-event', compact('events', 'query', 'category'));
+        // Kirim data ke view
+        return view('home.search-event', compact('events', 'search', 'category'));
     }
 }

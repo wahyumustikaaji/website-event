@@ -388,8 +388,8 @@
         },
         yaxis: {
         min: 0,
-        max: Math.ceil(Math.max(...chartData.views) + 10),
-        tickAmount: Math.ceil((Math.max(...chartData.views) + 10) / 5),
+        max: Math.ceil(Math.max(...chartData.views) / 50) * 50, // Membulatkan ke kelipatan 50
+        tickAmount: Math.ceil((Math.max(...chartData.views)) / 50), // Menyesuaikan jumlah ticks
         labels: {
         style: {
         colors: '#9ca3af',
@@ -399,12 +399,6 @@
         },
         formatter: (value) => Math.round(value)
         }
-        },
-        tooltip: {
-            x: { format: 'dd MMM yyyy' },
-            y: {
-                formatter: (value) => `${value >= 1000 ? `${value / 1000}k` : value}`
-            }
         },
         responsive: [{
             breakpoint: 568,
@@ -420,7 +414,7 @@
     }), {
         colors: ['#2563eb', '#9333ea']
     });
-});
+    });
     </script>
 
     <script>
@@ -430,7 +424,7 @@
                 totals: @json($bubbleData['totals'])
             };
 
-            const maxSize = Math.max(...bubbleData.totals); // Ukuran maksimal untuk normalisasi
+            const maxSize = Math.max(...bubbleData.totals);
 
             const bubbleSeries = bubbleData.browsers.map((browser, index) => {
                 return {
@@ -474,6 +468,5 @@
             }));
         });
     </script>
-
 
 </x-app-layout>

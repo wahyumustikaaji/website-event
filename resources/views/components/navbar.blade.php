@@ -5,8 +5,8 @@
         class="relative max-w-[66rem] w-full md:flex md:items-center md:justify-between md:gap-3 ps-5 pe-2 mx-2 lg:mx-auto py-2">
         <!-- Logo w/ Collapse Button -->
         <div class="flex items-center justify-between">
-            <a class="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80 dark:text-white"
-                href="/" aria-label="Brand">Brand</a>
+            <a class="flex-none font-semibold text-xl bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent dark:from-blue-400 dark:to-violet-400 focus:outline-none focus:opacity-80"
+                href="/" aria-label="Brand">Spherevent</a>
 
             <!-- Collapse Button -->
             <div class="md:hidden">

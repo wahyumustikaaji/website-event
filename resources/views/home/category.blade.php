@@ -126,9 +126,8 @@
                     <!-- End Col -->
 
                     <div class="lg:col-span-4 mt-10 lg:mt-0 lg:order-2 order-1">
-                        <img class="w-full rounded-xl lg:max-h-full max-h-60 object-cover"
-                            src="https://images.unsplash.com/photo-1665686376173-ada7a0031a85?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=900&h=700&q=80"
-                            alt="Hero Image">
+                        <img class="w-full rounded-xl lg:max-h-full lg:h-[500px] max-h-[500px] object-cover"
+                            src="{{$category->image}}" alt="Hero Image">
                     </div>
                     <!-- End Col -->
                 </div>

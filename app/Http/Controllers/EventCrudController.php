@@ -55,7 +55,6 @@ class EventCrudController extends Controller
             ->orderBy('date')
             ->get();
 
-
         // Mengisi bulan yang kosong dengan 0
         $completeViewsData = collect();
         for ($i = 11; $i >= 0; $i--) {
@@ -102,6 +101,24 @@ class EventCrudController extends Controller
     public function store(Request $request)
     {
         try {
+            $messages = [
+                'title.required' => 'Nama event wajib diisi',
+                'title.max' => 'Nama event tidak boleh lebih dari 255 karakter',
+                'body.required' => 'Deskripsi event wajib diisi',
+                'body.max' => 'Deskripsi tidak boleh lebih dari 2000 karakter',
+                'image.image' => 'File harus berupa gambar',
+                'image.mimes' => 'Format gambar harus jpg, jpeg, atau png',
+                'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB',
+                'ticket_quantity.min' => 'Jumlah tiket minimal 1',
+                'event_date.required' => 'Tanggal event wajib diisi',
+                'event_date.date' => 'Format tanggal tidak valid',
+                'start_time.required' => 'Waktu mulai wajib diisi',
+                'end_date.required' => 'Tanggal selesai wajib diisi',
+                'end_time.required' => 'Waktu selesai wajib diisi',
+                'location_name.required' => 'Nama lokasi wajib diisi',
+                'address.required' => 'Alamat wajib diisi',
+            ];
+
             $request->validate([
                 'title' => 'required|string|max:255',
                 'body' => 'required|string|max:2000',
@@ -115,7 +132,7 @@ class EventCrudController extends Controller
                 'location_name' => 'required|string|max:255',
                 'address' => 'required|string|max:255',
                 'ticket_quantity' => 'nullable|integer|min:1',
-            ]);
+            ], $messages);
 
             // Simpan gambar jika ada
             $imagePath = null;
