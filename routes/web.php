@@ -16,6 +16,7 @@ Route::get('/pricing', function () {
 
 Route::get('/events', [EventController::class, 'events'])->name('events');
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('event.show');
+Route::get('/all-events', [EventController::class, 'search'])->name('search');
 Route::post('/event/{slug}/register', [EventController::class, 'register'])->name('event.register');
 Route::get('/category/{slug}', [EventController::class, 'showByCategory'])->name('category.show');
 Route::get('/city-category/{slug}', [EventController::class, 'showByCityCategory'])->name('city-category.show');
@@ -25,10 +26,7 @@ Route::controller(SocialiteController::class)->group(function () {
     Route::get('auth/google-callback', 'googleAuthentication')->name('auth.google-callback');
 });
 
-Route::get('/dashboard', [EventCrudController::class, 'dashboard'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
+Route::get('/dashboard', [EventCrudController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/create-event', [EventCrudController::class, 'createEvent'])->middleware(['auth', 'verified'])->name('create-event');
 Route::get('/my-event', [EventCrudController::class, 'myEvent'])->middleware(['auth', 'verified'])->name('my-event');
 Route::get('/detail-event/{slug}', [EventCrudController::class, 'detailEvent'])->middleware(['auth', 'verified'])->name('detail-event');

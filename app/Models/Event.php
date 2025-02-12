@@ -27,6 +27,8 @@ class Event extends Model
         'image'
     ];
 
+    protected $with = ['category', 'cityCategory', 'creator'];
+
     // Relasi dengan Category
     public function category()
     {

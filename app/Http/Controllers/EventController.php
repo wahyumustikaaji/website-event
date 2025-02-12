@@ -132,4 +132,14 @@ class EventController extends Controller
             'events' => $events
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+        $category = Category::all();
+
+        $events = Event::where('title', 'like', '%' . $query . '%')->simplePaginate(20);
+
+        return view('home.search-event', compact('events', 'query', 'category'));
+    }
 }

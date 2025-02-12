@@ -41,27 +41,40 @@ class EventCrudController extends Controller
         $category = $event->category;
         $citycategory = $event->citycategory;
         $eventParticipants = EventParticipant::where('event_id', $event->id)
-            ->with('user') // Mengambil informasi user yang mendaftar
+            ->with('user')
             ->get();
-        $viewsData = Event::select(
-            DB::raw('DATE(created_at) as date'),
-            DB::raw('SUM(views) as total_views')
+
+        // Query untuk data views per bulan
+        $viewsData = EventVisitor::select(
+            DB::raw('DATE_FORMAT(created_at, "%Y-%m") as date'),
+            DB::raw('COUNT(*) as total_views')
         )
-            ->where('id', $event->id) // Filter berdasarkan event yang sedang dilihat
+            ->where('event_id', $event->id)
+            ->where('created_at', '<=', now()->addMonths(12)) // Ambil data 12 bulan ke depan
             ->groupBy('date')
             ->orderBy('date')
-            ->limit(12)
             ->get();
 
 
+        // Mengisi bulan yang kosong dengan 0
+        $completeViewsData = collect();
+        for ($i = 11; $i >= 0; $i--) {
+            $date = now()->subMonths($i)->format('Y-m');
+            $viewForDate = $viewsData->firstWhere('date', $date);
+            $completeViewsData->push([
+                'date' => $date,
+                'total_views' => $viewForDate ? $viewForDate->total_views : 0
+            ]);
+        }
+
         $browserData = EventVisitor::select('device', DB::raw('COUNT(*) as total'))
-            ->where('event_id', $event->id) // Pastikan hanya mengambil data event yang sedang dilihat
+            ->where('event_id', $event->id)
             ->groupBy('device')
             ->get();
 
         $bubbleData = [
-            'browsers' => $browserData->pluck('device'), // Nama browser
-            'totals' => $browserData->pluck('total') // Jumlah pengguna per browser
+            'browsers' => $browserData->pluck('device'),
+            'totals' => $browserData->pluck('total')
         ];
 
         return view('dashboard.detail-event', [
@@ -71,8 +84,8 @@ class EventCrudController extends Controller
             'category' => $category,
             'citycategory' => $citycategory,
             'chartData' => [
-                'dates' => $viewsData->pluck('date'),
-                'views' => $viewsData->pluck('total_views')
+                'dates' => $completeViewsData->pluck('date'),
+                'views' => $completeViewsData->pluck('total_views')
             ]
         ]);
     }
