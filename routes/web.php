@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventCrudController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,18 @@ Route::get('/', function () {
 Route::get('/pricing', function () {
     return view('home.pricing');
 });
+
+Route::get('/payment', function () {
+    return view('payment.payment');
+});
+
+// routes/web.php
+Route::post('/payment/snap', [PaymentController::class, 'createCharge'])->middleware(['auth', 'verified'])->name('payment.snap');
+Route::get('/payment/success', [PaymentController::class, 'success'])->middleware(['auth', 'verified'])->name('payment.success');
+
+// Route callback dari Midtrans tidak perlu auth middleware
+Route::post('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
+Route::post('payment/notification', [PaymentController::class, 'notification'])->name('payment.notification');
 
 Route::get('/events', [EventController::class, 'events'])->name('events');
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('event.show');
