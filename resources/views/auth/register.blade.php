@@ -1,4 +1,7 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Daftar & Ikuti Event Seru"
+    description="Buat akun Spherevent sekarang dan temukan berbagai event menarik! Daftar dengan mudah, jelajahi acara terbaru, dan nikmati pengalaman event yang tak terlupakan."
+    keywords="Daftar Spherevent, Buat Akun, Registrasi, Tiket Event, Event Online, Bergabung dengan Spherevent, Acara Seru"
+    author="Tim Spherevent">
     <div class="relative overflow-hidden">
         <!-- Gradients -->
         <div aria-hidden="true" class="flex absolute -top-96 start-1/2 transform -translate-x-1/2">

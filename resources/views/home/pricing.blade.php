@@ -1,4 +1,7 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Harga & Paket untuk Event Seru"
+    description="Temukan paket harga terbaik di Spherevent! Pilih paket yang sesuai untuk acara Anda dan nikmati fitur eksklusif untuk pengalaman event yang lebih maksimal."
+    keywords="Harga Event, Paket Event, Biaya Tiket, Berlangganan, Spherevent, Event Organizer, Penyelenggara Acara, Booking Tiket"
+    author="Tim Spherevent">
     <!-- Hero -->
     <div class="relative overflow-hidden">
         <!-- Gradients -->

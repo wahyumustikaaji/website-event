@@ -1,4 +1,7 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Temukan Event di {{ $citycategory->name }}"
+    description="Jelajahi berbagai event seru di kota-kota pilihan! Temukan konser, seminar, workshop, festival, dan acara komunitas di dekatmu hanya di Spherevent."
+    keywords="Event Kota, Acara Lokal, Konser, Seminar, Workshop, Festival, Komunitas, Pameran, Event Terdekat, Spherevent"
+    author="Tim Spherevent">
     <!-- Hero -->
     <div class="relative overflow-hidden">
         <!-- Gradients -->

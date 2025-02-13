@@ -1,4 +1,7 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Temukan & Ikuti Event Seru"
+    description="Spherevent adalah platform untuk menemukan dan mengikuti berbagai event menarik. Jelajahi acara terbaru, daftar dengan mudah, dan rasakan pengalaman yang tak terlupakan."
+    keywords="Event, Acara, Konser, Seminar, Workshop, Festival, Komunitas, Pameran, Tiket, Event Seru"
+    author="Tim Spherevent">
     <!-- Hero -->
     <div class="relative overflow-hidden">
         <!-- Gradients -->

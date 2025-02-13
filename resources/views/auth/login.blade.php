@@ -1,4 +1,7 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Masuk ke Akun Anda"
+    description="Masuk ke akun Spherevent untuk menemukan dan mengikuti berbagai event menarik. Jelajahi acara terbaru, kelola tiket, dan nikmati pengalaman event yang lebih mudah."
+    keywords="Login Spherevent, Masuk Akun, Tiket Event, Akun Pengguna, Event Online, Daftar Event, Spherevent"
+    author="Tim Spherevent">
 
     <div class="relative overflow-hidden">
         <!-- Gradients -->

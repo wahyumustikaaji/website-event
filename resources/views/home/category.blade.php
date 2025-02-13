@@ -1,4 +1,7 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Jelajahi Berbagai Kategori Event"
+    description="Temukan event berdasarkan kategori yang kamu minati! Dari konser, seminar, workshop, hingga festival dan pameran, Spherevent menghadirkan berbagai acara menarik untukmu."
+    keywords="Kategori Event, Jenis Acara, Konser, Seminar, Workshop, Festival, Pameran, Komunitas, Event Seru, Spherevent"
+    author="Tim Spherevent">
     <!-- Hero -->
     <div class="relative overflow-hidden">
         <!-- Gradients -->
