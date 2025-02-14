@@ -54,36 +54,35 @@
                                     Invoice from Spherevent
                                 </h3>
                                 <p class="text-sm text-gray-500 dark:text-neutral-500">
-                                    Invoice #3682303
+                                    {{ $orderId }}
                                 </p>
                             </div>
 
                             <!-- Grid -->
                             <div class="mt-5 sm:mt-10 grid grid-cols-2 sm:grid-cols-3 gap-5">
                                 <div>
+                                    <span class="block text-xs uppercase text-gray-500 dark:text-neutral-500">Nama
+                                        Akun:</span>
+                                    <div class="flex items-center gap-x-2">
+                                        <span class="block text-sm font-medium text-gray-800 dark:text-neutral-200">{{
+                                            $user->name }}</span>
+                                    </div>
+                                </div>
+                                <!-- End Col -->
+
+                                <div>
                                     <span class="block text-xs uppercase text-gray-500 dark:text-neutral-500">Jumlah
                                         Dibayar:</span>
                                     <span class="block text-sm font-medium text-gray-800 dark:text-neutral-200">Rp.
-                                        50.000</span>
+                                        {{ number_format($amount, 0, ',', '.') }}</span>
                                 </div>
                                 <!-- End Col -->
 
                                 <div>
                                     <span class="block text-xs uppercase text-gray-500 dark:text-neutral-500">Tanggal
                                         Bayar:</span>
-                                    <span class="block text-sm font-medium text-gray-800 dark:text-neutral-200">April
-                                        22,
-                                        2020</span>
-                                </div>
-                                <!-- End Col -->
-
-                                <div>
-                                    <span class="block text-xs uppercase text-gray-500 dark:text-neutral-500">Metode
-                                        Pembayaran:</span>
-                                    <div class="flex items-center gap-x-2">
-                                        <span
-                                            class="block text-sm font-medium text-gray-800 dark:text-neutral-200">Midtrans</span>
-                                    </div>
+                                    <span class="block text-sm font-medium text-gray-800 dark:text-neutral-200">{{
+                                        $orderDate }}</span>
                                 </div>
                                 <!-- End Col -->
                             </div>
@@ -98,21 +97,21 @@
                                         class="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700 dark:text-neutral-200">
                                         <div class="flex items-center justify-between w-full">
                                             <span>Pembayaran untuk Pro Plan</span>
-                                            <span>Rp. 50.000</span>
+                                            <span>Rp. {{ number_format($amount, 0, ',', '.') }}</span>
                                         </div>
                                     </li>
                                     <li
                                         class="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700 dark:text-neutral-200">
                                         <div class="flex items-center justify-between w-full">
                                             <span>Pajak</span>
-                                            <span>Rp. 1000</span>
+                                            <span>Rp. {{ number_format($taxAmount, 0, ',', '.') }}</span>
                                         </div>
                                     </li>
                                     <li
                                         class="inline-flex items-center gap-x-2 py-3 px-4 text-sm font-semibold bg-gray-50 border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200">
                                         <div class="flex items-center justify-between w-full">
                                             <span>Total Pembayaran</span>
-                                            <span>Rp. 51.000</span>
+                                            <span>Rp. {{ number_format($totalAmount, 0, ',', '.') }}</span>
                                         </div>
                                     </li>
                                 </ul>

@@ -19,6 +19,25 @@ class PaymentController extends Controller
     private const PRO_PLAN_PRICE = 50000;
     private const TAX_RATE = 0.1; // 10%
 
+    public function showPaymentPage()
+    {
+        $user = Auth::user();
+
+        // Cek apakah user masih dalam masa premium
+        if ($user->is_premium && $user->subscription_expires_at > now()) {
+            $remainingDays = now()->diffInDays($user->subscription_expires_at);
+            return redirect()->back()->with('error', "You are still in premium period. Your premium will expire in {$remainingDays} days.");
+        }
+
+        $amount = self::PRO_PLAN_PRICE;
+        $taxAmount = $amount * self::TAX_RATE;
+        $totalAmount = $amount + $taxAmount;
+        $orderId = 'ORDER-' . time() . '-' . $user->id;
+        $orderDate = Carbon::now()->format('F d, Y');
+
+        return view('payment.payment', compact('user', 'amount', 'taxAmount', 'totalAmount', 'orderId', 'orderDate'));
+    }
+
     public function __construct()
     {
         // Konfigurasi Midtrans
@@ -112,23 +131,35 @@ class PaymentController extends Controller
                     $payment->status = 'success';
                     $payment->paid_at = now();
 
-                    // Update status premium pada user
+                    // Update status premium pada user dengan method baru
                     $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
                     if ($user) {
-                        $user->is_premium = true;
-                        $user->subscription_expires_at = Carbon::now()->addMonth();
-                        $user->save();
+                        // Menggunakan method activatePremium untuk mengaktifkan premium selama 30 hari
+                        $user->activatePremium(30);
 
                         Log::info('User premium status updated:', [
-                            'user_id'   => $user->id,
-                            'is_premium' => $user->is_premium,
-                            'expires_at' => $user->subscription_expires_at
+                            'user_id' => $user->id,
+                            'subscription_ends' => $user->subscription_expires_at->format('Y-m-d H:i:s'),
+                            'status' => 'activated'
                         ]);
                     }
                 } elseif ($request->transaction_status == 'pending') {
                     $payment->status = 'pending';
                 } else {
+                    // Untuk status failed, deny, cancel, atau expire
                     $payment->status = 'failed';
+
+                    // Jika payment gagal, pastikan user tidak premium
+                    $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
+                    if ($user && $user->hasActivePremium()) {
+                        $user->deactivatePremium();
+
+                        Log::info('User premium status updated:', [
+                            'user_id' => $user->id,
+                            'status' => 'deactivated',
+                            'reason' => 'payment_failed'
+                        ]);
+                    }
                 }
 
                 $payment->save();
@@ -136,17 +167,24 @@ class PaymentController extends Controller
 
                 Log::info('Payment status updated successfully:', [
                     'order_id' => $payment->order_id,
-                    'status'   => $payment->status
+                    'status' => $payment->status,
+                    'payment_type' => $payment->payment_type
                 ]);
 
-                return response()->json(['message' => 'Payment updated successfully']);
+                return response()->json([
+                    'message' => 'Payment updated successfully',
+                    'status' => $payment->status
+                ]);
             }
 
             Log::warning('Invalid signature received for order_id: ' . $request->order_id);
             return response()->json(['message' => 'Invalid signature'], 400);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error in handleCallback: ' . $e->getMessage());
+            Log::error('Error in handleCallback: ' . $e->getMessage(), [
+                'order_id' => $request->order_id ?? null,
+                'trace' => $e->getTraceAsString()
+            ]);
             return response()->json(['message' => 'Error processing payment'], 500);
         }
     }
@@ -220,8 +258,21 @@ class PaymentController extends Controller
         // Refresh data payment terbaru
         $payment->refresh();
 
+        $user = Auth::user();
+        $amount = self::PRO_PLAN_PRICE;
+        $taxAmount = $amount * self::TAX_RATE;
+        $totalAmount = $amount + $taxAmount;
+        $orderId = 'ORDER-' . time() . '-' . $user->id;
+        $orderDate = Carbon::now()->format('F d, Y');
+
         return view('payment.success', [
-            'payment' => $payment
+            'payment' => $payment,
+            'user' => $user,
+            'amount' => $amount,
+            'taxAmount' => $taxAmount,
+            'totalAmount' => $totalAmount,
+            'orderId' => $orderId,
+            'orderDate' => $orderDate
         ]);
     }
 

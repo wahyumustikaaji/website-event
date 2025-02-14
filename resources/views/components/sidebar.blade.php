@@ -14,7 +14,69 @@
         </div>
 
         <div class="w-full flex items-center justify-end ms-auto gap-x-1 md:gap-x-3">
+            @php
+            $user = Auth::user();
+            $isPremium = $user->is_premium && $user->subscription_expires_at > now();
+            $expiryDate = $user->subscription_expires_at ?
+            Carbon\Carbon::parse($user->subscription_expires_at)->format('F d, Y') :
+            null;
+            @endphp
+            @if($isPremium)
+            <!-- User -->
+            <div class="hs-tooltip [--trigger:hover] sm:[--placement:right] inline-block">
+                <div class="hs-tooltip-toggle">
+                    <span
+                        class="ms-0.5 inline-flex items-center align-middle gap-x-1.5 py-0.5 px-1.5 rounded-md text-[11px] font-medium bg-gray-800 text-white dark:bg-white dark:text-neutral-800">
+                        PRO PLAN
+                    </span>
+                    <!-- End User Content -->
 
+                    <!-- Popover Content -->
+                    <div class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible hidden opacity-0 transition-opacity absolute invisible z-10 max-w-[15rem] w-full bg-white border border-gray-100 text-start rounded-xl shadow-md after:absolute after:top-0 after:-start-4 after:w-4 after:h-full dark:bg-neutral-800 dark:border-neutral-700"
+                        role="tooltip">
+
+                        <!-- List -->
+                        <ul class="py-3 px-4 space-y-1">
+                            <li>
+                                <div
+                                    class="inline-flex items-center gap-x-3 text-sm text-gray-800 dark:text-neutral-200">
+                                    <svg class="shrink-0 size-4 text-gray-600 dark:text-neutral-400"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
+                                        <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path>
+                                        <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path>
+                                        <path d="M10 6h4"></path>
+                                        <path d="M10 10h4"></path>
+                                        <path d="M10 14h4"></path>
+                                        <path d="M10 18h4"></path>
+                                    </svg>
+                                    Pro Plan
+                                </div>
+                            </li>
+
+                            <li>
+                                <div
+                                    class="inline-flex items-center gap-x-3 text-sm text-gray-800 dark:text-neutral-200">
+                                    <svg class="shrink-0 size-4 text-gray-600 dark:text-neutral-400"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
+                                        <path d="M12 18h.01"></path>
+                                    </svg>
+                                    {{ $expiryDate }}
+                                </div>
+                            </li>
+                        </ul>
+                        <!-- End List -->
+                    </div>
+                    <!-- End Popover Content -->
+                </div>
+            </div>
+            <!-- End User -->
+            @endif
             <!-- Dropdown -->
             <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
                 <button id="hs-dropdown-account" type="button"

@@ -15,9 +15,7 @@ Route::get('/pricing', function () {
     return view('home.pricing');
 });
 
-Route::get('/payment', function () {
-    return view('payment.payment');
-});
+Route::get('/payment', [PaymentController::class, 'showPaymentPage'])->middleware(['auth', 'check.premium'])->name('payment.show');
 
 // routes/web.php
 Route::post('/payment/snap', [PaymentController::class, 'createCharge'])->middleware(['auth', 'verified'])->name('payment.snap');
