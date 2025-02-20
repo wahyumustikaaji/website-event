@@ -219,8 +219,8 @@
                             <div class="flex justify-between items-center gap-x-3">
                                 <div class="grow">
                                     <div class="flex items-center gap-x-3">
-                                        <img class="size-[38px] rounded-full" src="{{$citycategory->image}}"
-                                            alt="Avatar">
+                                        <img class="size-[38px] rounded-full"
+                                            src="{{asset('storage/'.$citycategory->image)}}" alt="Avatar">
                                         <div class="grow">
                                             <h3
                                                 class="group-hover:text-blue-600 font-semibold text-gray-800 dark:group-hover:text-neutral-400 dark:text-neutral-200 transition-all duration-300 ease-in-out">

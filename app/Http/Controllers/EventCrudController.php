@@ -12,22 +12,20 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use DateTime;
 
 class EventCrudController extends Controller
 {
     public function dashboard()
     {
         $user = Auth::user();
-
         $myevents = Event::where('creator_id', $user->id)->get();
-
         return view('dashboard.dashboard', compact('myevents'));
     }
 
     public function myEvent()
     {
         $user = Auth::user();
-
         $myeventsregistered = Event::whereHas('participants', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })->get();
@@ -44,51 +42,76 @@ class EventCrudController extends Controller
             ->with('user')
             ->get();
 
-        // Query untuk data views per bulan
-        $viewsData = EventVisitor::select(
-            DB::raw('DATE_FORMAT(created_at, "%Y-%m") as date'),
-            DB::raw('COUNT(*) as total_views')
-        )
-            ->where('event_id', $event->id)
-            ->where('created_at', '<=', now()->addMonths(12)) // Ambil data 12 bulan ke depan
-            ->groupBy('date')
-            ->orderBy('date')
-            ->get();
+        // Get views data for the last 12 months
+        $viewsData = $this->getEventViewsData($event->id);
 
-        // Mengisi bulan yang kosong dengan 0
-        $completeViewsData = collect();
-        for ($i = 11; $i >= 0; $i--) {
-            $date = now()->subMonths($i)->format('Y-m');
-            $viewForDate = $viewsData->firstWhere('date', $date);
-            $completeViewsData->push([
-                'date' => $date,
-                'total_views' => $viewForDate ? $viewForDate->total_views : 0
-            ]);
-        }
-
-        $browserData = EventVisitor::select('device', DB::raw('COUNT(*) as total'))
-            ->where('event_id', $event->id)
-            ->groupBy('device')
-            ->get();
-
-        $bubbleData = [
-            'browsers' => $browserData->pluck('device'),
-            'totals' => $browserData->pluck('total')
-        ];
+        // Get browser statistics
+        $browserData = $this->getBrowserStatistics($event->id);
 
         return view('dashboard.detail-event', [
             'event' => $event,
-            'bubbleData' => $bubbleData,
+            'bubbleData' => [
+                'browsers' => array_column($browserData, 'device'),
+                'totals' => array_column($browserData, 'total')
+            ],
             'eventParticipants' => $eventParticipants,
             'category' => $category,
             'citycategory' => $citycategory,
             'chartData' => [
-                'dates' => $completeViewsData->pluck('date'),
-                'views' => $completeViewsData->pluck('total_views')
+                'dates' => array_column($viewsData, 'date'),
+                'views' => array_column($viewsData, 'total_views')
             ]
         ]);
     }
 
+    /**
+     * Get monthly views data for the last 12 months
+     */
+    private function getEventViewsData(int $eventId): array
+    {
+        // Get the current date and one year later
+        $currentDate = new DateTime();
+        $oneYearLater = (new DateTime())->modify('+12 months');
+
+        // Get the raw views data from database
+        $rawViewsData = EventVisitor::select(
+            DB::raw('DATE_FORMAT(created_at, "%Y-%m") as date'),
+            DB::raw('COUNT(*) as total_views')
+        )
+            ->where('event_id', $eventId)
+            ->where('created_at', '<=', $oneYearLater->format('Y-m-d H:i:s'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->toArray();
+
+        // Convert to associative array for easier lookup
+        $viewsByMonth = array_column($rawViewsData, 'total_views', 'date');
+
+        // Generate complete data for last 12 months
+        $completeViewsData = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $date = (new DateTime())->modify("-$i months")->format('Y-m');
+            $completeViewsData[] = [
+                'date' => $date,
+                'total_views' => $viewsByMonth[$date] ?? 0
+            ];
+        }
+
+        return $completeViewsData;
+    }
+
+    /**
+     * Get browser statistics for the event
+     */
+    private function getBrowserStatistics(int $eventId): array
+    {
+        return EventVisitor::select('device', DB::raw('COUNT(*) as total'))
+            ->where('event_id', $eventId)
+            ->groupBy('device')
+            ->get()
+            ->toArray();
+    }
 
     public function createEvent()
     {
@@ -100,25 +123,7 @@ class EventCrudController extends Controller
 
     public function store(Request $request)
     {
-        $messages = [
-            'title.required' => 'Nama event wajib diisi',
-            'title.max' => 'Nama event tidak boleh lebih dari 255 karakter',
-            'body.required' => 'Deskripsi event wajib diisi',
-            'body.max' => 'Deskripsi tidak boleh lebih dari 2000 karakter',
-            'image.required' => 'Poster event wajib diisi',
-            'image.image' => 'File harus berupa gambar',
-            'image.mimes' => 'Format gambar harus jpg, jpeg, atau png',
-            'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB',
-            'ticket_quantity.min' => 'Jumlah tiket minimal 1',
-            'ticket_quantity.max' => 'Jumlah tiket terlalu banyak',
-            'event_date.required' => 'Tanggal event wajib diisi',
-            'event_date.date' => 'Format tanggal tidak valid',
-            'start_time.required' => 'Waktu mulai wajib diisi',
-            'end_date.required' => 'Tanggal selesai wajib diisi',
-            'end_time.required' => 'Waktu selesai wajib diisi',
-            'location_name.required' => 'Nama lokasi wajib diisi',
-            'address.required' => 'Alamat wajib diisi',
-        ];
+        $messages = $this->getValidationMessages();
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -135,7 +140,7 @@ class EventCrudController extends Controller
             'ticket_quantity' => 'nullable|integer|min:1|max:999999',
         ], $messages);
 
-        // Simpan gambar jika ada
+        // Handle image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('events', 'public');
@@ -175,9 +180,10 @@ class EventCrudController extends Controller
             abort(403);
         }
 
+        // Format dates for form
         if ($event->event_date && $event->end_date) {
-            $event->event_date = \Carbon\Carbon::parse($event->event_date)->format('Y-m-d');
-            $event->end_date = \Carbon\Carbon::parse($event->end_date)->format('Y-m-d');
+            $event->event_date = (new DateTime($event->event_date))->format('Y-m-d');
+            $event->end_date = (new DateTime($event->end_date))->format('Y-m-d');
         }
 
         $categories = Category::all();
@@ -198,7 +204,74 @@ class EventCrudController extends Controller
             abort(403);
         }
 
-        $messages = [
+        $messages = $this->getValidationMessages();
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'city_category_id' => 'required|exists:city_categories,id',
+            'ticket_quantity' => 'required|integer|min:0',
+            'body' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'event_date' => 'required|date',
+            'start_time' => 'required',
+            'end_date' => 'required|date|after_or_equal:event_date',
+            'end_time' => 'required',
+            'location_name' => 'required|string|max:255',
+            'address' => 'required|string'
+        ], $messages);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+            $imagePath = $request->file('image')->store('events', 'public');
+            $event->image = $imagePath;
+        }
+
+        $event->update([
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'category_id' => $validated['category_id'],
+            'city_category_id' => $validated['city_category_id'],
+            'ticket_quantity' => $validated['ticket_quantity'],
+            'body' => $validated['body'],
+            'event_date' => $validated['event_date'],
+            'start_time' => $validated['start_time'],
+            'end_date' => $validated['end_date'],
+            'end_time' => $validated['end_time'],
+            'location_name' => $validated['location_name'],
+            'address' => $validated['address']
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Event berhasil diperbarui!');
+    }
+
+    public function destroy($slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        if ($event->creator_id !== Auth::user()->id) {
+            abort(403);
+        }
+
+        // Delete associated image
+        if ($event->image) {
+            Storage::disk('public')->delete($event->image);
+        }
+
+        $event->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Event berhasil dihapus.');
+    }
+
+    /**
+     * Get validation messages
+     */
+    private function getValidationMessages(): array
+    {
+        return [
             'title.required' => 'Nama event wajib diisi',
             'title.max' => 'Nama event tidak boleh lebih dari 255 karakter',
             'body.required' => 'Deskripsi event wajib diisi',
@@ -217,59 +290,5 @@ class EventCrudController extends Controller
             'location_name.required' => 'Nama lokasi wajib diisi',
             'address.required' => 'Alamat wajib diisi',
         ];
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'city_category_id' => 'required|exists:city_categories,id',
-            'ticket_quantity' => 'required|integer|min:0',
-            'body' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'event_date' => 'required|date',
-            'start_time' => 'required',
-            'end_date' => 'required|date|after_or_equal:event_date',
-            'end_time' => 'required',
-            'location_name' => 'required|string|max:255',
-            'address' => 'required|string'
-        ], $messages);
-
-        if ($request->hasFile('image')) {
-            if ($event->image) {
-                Storage::disk('public')->delete($event->image);
-            }
-            $imagePath = $request->file('image')->store('events', 'public');
-        }
-
-        $event->update([
-            'title' => $validated['title'],
-            'slug' => Str::slug($validated['title']),
-            'category_id' => $validated['category_id'],
-            'city_category_id' => $validated['city_category_id'],
-            'ticket_quantity' => $validated['ticket_quantity'],
-            'body' => $validated['body'],
-            'image' => $request->hasFile('image') ? $imagePath : $event->image,
-            'event_date' => $validated['event_date'],
-            'start_time' => $validated['start_time'],
-            'end_date' => $validated['end_date'],
-            'end_time' => $validated['end_time'],
-            'location_name' => $validated['location_name'],
-            'address' => $validated['address']
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Event berhasil diperbarui!');
-    }
-
-    public function destroy(Request $request, $slug)
-    {
-        $event = Event::where('slug', $slug)->firstOrFail();
-
-        // Hapus gambar jika ada
-        if ($event->image) {
-            Storage::delete('public/' . $event->image);
-        }
-
-        $event->delete();
-
-        return redirect()->route('dashboard')->with('success', 'Event berhasil dihapus.');
     }
 }

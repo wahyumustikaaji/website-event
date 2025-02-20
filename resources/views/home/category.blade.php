@@ -130,7 +130,7 @@
 
                     <div class="lg:col-span-4 mt-10 lg:mt-0 lg:order-2 order-1">
                         <img class="w-full rounded-xl lg:max-h-full lg:h-[500px] max-h-[500px] object-cover"
-                            src="{{$category->image}}" alt="Hero Image">
+                            src="{{asset('storage/'.$category->image)}}" alt="Hero Image">
                     </div>
                     <!-- End Col -->
                 </div>

@@ -7,7 +7,6 @@ use App\Models\CityCategory;
 use App\Models\Event;
 use App\Models\EventParticipant;
 use App\Models\EventVisitor;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -17,8 +16,9 @@ class EventController extends Controller
 {
     private function getActiveEventsQuery()
     {
-        return Event::where(function ($query) {
-            $query->where('end_date', '>', Carbon::now()->subDays(3))
+        $threeDaysAgo = date('Y-m-d H:i:s', strtotime('-3 days'));
+        return Event::where(function ($query) use ($threeDaysAgo) {
+            $query->where('end_date', '>', $threeDaysAgo)
                 ->orWhereNull('end_date');
         });
     }
@@ -33,13 +33,14 @@ class EventController extends Controller
 
         $events = $this->getActiveEventsQuery()->get();
 
-        $category = Category::withCount(['events' => function ($query) {
-            $query->where('end_date', '>', Carbon::now()->subDays(3))
+        $threeDaysAgo = date('Y-m-d H:i:s', strtotime('-3 days'));
+        $category = Category::withCount(['events' => function ($query) use ($threeDaysAgo) {
+            $query->where('end_date', '>', $threeDaysAgo)
                 ->orWhereNull('end_date');
         }])->get()->sortByDesc('events_count');
 
-        $citycategory = CityCategory::withCount(['events' => function ($query) {
-            $query->where('end_date', '>', Carbon::now()->subDays(3))
+        $citycategory = CityCategory::withCount(['events' => function ($query) use ($threeDaysAgo) {
+            $query->where('end_date', '>', $threeDaysAgo)
                 ->orWhereNull('end_date');
         }])->get()->sortByDesc('events_count');
 
@@ -58,12 +59,12 @@ class EventController extends Controller
         $citycategory = $event->citycategory;
         $user = Auth::user();
 
-        $startDate = Carbon::parse($event->event_date);
-        $endDate = Carbon::parse($event->end_date);
-        $now = Carbon::now();
+        $startDate = new \DateTime($event->event_date);
+        $endDate = new \DateTime($event->end_date);
+        $now = new \DateTime();
 
-        $isExpired = $now->greaterThanOrEqualTo($endDate);
-        $isOngoing = $now->greaterThanOrEqualTo($startDate) && $now->lessThan($endDate);
+        $isExpired = $now >= $endDate;
+        $isOngoing = $now >= $startDate && $now < $endDate;
 
         $isRegistered = false;
         if ($user) {
@@ -142,7 +143,6 @@ class EventController extends Controller
         return view('home.search-event', compact('events', 'search', 'category'));
     }
 
-    // Register method remains unchanged as it already checks event availability
     public function register(Request $request, $slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();

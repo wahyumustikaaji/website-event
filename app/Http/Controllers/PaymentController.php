@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\User;
-use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +12,8 @@ use Illuminate\Http\Request;
 use Midtrans\Notification;
 use Midtrans\Config;
 use Midtrans\Snap;
+use DateTime;
+use DateInterval;
 
 class PaymentController extends Controller
 {
@@ -23,9 +24,11 @@ class PaymentController extends Controller
     {
         $user = Auth::user();
 
-        // Cek apakah user masih dalam masa premium
-        if ($user->is_premium && $user->subscription_expires_at > now()) {
-            $remainingDays = now()->diffInDays($user->subscription_expires_at);
+        // Cek apakah user masih dalam masa premium menggunakan DateTime
+        if ($user->is_premium && new DateTime($user->subscription_expires_at) > new DateTime()) {
+            $now = new DateTime();
+            $expiryDate = new DateTime($user->subscription_expires_at);
+            $remainingDays = $now->diff($expiryDate)->days;
             return redirect()->back()->with('error', "You are still in premium period. Your premium will expire in {$remainingDays} days.");
         }
 
@@ -33,7 +36,7 @@ class PaymentController extends Controller
         $taxAmount = $amount * self::TAX_RATE;
         $totalAmount = $amount + $taxAmount;
         $orderId = 'ORDER-' . time() . '-' . $user->id;
-        $orderDate = Carbon::now()->format('F d, Y');
+        $orderDate = (new DateTime())->format('F d, Y');
 
         return view('payment.payment', compact('user', 'amount', 'taxAmount', 'totalAmount', 'orderId', 'orderDate'));
     }
@@ -47,9 +50,6 @@ class PaymentController extends Controller
         Config::$is3ds        = config('midtrans.is_3ds');
     }
 
-    /**
-     * Membuat transaksi charge dan mendapatkan snap token
-     */
     public function createCharge(Request $request)
     {
         $user = Auth::user();
@@ -58,7 +58,6 @@ class PaymentController extends Controller
         $totalAmount = $amount + $taxAmount;
         $orderId = 'ORDER-' . time() . '-' . $user->id;
 
-        // Buat record pembayaran
         $payment = Payment::create([
             'user_id'      => $user->id,
             'order_id'     => $orderId,
@@ -103,9 +102,6 @@ class PaymentController extends Controller
         ]);
     }
 
-    /**
-     * Callback dari Midtrans untuk update status pembayaran
-     */
     public function handleCallback(Request $request)
     {
         try {
@@ -129,30 +125,31 @@ class PaymentController extends Controller
 
                 if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
                     $payment->status = 'success';
-                    $payment->paid_at = now();
+                    $payment->paid_at = (new DateTime())->format('Y-m-d H:i:s');
 
-                    // Update status premium pada user dengan method baru
                     $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
                     if ($user) {
-                        // Menggunakan method activatePremium untuk mengaktifkan premium selama 30 hari
-                        $user->activatePremium(30);
+                        $expiryDate = (new DateTime())->add(new DateInterval('P30D'));
+                        $user->is_premium = true;
+                        $user->subscription_expires_at = $expiryDate->format('Y-m-d H:i:s');
+                        $user->save();
 
                         Log::info('User premium status updated:', [
                             'user_id' => $user->id,
-                            'subscription_ends' => $user->subscription_expires_at->format('Y-m-d H:i:s'),
+                            'subscription_ends' => $user->subscription_expires_at,
                             'status' => 'activated'
                         ]);
                     }
                 } elseif ($request->transaction_status == 'pending') {
                     $payment->status = 'pending';
                 } else {
-                    // Untuk status failed, deny, cancel, atau expire
                     $payment->status = 'failed';
 
-                    // Jika payment gagal, pastikan user tidak premium
                     $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
-                    if ($user && $user->hasActivePremium()) {
-                        $user->deactivatePremium();
+                    if ($user && $user->is_premium && new DateTime($user->subscription_expires_at) > new DateTime()) {
+                        $user->is_premium = false;
+                        $user->subscription_expires_at = null;
+                        $user->save();
 
                         Log::info('User premium status updated:', [
                             'user_id' => $user->id,
@@ -189,10 +186,6 @@ class PaymentController extends Controller
         }
     }
 
-    /**
-     * Halaman sukses. Jika status pembayaran belum ter-update,
-     * kita cek status terbaru dari Midtrans melalui API dan update data di database.
-     */
     public function success(Request $request)
     {
         $orderId = $request->order_id;
@@ -202,7 +195,6 @@ class PaymentController extends Controller
             abort(404, "Payment not found.");
         }
 
-        // Jika status pembayaran masih pending atau belum sukses, cek status melalui API Midtrans
         if ($payment->status !== 'success') {
             $client = new Client();
             $serverKey = config('midtrans.server_key');
@@ -220,18 +212,17 @@ class PaymentController extends Controller
                 $transactionStatus = $statusResponse['transaction_status'] ?? null;
 
                 DB::beginTransaction();
-                // Simpan detail response dari API Midtrans
                 $payment->payment_details = $statusResponse;
 
                 if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
                     $payment->status = 'success';
-                    $payment->paid_at = now();
+                    $payment->paid_at = (new DateTime())->format('Y-m-d H:i:s');
 
-                    // Update user premium jika belum aktif
                     $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
                     if ($user && !$user->is_premium) {
+                        $expiryDate = (new DateTime())->add(new DateInterval('P30D'));
                         $user->is_premium = true;
-                        $user->subscription_expires_at = Carbon::now()->addMonth();
+                        $user->subscription_expires_at = $expiryDate->format('Y-m-d H:i:s');
                         $user->save();
 
                         Log::info('User premium status updated via success method:', [
@@ -251,11 +242,9 @@ class PaymentController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error("Error checking Midtrans status in success method: " . $e->getMessage());
-                // Jika terjadi error, tetap lanjutkan untuk menampilkan view dengan data yang ada
             }
         }
 
-        // Refresh data payment terbaru
         $payment->refresh();
 
         $user = Auth::user();
@@ -263,7 +252,7 @@ class PaymentController extends Controller
         $taxAmount = $amount * self::TAX_RATE;
         $totalAmount = $amount + $taxAmount;
         $orderId = 'ORDER-' . time() . '-' . $user->id;
-        $orderDate = Carbon::now()->format('F d, Y');
+        $orderDate = (new DateTime())->format('F d, Y');
 
         return view('payment.success', [
             'payment' => $payment,
@@ -276,9 +265,6 @@ class PaymentController extends Controller
         ]);
     }
 
-    /**
-     * Menangani notifikasi yang dikirim oleh Midtrans secara asinkron
-     */
     public function notification(Request $request)
     {
         try {
@@ -295,22 +281,20 @@ class PaymentController extends Controller
                 return response()->json(['message' => 'Payment not found'], 404);
             }
 
-            // Simpan detail pembayaran dari notifikasi
             $payment->payment_details = $notification->getResponse();
             $payment->payment_type = $notification->payment_type;
 
-            // Update status berdasarkan notifikasi Midtrans
             switch ($notification->transaction_status) {
                 case 'capture':
                 case 'settlement':
                     $payment->status = 'success';
-                    $payment->paid_at = now();
+                    $payment->paid_at = (new DateTime())->format('Y-m-d H:i:s');
 
-                    // Update user premium status
                     $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
                     if ($user) {
+                        $expiryDate = (new DateTime())->add(new DateInterval('P30D'));
                         $user->is_premium = true;
-                        $user->subscription_expires_at = Carbon::now()->addMonth();
+                        $user->subscription_expires_at = $expiryDate->format('Y-m-d H:i:s');
                         $user->save();
 
                         Log::info('User premium status updated via notification:', [

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('is_premium')->default(false);
             $table->timestamp('subscription_expires_at')->nullable();
             $table->string('profile')->nullable();
+            $table->enum('role', ['admin', 'user'])->default('user'); // Tambahkan role
             $table->rememberToken();
             $table->timestamps();
         });
