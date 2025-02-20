@@ -20,7 +20,7 @@
                 <div class="max-w-2xl text-center mx-auto">
                     <p
                         class="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent dark:from-blue-400 dark:to-violet-400">
-                        Preline: A vision for 2023
+                        Spherevent: A vision for 2025
                     </p>
 
                     <!-- Title -->

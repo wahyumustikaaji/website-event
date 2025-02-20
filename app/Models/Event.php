@@ -24,6 +24,7 @@ class Event extends Model
         'end_date',
         'end_time',
         'ticket_quantity',
+        'views',
         'image'
     ];
 
@@ -56,7 +57,6 @@ class Event extends Model
     {
         return $this->participants()->count();
     }
-
 
     public function getFormattedEventDateAndTimeAttribute()
     {

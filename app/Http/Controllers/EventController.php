@@ -15,19 +15,40 @@ use Jenssegers\Agent\Agent;
 
 class EventController extends Controller
 {
+    private function getActiveEventsQuery()
+    {
+        return Event::where(function ($query) {
+            $query->where('end_date', '>', Carbon::now()->subDays(3))
+                ->orWhereNull('end_date');
+        });
+    }
+
     public function events()
     {
-        $popularEvents = Event::withCount('participants')
+        $popularEvents = $this->getActiveEventsQuery()
+            ->withCount('participants')
             ->orderByDesc('participants_count')
             ->limit(6)
             ->get();
 
-        $events = Event::all();
+        $events = $this->getActiveEventsQuery()->get();
 
-        $category = Category::withCount('events')->get()->sortByDesc('events_count');
-        $citycategory = CityCategory::withCount('events')->get()->sortByDesc('events_count');
+        $category = Category::withCount(['events' => function ($query) {
+            $query->where('end_date', '>', Carbon::now()->subDays(3))
+                ->orWhereNull('end_date');
+        }])->get()->sortByDesc('events_count');
 
-        return view('home.events', ['events' => $events, 'popularEvents' => $popularEvents, 'category' => $category, 'citycategory' => $citycategory]);
+        $citycategory = CityCategory::withCount(['events' => function ($query) {
+            $query->where('end_date', '>', Carbon::now()->subDays(3))
+                ->orWhereNull('end_date');
+        }])->get()->sortByDesc('events_count');
+
+        return view('home.events', [
+            'events' => $events,
+            'popularEvents' => $popularEvents,
+            'category' => $category,
+            'citycategory' => $citycategory
+        ]);
     }
 
     public function show($slug, Request $request)
@@ -37,14 +58,12 @@ class EventController extends Controller
         $citycategory = $event->citycategory;
         $user = Auth::user();
 
-        // Konversi start_date dan end_date ke format tanggal
-        $startDate = Carbon::parse($event->start_date);
+        $startDate = Carbon::parse($event->event_date);
         $endDate = Carbon::parse($event->end_date);
         $now = Carbon::now();
 
-        // Periksa status event berdasarkan tanggal
-        $isExpired = $now->greaterThan($endDate); // Event sudah selesai jika sekarang lebih dari end_date
-        $isOngoing = $now->between($startDate, $endDate); // Event berlangsung jika sekarang di antara start_date dan end_date
+        $isExpired = $now->greaterThanOrEqualTo($endDate);
+        $isOngoing = $now->greaterThanOrEqualTo($startDate) && $now->lessThan($endDate);
 
         $isRegistered = false;
         if ($user) {
@@ -53,14 +72,11 @@ class EventController extends Controller
                 ->exists();
         }
 
-        // Meningkatkan jumlah views (hanya jika belum dikunjungi dalam sesi ini)
         $event->increment('views');
 
-        // **Menyimpan Data Demografi Pengunjung**
         $ip = $request->ip();
-        $agent = new Agent(); // Menggunakan Jenssegers\Agent untuk mendeteksi device/browser
+        $agent = new Agent();
 
-        // Ambil informasi lokasi berdasarkan IP (menggunakan API seperti ip-api.com atau geoplugin.net)
         $location = Http::get("http://ip-api.com/json/{$ip}")->json();
 
         EventVisitor::create([
@@ -82,6 +98,51 @@ class EventController extends Controller
         ]);
     }
 
+    public function showByCategory($slug)
+    {
+        $category = Category::where('slug', $slug)->firstOrFail();
+
+        $events = $this->getActiveEventsQuery()
+            ->where('category_id', $category->id)
+            ->get();
+
+        return view('home.category', [
+            'category' => $category,
+            'events' => $events
+        ]);
+    }
+
+    public function showByCityCategory($slug)
+    {
+        $citycategory = CityCategory::where('slug', $slug)->firstOrFail();
+
+        $events = $this->getActiveEventsQuery()
+            ->where('city_category_id', $citycategory->id)
+            ->get();
+
+        return view('home.city-category', [
+            'citycategory' => $citycategory,
+            'events' => $events
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $query = Event::latest();
+
+        if (!empty($search)) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        $events = $query->paginate(20);
+        $category = Category::all();
+
+        return view('home.search-event', compact('events', 'search', 'category'));
+    }
+
+    // Register method remains unchanged as it already checks event availability
     public function register(Request $request, $slug)
     {
         $event = Event::where('slug', $slug)->firstOrFail();
@@ -111,50 +172,5 @@ class EventController extends Controller
         $event->decrement('ticket_quantity');
 
         return redirect()->back()->with('success', 'Berhasil Mendaftar Event!');
-    }
-
-    public function showByCategory($slug)
-    {
-        $category = Category::where('slug', $slug)->firstOrFail();
-
-        $events = Event::where('category_id', $category->id)->get();
-
-        return view('home.category', [
-            'category' => $category,
-            'events' => $events
-        ]);
-    }
-
-    public function showByCityCategory($slug)
-    {
-        $citycategory = CityCategory::where('slug', $slug)->firstOrFail();
-
-        $events = Event::where('city_category_id', $citycategory->id)->get();
-
-        return view('home.city-category', [
-            'citycategory' => $citycategory,
-            'events' => $events
-        ]);
-    }
-
-    public function search(Request $request)
-    {
-        // Tangkap query pencarian dari request
-        $search = $request->input('search');
-
-        // Mulai query untuk post (dengan sorting terbaru)
-        $query = Event::latest();
-
-        // Cek apakah parameter 'search' ada
-        if (!empty($search)) {
-            $query->where('title', 'like', '%' . $search . '%');
-        }
-
-        // Ambil hasil query dengan paginasi
-        $events = $query->paginate(20);
-        $category = Category::all();
-
-        // Kirim data ke view
-        return view('home.search-event', compact('events', 'search', 'category'));
     }
 }

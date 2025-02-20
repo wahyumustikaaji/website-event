@@ -22,6 +22,7 @@
                     @if($event)
                     @method('PUT')
                     @endif
+
                     <!-- Section -->
                     <div class="grid sm:grid-cols-12 gap-2 sm:gap-4 py-8 pt-0 last:pb-0">
                         <div class="sm:col-span-12">
@@ -93,14 +94,14 @@
 
                         <div class="sm:col-span-9">
                             <!-- Input Number -->
-                            <div class="py-2 px-3 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-neutral-700"
+                            <div class="py-2 px-3 bg-white border border-gray-200 @error('ticket_quantity') border-red-500 @enderror rounded-lg dark:bg-neutral-900 dark:border-neutral-700"
                                 data-hs-input-number='{
                               "step": 1
                             }'>
                                 <div class="w-full flex justify-between items-center gap-x-3">
                                     <input id="ticket-quantity"
                                         value="{{ old('ticket_quantity', $event ? $event->ticket_quantity : '') }}"
-                                        class="w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white @error('ticket_quantity') border-red-500 @enderror"
+                                        class="w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"
                                         style="-moz-appearance: textfield;" type="number" required
                                         aria-roledescription="Number field" name="ticket_quantity" value="0"
                                         data-hs-input-number-input="">
@@ -186,7 +187,6 @@
                     </div>
                     <!-- End Section -->
 
-                    <!-- Section -->
                     <div
                         class="grid sm:grid-cols-12 gap-2 sm:gap-4 py-8 first:pt-0 last:pb-0 border-t first:border-transparent border-gray-200 dark:border-neutral-700 dark:first:border-transparent">
                         <div class="sm:col-span-12">
@@ -205,13 +205,23 @@
                         <!-- End Col -->
 
                         <div class="sm:col-span-9">
-                            <div class="sm:flex">
-                                <input id="date-start-event" name="event_date" type="date" required
-                                    value="{{ old('event_date', $event ? $event->event_date : '') }}"
-                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                                <input id="time-start-event" name="start_time" type="time" required
-                                    value="{{ old('start_time', $event ? $event->start_time : '') }}"
-                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                            <div class="sm:flex gap-2">
+                                <div class="w-full">
+                                    <input id="date-start-event" name="event_date" type="date" required
+                                        value="{{ old('event_date', $event ? $event->event_date : '') }}"
+                                        class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('event_date') border-red-500 @enderror">
+                                    @error('event_date')
+                                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="w-full">
+                                    <input id="time-start-event" name="start_time" type="time" required
+                                        value="{{ old('start_time', $event ? $event->start_time : '') }}"
+                                        class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('start_time') border-red-500 @enderror">
+                                    @error('start_time')
+                                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
                         <!-- End Col -->
@@ -225,19 +235,28 @@
                         <!-- End Col -->
 
                         <div class="sm:col-span-9">
-                            <div class="sm:flex">
-                                <input id="date-end-event" name="end_date" type="date" required
-                                    value="{{ old('end_date', $event ? $event->end_date : '') }}"
-                                    min="{{ '${document.getElementById(\'date-end-event\').value}' }}"
-                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                                <input id="time-end-event" name="end_time" type="time" required
-                                    value="{{ old('end_time', $event ? $event->end_time : '') }}"
-                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                            <div class="sm:flex gap-2">
+                                <div class="w-full">
+                                    <input id="date-end-event" name="end_date" type="date" required
+                                        value="{{ old('end_date', $event ? $event->end_date : '') }}"
+                                        min="{{ '${document.getElementById(\'date-end-event\').value}' }}"
+                                        class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('end_date') border-red-500 @enderror">
+                                    @error('end_date')
+                                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="w-full">
+                                    <input id="time-end-event" name="end_time" type="time" required
+                                        value="{{ old('end_time', $event ? $event->end_time : '') }}"
+                                        class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('end_time') border-red-500 @enderror">
+                                    @error('end_time')
+                                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
                         <!-- End Col -->
                     </div>
-                    <!-- End Section -->
 
                     <!-- Section -->
                     <div
@@ -260,7 +279,10 @@
                         <div class="sm:col-span-9">
                             <input id="name-location" name="location_name" type="text" required
                                 value="{{ old('location_name', $event ? $event->location_name : '') }}"
-                                class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                                class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('location_name') border-red-500 @enderror">
+                            @error('location_name')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <!-- End Col -->
 
@@ -275,7 +297,10 @@
                         <div class="sm:col-span-9">
                             <input id="address" name="address" type="text" required
                                 value="{{ old('address', $event ? $event->address : '') }}"
-                                class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                                class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('address') border-red-500 @enderror">
+                            @error('address')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <!-- End Col -->
                     </div>
@@ -344,84 +369,4 @@
                 });
         </script>
         @endif
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const titleInput = document.getElementById('name-event');
-            const bodyInput = document.getElementById('body');
-            const imageInput = document.getElementById('image');
-            const ticketInput = document.getElementById('ticket-quantity');
-            const startDateInput = document.getElementById('date-start-event');
-            const endDateInput = document.getElementById('date-end-event');
-            const startTimeInput = document.getElementById('time-start-event');
-            const endTimeInput = document.getElementById('time-end-event');
-
-            function showError(element, message) {
-            const errorElement = document.getElementById('error-' + element.id);
-            if (errorElement) {
-            errorElement.textContent = message;
-            }
-            }
-
-            function clearError(element) {
-            const errorElement = document.getElementById('error-' + element.id);
-            if (errorElement) {
-            errorElement.textContent = '';
-            }
-            }
-
-            form.addEventListener('submit', function(e) {
-            let hasError = false;
-
-            // Reset all errors
-            const errorElements = document.querySelectorAll('[id^="error-"]');
-            errorElements.forEach(element => element.textContent = '');
-
-            // Title validation
-            if (!titleInput.value.trim()) {
-            showError(titleInput, 'Nama event wajib diisi');
-            hasError = true;
-            } else if (titleInput.value.length > 255) {
-            showError(titleInput, 'Nama event tidak boleh lebih dari 255 karakter');
-            hasError = true;
-            }
-
-            // Body validation
-            if (!bodyInput.value.trim()) {
-            showError(bodyInput, 'Deskripsi event wajib diisi');
-            hasError = true;
-            } else if (bodyInput.value.length > 2000) {
-            showError(bodyInput, 'Deskripsi tidak boleh lebih dari 2000 karakter');
-            hasError = true;
-            }
-
-            // Image validation
-            if (imageInput.files.length > 0) {
-            const file = imageInput.files[0];
-            const fileSize = file.size / 1024 / 1024; // Convert to MB
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-
-            if (!allowedTypes.includes(file.type)) {
-            showError(imageInput, 'File harus berupa gambar (JPG, JPEG, atau PNG)');
-            hasError = true;
-            } else if (fileSize > 2) {
-            showError(imageInput, 'Ukuran gambar tidak boleh lebih dari 2MB');
-            hasError = true;
-            }
-            }
-
-            // Ticket quantity validation
-            if (ticketInput.value && parseInt(ticketInput.value) < 1) { showError(ticketInput, 'Jumlah tiket minimal 1' );
-                hasError=true; } // Date and time validation const startDateTime=new Date(startDateInput.value + ' ' +
-                startTimeInput.value); const endDateTime=new Date(endDateInput.value + ' ' + endTimeInput.value); if (endDateTime
-                <=startDateTime) { showError(endDateInput, 'Waktu selesai harus lebih besar dari waktu mulai' ); hasError=true; } if
-                (hasError) { e.preventDefault(); } }); // Clear errors on input [titleInput, bodyInput, imageInput, ticketInput,
-                startDateInput, endDateInput, startTimeInput, endTimeInput].forEach(input=> {
-                input.addEventListener('input', function() {
-                clearError(this);
-                });
-                });
-                });
-        </script>
 </x-app-layout>

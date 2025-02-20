@@ -75,13 +75,6 @@
                                                                             </p>
                                                                         </div>
                                                                     </div>
-                                                                    <p
-                                                                        class="text-sm text-gray-400 dark:text-neutral-400">
-                                                                        Leyla is a Customer Success Specialist at
-                                                                        Preline
-                                                                        and spends her time speaking
-                                                                        to in-house recruiters all over the world.
-                                                                    </p>
                                                                 </div>
                                                                 <!-- End Body -->
                                                             </div>
@@ -350,13 +343,6 @@
                                                         Hampir Penuh
                                                     </span>
                                             </div>
-                                            {{-- @else
-                                            <div>
-                                                <span
-                                                    class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium bg-green-100 text-green-600 rounded-md dark:bg-teal-500/10 dark:text-teal-500">
-                                                    Tersedia
-                                                </span>
-                                            </div> --}}
                                             @endif
                                         </div>
                                     </div>

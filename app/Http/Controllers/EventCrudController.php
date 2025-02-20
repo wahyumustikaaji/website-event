@@ -100,79 +100,71 @@ class EventCrudController extends Controller
 
     public function store(Request $request)
     {
-        try {
-            $messages = [
-                'title.required' => 'Nama event wajib diisi',
-                'title.max' => 'Nama event tidak boleh lebih dari 255 karakter',
-                'body.required' => 'Deskripsi event wajib diisi',
-                'body.max' => 'Deskripsi tidak boleh lebih dari 2000 karakter',
-                'image.image' => 'File harus berupa gambar',
-                'image.mimes' => 'Format gambar harus jpg, jpeg, atau png',
-                'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB',
-                'ticket_quantity.min' => 'Jumlah tiket minimal 1',
-                'event_date.required' => 'Tanggal event wajib diisi',
-                'event_date.date' => 'Format tanggal tidak valid',
-                'start_time.required' => 'Waktu mulai wajib diisi',
-                'end_date.required' => 'Tanggal selesai wajib diisi',
-                'end_time.required' => 'Waktu selesai wajib diisi',
-                'location_name.required' => 'Nama lokasi wajib diisi',
-                'address.required' => 'Alamat wajib diisi',
-            ];
+        $messages = [
+            'title.required' => 'Nama event wajib diisi',
+            'title.max' => 'Nama event tidak boleh lebih dari 255 karakter',
+            'body.required' => 'Deskripsi event wajib diisi',
+            'body.max' => 'Deskripsi tidak boleh lebih dari 2000 karakter',
+            'image.required' => 'Poster event wajib diisi',
+            'image.image' => 'File harus berupa gambar',
+            'image.mimes' => 'Format gambar harus jpg, jpeg, atau png',
+            'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB',
+            'ticket_quantity.min' => 'Jumlah tiket minimal 1',
+            'ticket_quantity.max' => 'Jumlah tiket terlalu banyak',
+            'event_date.required' => 'Tanggal event wajib diisi',
+            'event_date.date' => 'Format tanggal tidak valid',
+            'start_time.required' => 'Waktu mulai wajib diisi',
+            'end_date.required' => 'Tanggal selesai wajib diisi',
+            'end_time.required' => 'Waktu selesai wajib diisi',
+            'location_name.required' => 'Nama lokasi wajib diisi',
+            'address.required' => 'Alamat wajib diisi',
+        ];
 
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'body' => 'required|string|max:2000',
-                'category_id' => 'required|exists:categories,id',
-                'city_category_id' => 'required|exists:city_categories,id',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'event_date' => 'required|date',
-                'start_time' => 'required',
-                'end_date' => 'required|date',
-                'end_time' => 'required',
-                'location_name' => 'required|string|max:255',
-                'address' => 'required|string|max:255',
-                'ticket_quantity' => 'nullable|integer|min:1',
-            ], $messages);
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string|max:2000',
+            'category_id' => 'required|exists:categories,id',
+            'city_category_id' => 'required|exists:city_categories,id',
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'event_date' => 'required|date',
+            'start_time' => 'required',
+            'end_date' => 'required|date|after_or_equal:event_date',
+            'end_time' => 'required',
+            'location_name' => 'required|string|max:255',
+            'address' => 'required|string',
+            'ticket_quantity' => 'nullable|integer|min:1|max:999999',
+        ], $messages);
 
-            // Simpan gambar jika ada
-            $imagePath = null;
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('events', 'public');
-            }
-
-            $slug = Str::slug($request->title);
-
-            Event::create([
-                'title' => $request->title,
-                'slug' => Str::slug($request->title),
-                'category_id' => $request->category_id,
-                'city_category_id' => $request->city_category_id,
-                'creator_id' => Auth::user()->id,
-                'location_name' => $request->location_name,
-                'address' => $request->address,
-                'body' => $request->body,
-                'event_date' => $request->event_date,
-                'start_time' => $request->start_time,
-                'end_date' => $request->end_date,
-                'end_time' => $request->end_time,
-                'ticket_quantity' => $request->ticket_quantity,
-                'image' => $imagePath,
-            ]);
-
-            // Redirect dengan flash message dan menandai bahwa modal harus ditampilkan
-            return redirect()
-                ->route('create-event')
-                ->with('success', 'Event berhasil dibuat!')
-                ->with('showModal', true)
-                ->with('slug', $slug); // Menyimpan ID event untuk preview
-
-        } catch (\Exception $e) {
-            // Handle error
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['error' => 'Terjadi kesalahan saat membuat event. Silakan coba lagi.']);
+        // Simpan gambar jika ada
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('events', 'public');
         }
+
+        $slug = Str::slug($request->title);
+
+        Event::create([
+            'title' => $request->title,
+            'slug' => $slug,
+            'category_id' => $request->category_id,
+            'city_category_id' => $request->city_category_id,
+            'creator_id' => Auth::user()->id,
+            'location_name' => $request->location_name,
+            'address' => $request->address,
+            'body' => $request->body,
+            'event_date' => $request->event_date,
+            'start_time' => $request->start_time,
+            'end_date' => $request->end_date,
+            'end_time' => $request->end_time,
+            'ticket_quantity' => $request->ticket_quantity,
+            'image' => $imagePath,
+        ]);
+
+        return redirect()
+            ->route('create-event')
+            ->with('success', 'Event berhasil dibuat!')
+            ->with('showModal', true)
+            ->with('slug', $slug);
     }
 
     public function edit($slug)
@@ -206,6 +198,26 @@ class EventCrudController extends Controller
             abort(403);
         }
 
+        $messages = [
+            'title.required' => 'Nama event wajib diisi',
+            'title.max' => 'Nama event tidak boleh lebih dari 255 karakter',
+            'body.required' => 'Deskripsi event wajib diisi',
+            'body.max' => 'Deskripsi tidak boleh lebih dari 2000 karakter',
+            'image.required' => 'Poster event wajib diisi',
+            'image.image' => 'File harus berupa gambar',
+            'image.mimes' => 'Format gambar harus jpg, jpeg, atau png',
+            'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB',
+            'ticket_quantity.min' => 'Jumlah tiket minimal 1',
+            'ticket_quantity.max' => 'Jumlah tiket terlalu banyak',
+            'event_date.required' => 'Tanggal event wajib diisi',
+            'event_date.date' => 'Format tanggal tidak valid',
+            'start_time.required' => 'Waktu mulai wajib diisi',
+            'end_date.required' => 'Tanggal selesai wajib diisi',
+            'end_time.required' => 'Waktu selesai wajib diisi',
+            'location_name.required' => 'Nama lokasi wajib diisi',
+            'address.required' => 'Alamat wajib diisi',
+        ];
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
@@ -219,7 +231,7 @@ class EventCrudController extends Controller
             'end_time' => 'required',
             'location_name' => 'required|string|max:255',
             'address' => 'required|string'
-        ]);
+        ], $messages);
 
         if ($request->hasFile('image')) {
             if ($event->image) {
