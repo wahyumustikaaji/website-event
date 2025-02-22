@@ -30,7 +30,6 @@ class Event extends Model
 
     protected $with = ['category', 'cityCategory', 'creator'];
 
-    // Relasi dengan Category
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');

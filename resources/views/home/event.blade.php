@@ -380,18 +380,18 @@
                                         Anda Pemilik Acara
                                     </button>
                                     @elseif($isOngoing)
-                                    <button type="submit"
+                                    <button type="submit" id="register-button"
                                         class="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                         Daftar
                                     </button>
                                     @else
-                                    <button type="submit"
+                                    <button type="submit" id="register-button"
                                         class="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                         Daftar
                                     </button>
                                     @endif
                                     @else
-                                    <button onclick="window.location.href='{{ route('login') }}'"
+                                    <button onclick="window.location.href='{{ route('login') }}'" id="register-button"
                                         class="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                         Daftar
                                     </button>
@@ -563,6 +563,7 @@
             })();
           });
         </script>
+
         <script>
             function copyLink() {
                 const currentUrl = window.location.href;
@@ -589,6 +590,7 @@
         document.getElementById("share-linkedin").href = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
     });
         </script>
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                     setTimeout(() => {
@@ -610,5 +612,32 @@
                         }
                     }, 5000);
                 });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const registerButton = document.getElementById("register-button");
+            if (registerButton) {
+                registerButton.addEventListener("click", function (event) {
+                    event.preventDefault(); // Cegah pengiriman langsung
+
+                    // Simpan teks asli sebelum berubah ke spinner
+                    const originalContent = registerButton.innerHTML;
+
+                    // Ubah tombol menjadi spinner
+                    registerButton.innerHTML = `
+                        <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-white rounded-full dark:text-white" role="status" aria-label="loading">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    `;
+                    registerButton.disabled = true; // Cegah klik ulang
+
+                    // Simulasi pemrosesan sebelum submit (misalnya 2 detik)
+                    setTimeout(() => {
+                        registerButton.closest("form").submit(); // Kirim form setelah loading
+                    }, 2000);
+                });
+            }
+        });
         </script>
 </x-guest-layout>

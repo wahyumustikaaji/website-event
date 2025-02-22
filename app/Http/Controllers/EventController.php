@@ -7,10 +7,13 @@ use App\Models\CityCategory;
 use App\Models\Event;
 use App\Models\EventParticipant;
 use App\Models\EventVisitor;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Jenssegers\Agent\Agent;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Barryvdh\DomPdf\Facade\Pdf;
 
 class EventController extends Controller
 {
@@ -172,5 +175,30 @@ class EventController extends Controller
         $event->decrement('ticket_quantity');
 
         return redirect()->back()->with('success', 'Berhasil Mendaftar Event!');
+    }
+
+    public function ticket($eventSlug, $userName)
+    {
+        $user = User::where('name', $userName)->firstOrFail();
+        $event = Event::where('slug', $eventSlug)->firstOrFail();
+
+        // Cek apakah user adalah peserta event
+        $isParticipant = EventParticipant::where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if (!$isParticipant) {
+            abort(403, 'Anda belum mendaftar di event ini.');
+        }
+
+        // Tentukan lokasi penyimpanan QR Code
+        $fileName = $user->id . '-' . $event->id . '.svg';
+        $qrCodePath = 'public/qrcodes/' . $fileName;
+        $storagePath = storage_path('app/' . $qrCodePath); // Simpan di storage
+
+        // Generate QR Code
+        QrCode::format('svg')->size(250)->generate(route('ticket', [$event->slug, $user->name]), $storagePath);
+
+        return view('home.ticket', compact('event', 'user', 'fileName'));
     }
 }

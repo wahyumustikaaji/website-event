@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="sm:col-span-9">
-                            <input id="name-event" name="title" type="text"
+                            <input id="name-event" name="title" type="text" required
                                 value="{{ old('title', $event ? $event->title : '') }}" class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm text-sm rounded-lg
                                               focus:border-blue-500 focus:ring-blue-500
                                               @error('title') border-red-500 @enderror">

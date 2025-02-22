@@ -15,13 +15,13 @@ Route::get('/pricing', function () {
     return view('home.pricing');
 });
 
-Route::get('/payment', [PaymentController::class, 'showPaymentPage'])->middleware(['auth', 'check.premium'])->name('payment.show');
+Route::get('/ticket', function () {
+    return view('home.ticket');
+});
 
-// routes/web.php
+Route::get('/payment', [PaymentController::class, 'showPaymentPage'])->middleware(['auth', 'check.premium'])->name('payment.show');
 Route::post('/payment/snap', [PaymentController::class, 'createCharge'])->middleware(['auth', 'verified'])->name('payment.snap');
 Route::get('/payment/success', [PaymentController::class, 'success'])->middleware(['auth', 'verified'])->name('payment.success');
-
-// Route callback dari Midtrans tidak perlu auth middleware
 Route::post('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
 Route::post('payment/notification', [PaymentController::class, 'notification'])->name('payment.notification');
 
@@ -31,6 +31,7 @@ Route::get('/all-events', [EventController::class, 'search'])->name('search');
 Route::post('/event/{slug}/register', [EventController::class, 'register'])->name('event.register');
 Route::get('/category/{slug}', [EventController::class, 'showByCategory'])->name('category.show');
 Route::get('/city-category/{slug}', [EventController::class, 'showByCityCategory'])->name('city-category.show');
+Route::get('/ticket/{eventSlug}/{userName}', [EventController::class, 'ticket'])->middleware('auth')->name('ticket');
 
 Route::controller(SocialiteController::class)->group(function () {
     Route::get('auth/google', 'googleLogin')->name('auth.google');

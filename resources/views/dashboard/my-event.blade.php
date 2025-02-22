@@ -44,7 +44,7 @@
             </div>
             @else
             @foreach ($myeventsregistered as $events )
-            <a href="/event/{{ $events->slug }}"
+            <a href="{{ route('ticket', [$events->slug, auth()->user()->name]) }}"
                 class="group block rounded-xl overflow-hidden relative focus:outline-none border shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
                     <div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
