@@ -1,8 +1,8 @@
 <x-app-layout>
     <div class="relative z-10">
         <!-- Title -->
-        <div class="max-w-2xl mb-5 {{$myevents->isEmpty() ? 'hidden' : ''}}">
-            <h2 class="text-2xl font-bold md:text-2xl md:leading-tight dark:text-white">Semua Acara</h2>
+        <div class="max-w-2xl mb-5">
+            <h2 class="text-2xl font-bold md:text-2xl md:leading-tight dark:text-white">Halo, {{$user->name}}</h2>
             <p class="mt-1 text-gray-600 dark:text-neutral-400 hidden lg:block">Buat event paling
                 diminati dan
                 jangan
@@ -10,8 +10,157 @@
         </div>
         <!-- End Title -->
 
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <!-- Card -->
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+                <div class="p-4 md:p-5">
+                    <div class="flex items-center gap-x-2">
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">
+                            Total Acara
+                        </p>
+                        <div class="hs-tooltip">
+                            <div class="hs-tooltip-toggle">
+                                <svg class="shrink-0 size-4 text-gray-500 dark:text-neutral-500"
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                    <path d="M12 17h.01"></path>
+                                </svg>
+                                <span
+                                    class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-neutral-700"
+                                    role="tooltip" data-popper-placement="top"
+                                    style="position: fixed; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(317.5px, -843.5px, 0px);">
+                                    Total acara dibuat
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-1 flex items-center gap-x-2">
+                        <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">
+                            {{ number_format($totalEvents) }}
+                        </h3>
+                        <span class="text-{{ $eventPercentageChange >= 0 ? 'green' : 'red' }}-600">
+                            @if ($eventPercentageChange >= 0)
+                            <svg class="inline-block size-4 self-center" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            @else
+                            <svg class="inline-block size-4 self-center" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+                                <polyline points="16 17 22 17 22 11"></polyline>
+                            </svg>
+                            @endif
+                            {{ number_format(abs($eventPercentageChange), 1) }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- End Card -->
+
+            <!-- Card -->
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+                <div class="p-4 md:p-5">
+                    <div class="flex items-center gap-x-2">
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">
+                            Tiket Saya
+                        </p>
+                    </div>
+
+                    <div class="mt-1 flex items-center gap-x-2">
+                        <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">
+                            {{ number_format($myTickets) }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <!-- End Card -->
+
+            <!-- Card -->
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+                <div class="p-4 md:p-5">
+                    <div class="flex items-center gap-x-2">
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">
+                            Event Berlangsung
+                        </p>
+                    </div>
+
+                    <div class="mt-1 flex items-center gap-x-2">
+                        <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">
+                            {{ number_format($ongoingEvents) }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <!-- End Card -->
+
+            <!-- Card -->
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
+                <div class="p-4 md:p-5">
+                    <div class="flex items-center gap-x-2">
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">
+                            Pageviews
+                        </p>
+                    </div>
+
+                    <div class="mt-1 flex items-center gap-x-2">
+                        <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">
+                            {{ number_format($pageViews) }}
+                        </h3>
+                        <span class="text-{{ $pageViewsPercentageChange >= 0 ? 'green' : 'red' }}-600">
+                            @if ($pageViewsPercentageChange >= 0)
+                            <svg class="inline-block size-4 self-center" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            @else
+                            <svg class="inline-block size-4 self-center" xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+                                <polyline points="16 17 22 17 22 11"></polyline>
+                            </svg>
+                            @endif
+                            {{ number_format(abs($pageViewsPercentageChange), 1) }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- End Card -->
+        </div>
+
+        <!-- Title -->
+        <div class="w-full mb-5 mt-14 {{$myevents->isEmpty() ? 'hidden' : ''}} flex justify-between items-start">
+            <div>
+                <h2 class="text-2xl font-bold md:text-2xl md:leading-tight dark:text-white">Daftar Event</h2>
+                <p class="mt-1 text-gray-600 dark:text-neutral-400 hidden lg:block">Buat event paling
+                    diminati dan
+                    jangan
+                    lupa disebarkan!</p>
+            </div>
+            <button type="button" onclick="window.location.href='/event-create'"
+                class="py-1.5 px-2.5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-200 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 transition-all duration-300 ease-in-out">
+                Lihat Semua
+                <svg class="size-4 rotate-90" xmlns="http://www.w3.org/2000/svg" width="512" height="512"
+                    viewBox="0 0 512 512">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="48" d="m112 244l144-144l144 144M256 120v292" />
+                </svg>
+            </button>
+        </div>
+        <!-- End Title -->
+
         <!-- Grid -->
-        <div class="grid {{$myevents->isEmpty() ? 'lg:grid-cols-1' : 'lg:grid-cols-2'}} lg:gap-y-16 gap-10">
+        <div class="grid {{$myevents->isEmpty() ? 'lg:grid-cols-1' : 'lg:grid-cols-2'}} lg:gap-y-10 gap-10">
             <!-- Card -->
             @if ($myevents->isEmpty())
             <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16 mt-20 lg:mt-28">
@@ -54,7 +203,7 @@
 
                     <div class="grow">
                         <a href="/detail-event/{{ $events->slug }}" class=" text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300
-                            dark:group-hover:text-white hover:underline">
+                                    dark:group-hover:text-white hover:underline">
                             {{ $events->title }}
                         </a>
                         <p class="mt-3 text-gray-600 dark:text-neutral-400">
@@ -102,35 +251,6 @@
             <!-- End Card -->
         </div>
         <!-- End Grid -->
+
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        function showDeleteModal(button) {
-        let slug = button.getAttribute("data-id");
-        let deleteForm = document.getElementById("delete-form");
-
-        if (deleteForm) {
-        deleteForm.action = `/event/${slug}`;
-        }
-
-        let modal = document.getElementById("hs-danger-alert");
-        if (modal) {
-        modal.classList.remove("hidden");
-        }
-        }
-
-        let cancelButton = document.getElementById("cancel-delete");
-        if (cancelButton) {
-        cancelButton.addEventListener("click", function () {
-        let modal = document.getElementById("hs-danger-alert");
-        if (modal) {
-        modal.classList.add("hidden");
-        }
-        });
-        }
-
-        window.showDeleteModal = showDeleteModal;
-        });
-    </script>
 </x-app-layout>

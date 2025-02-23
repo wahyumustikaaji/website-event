@@ -53,7 +53,7 @@
                     <div class="flex items-center justify-between space-x-3" id="buttonNot">
                         <button type="button"
                             onclick="window.location.href='https://www.google.com/maps?q={{ urlencode($event->location_name) }}+{{ urlencode($event->address) }}'"
-                            class="w-full py-2 px-4 inline-flex items-center gap-x-2 text-base font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 focus:outline-none focus:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800">
+                            class="w-full py-2 px-4 inline-flex items-center gap-x-2 text-base font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 focus:outline-none focus:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 truncate">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path fill="currentColor"
                                     d="m15 21l-6-2.1l-4.65 1.8q-.5.2-.925-.112T3 19.75v-14q0-.325.188-.575T3.7 4.8L9 3l6 2.1l4.65-1.8q.5-.2.925.113T21 4.25v14q0 .325-.187.575t-.513.375zm-1-2.45V6.85l-4-1.4v11.7zm2 0l3-1V5.7l-3 1.15zM5 18.3l3-1.15V5.45l-3 1zM16 6.85v11.7zm-8-1.4v11.7z" />
@@ -61,7 +61,7 @@
                             Dapatkan Peta
                         </button>
                         <button type="button" onclick="generatePDF()"
-                            class="w-full py-2 px-4 inline-flex items-center gap-x-2 text-base font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 focus:outline-none focus:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800">
+                            class="w-full py-2 px-4 inline-flex items-center gap-x-2 text-base font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-900 focus:outline-none focus:bg-gray-900 disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 truncate">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="M6 21h12M12 3v14m0 0l5-5m-5 5l-5-5" />

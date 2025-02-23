@@ -19,8 +19,64 @@ class EventCrudController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
+        $currentDate = new DateTime();
+        $yesterday = (new DateTime())->modify('-1 day');
+
+        // Total Events Created
+        $totalEvents = Event::where('creator_id', $user->id)->count();
+        $yesterdayTotalEvents = Event::where('creator_id', $user->id)
+            ->where('created_at', '<', $yesterday->format('Y-m-d 23:59:59'))
+            ->count();
+        $eventPercentageChange = $yesterdayTotalEvents > 0
+            ? (($totalEvents - $yesterdayTotalEvents) / $yesterdayTotalEvents) * 100
+            : 0;
+
+        // My Tickets (Events I've registered for)
+        $myTickets = EventParticipant::where('user_id', $user->id)->count();
+        $yesterdayTickets = EventParticipant::where('user_id', $user->id)
+            ->where('created_at', '<', $yesterday->format('Y-m-d 23:59:59'))
+            ->count();
+        $ticketPercentageChange = $yesterdayTickets > 0
+            ? (($myTickets - $yesterdayTickets) / $yesterdayTickets) * 100
+            : 0;
+
+        $now = now(); // Waktu saat ini
+
+        // Ongoing Events: Event yang sedang berlangsung
+        $ongoingEvents = Event::where('creator_id', $user->id)
+            ->where('event_date', '<=', $now)  // Event sudah dimulai
+            ->where('end_date', '>', $now)     // Event belum berakhir
+            ->count();
+
+        // Page Views
+        $userEventIds = Event::where('creator_id', $user->id)->pluck('id');
+        $pageViews = EventVisitor::whereIn('event_id', $userEventIds)->count();
+        $yesterdayPageViews = EventVisitor::whereIn('event_id', $userEventIds)
+            ->where('created_at', '<', $yesterday->format('Y-m-d 23:59:59'))
+            ->count();
+        $pageViewsPercentageChange = $yesterdayPageViews > 0
+            ? (($pageViews - $yesterdayPageViews) / $yesterdayPageViews) * 100
+            : 0;
+
+        $myevents = Event::where('creator_id', $user->id)->limit(6)->get();
+
+        return view('dashboard.dashboard', compact(
+            'totalEvents',
+            'eventPercentageChange',
+            'myTickets',
+            'ongoingEvents',
+            'pageViews',
+            'pageViewsPercentageChange',
+            'user',
+            'myevents',
+        ));
+    }
+
+    public function eventCreate()
+    {
+        $user = Auth::user();
         $myevents = Event::where('creator_id', $user->id)->get();
-        return view('dashboard.dashboard', compact('myevents'));
+        return view('dashboard.event-create', compact('myevents'));
     }
 
     public function myEvent()
@@ -245,7 +301,7 @@ class EventCrudController extends Controller
             'address' => $validated['address']
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Event berhasil diperbarui!');
+        return redirect()->route('event-create')->with('success', 'Event berhasil diperbarui!');
     }
 
     public function destroy($slug)

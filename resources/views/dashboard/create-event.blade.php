@@ -17,7 +17,7 @@
             <!-- Card -->
             <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-neutral-900">
                 <form action="{{ $event ? route('event.update', $event->slug) : route('events.store') }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" onsubmit="submitForm(this); return false;">
                     @csrf
                     @if($event)
                     @method('PUT')
@@ -342,6 +342,25 @@
             <!-- End Card -->
         </div>
         <!-- End Card Section -->
+
+        <script>
+            function submitForm(form) {
+            // Dapatkan button submit
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalContent = submitBtn.innerHTML;
+
+            // Ganti konten button dengan loading spinner
+            submitBtn.innerHTML = `
+                <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-white rounded-full dark:text-white" role="status" aria-label="loading">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            `;
+            submitBtn.disabled = true;
+
+            // Submit form
+            form.submit();
+        }
+        </script>
 
         @if(session('success'))
         <script src="https://cdnjs.cloudflare.com/ajax/libs/preline/2.0.3/preline.min.js"></script>

@@ -182,7 +182,6 @@ class EventController extends Controller
         $user = User::where('name', $userName)->firstOrFail();
         $event = Event::where('slug', $eventSlug)->firstOrFail();
 
-        // Cek apakah user adalah peserta event
         $isParticipant = EventParticipant::where('event_id', $event->id)
             ->where('user_id', $user->id)
             ->exists();
@@ -191,10 +190,9 @@ class EventController extends Controller
             abort(403, 'Anda belum mendaftar di event ini.');
         }
 
-        // Tentukan lokasi penyimpanan QR Code
         $fileName = $user->id . '-' . $event->id . '.svg';
         $qrCodePath = 'public/qrcodes/' . $fileName;
-        $storagePath = storage_path('app/' . $qrCodePath); // Simpan di storage
+        $storagePath = storage_path('app/' . $qrCodePath);
 
         // Generate QR Code
         QrCode::format('svg')->size(250)->generate(route('ticket', [$event->slug, $user->name]), $storagePath);

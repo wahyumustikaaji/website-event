@@ -10,13 +10,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home.index');
 });
-
 Route::get('/pricing', function () {
     return view('home.pricing');
-});
-
-Route::get('/ticket', function () {
-    return view('home.ticket');
 });
 
 Route::get('/payment', [PaymentController::class, 'showPaymentPage'])->middleware(['auth', 'check.premium'])->name('payment.show');
@@ -39,6 +34,7 @@ Route::controller(SocialiteController::class)->group(function () {
 });
 
 Route::get('/dashboard', [EventCrudController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/event-create', [EventCrudController::class, 'eventCreate'])->middleware(['auth', 'verified'])->name('event-create');
 Route::get('/create-event', [EventCrudController::class, 'createEvent'])->middleware(['auth', 'verified'])->name('create-event');
 Route::get('/my-event', [EventCrudController::class, 'myEvent'])->middleware(['auth', 'verified'])->name('my-event');
 Route::get('/detail-event/{slug}', [EventCrudController::class, 'detailEvent'])->middleware(['auth', 'verified'])->name('detail-event');
