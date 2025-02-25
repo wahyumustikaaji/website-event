@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('event_visitors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained('events')->onDelete('cascade'); // Relasi ke event
-            $table->ipAddress('ip_address'); // Simpan IP pengunjung
-            $table->string('country')->nullable(); // Negara
-            $table->string('city')->nullable(); // Kota
-            $table->string('device')->nullable(); // Perangkat (Mobile/Desktop)
-            $table->string('browser')->nullable(); // Browser yang digunakan
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade'); 
+            $table->ipAddress('ip_address'); 
+            $table->string('country')->nullable();
+            $table->string('city')->nullable(); 
+            $table->string('device')->nullable();
+            $table->string('browser')->nullable(); 
             $table->timestamps();
         });
     }

@@ -208,7 +208,6 @@
                                                     </svg>
                                                 </div>
                                             </th>
-
                                             <th scope="col"
                                                 class="py-1 group text-start font-normal focus:outline-none">
                                                 <div
@@ -227,7 +226,6 @@
                                                     </svg>
                                                 </div>
                                             </th>
-
                                             <th scope="col"
                                                 class="py-1 group text-start font-normal focus:outline-none">
                                                 <div
@@ -246,37 +244,174 @@
                                                     </svg>
                                                 </div>
                                             </th>
-
-                                            {{-- <th scope="col"
-                                                class="py-2 px-3 text-end font-normal text-sm text-gray-500 --exclude-from-ordering dark:text-neutral-500">
-                                                Action</th> --}}
+                                            <th scope="col"
+                                                class="py-1 group text-start font-normal focus:outline-none">
+                                                <div
+                                                    class="py-1 px-2.5 inline-flex items-center border border-transparent text-sm text-gray-500 rounded-md hover:border-gray-200 dark:text-neutral-500 dark:hover:border-neutral-700 cursor-pointer">
+                                                    Status Pembayaran
+                                                </div>
+                                            </th>
+                                            <th scope="col"
+                                                class="py-1 group text-start font-normal focus:outline-none">
+                                                <div
+                                                    class="py-1 px-2.5 inline-flex items-center border border-transparent text-sm text-gray-500 rounded-md hover:border-gray-200 dark:text-neutral-500 dark:hover:border-neutral-700 cursor-pointer">
+                                                    Status Persetujuan
+                                                </div>
+                                            </th>
+                                            <th scope="col" class="py-1 group text-end font-normal focus:outline-none">
+                                                <div
+                                                    class="py-1 px-2.5 inline-flex items-center border border-transparent text-sm text-gray-500 rounded-md hover:border-gray-200 dark:text-neutral-500 dark:hover:border-neutral-700 cursor-pointer">
+                                                    Aksi
+                                                </div>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
-                                        @foreach ($eventParticipants as $participant )
+                                        @foreach ($eventParticipants as $participant)
                                         <tr>
                                             <td class="py-3 ps-3">
                                                 <div class="flex items-center h-5">
-                                                    <input id="hs-table-search-checkbox-1" type="checkbox"
+                                                    <input id="participant-checkbox-{{ $participant->id }}"
+                                                        type="checkbox"
                                                         class="border-gray-300 rounded text-blue-600 focus:ring-blue-500 dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                                                         data-hs-datatable-row-selecting-individual="">
-                                                    <label for="hs-table-search-checkbox-1"
+                                                    <label for="participant-checkbox-{{ $participant->id }}"
                                                         class="sr-only">Checkbox</label>
                                                 </div>
                                             </td>
                                             <td
                                                 class="p-3 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
-                                                {{$participant->user->name}}</td>
+                                                {{ $participant->user->name }}
+                                            </td>
                                             <td
                                                 class="p-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                                                {{$participant->user->email}}</td>
+                                                {{ $participant->user->email }}
+                                            </td>
                                             <td
                                                 class="p-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                                                {{$participant->created_at->format('d-m-Y H:i')}}</td>
-                                            {{-- <td class="p-3 whitespace-nowrap text-end text-sm font-medium">
-                                                <button type="button"
-                                                    class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400">Delete</button>
-                                            </td> --}}
+                                                {{ $participant->created_at->format('d-m-Y H:i') }}
+                                            </td>
+
+                                            <td
+                                                class="p-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
+                                                @if($event->price_ticket > 0)
+                                                @if($participant->payment_status)
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Pembayaran Selesai
+                                                </span>
+                                                @else
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Menunggu Pembayaran
+                                                </span>
+                                                @endif
+                                                @else
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Gratis
+                                                </span>
+                                                @endif
+                                            </td>
+
+                                            <td
+                                                class="p-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
+                                                @if($event->requires_approval)
+                                                @if($participant->is_approved)
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Disetujui
+                                                </span>
+                                                @else
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Menunggu Persetujuan
+                                                </span>
+                                                @endif
+                                                @else
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Otomatis Disetujui
+                                                </span>
+                                                @endif
+                                            </td>
+
+                                            <td class="p-3 whitespace-nowrap text-end text-sm font-medium">
+                                                <div class="flex justify-end space-x-2">
+
+                                                    @if($event->requires_approval && !$participant->is_approved)
+                                                    <form
+                                                        action="{{ route('event.approve-participant', ['event' => $event->slug, 'participant' => $participant->id]) }}"
+                                                        method="POST" class="inline-block">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400">
+                                                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                            Setujui
+                                                        </button>
+                                                    </form>
+                                                    @endif
+
+                                                    <form
+                                                        action="{{ route('event.remove-participant', ['event' => $event->slug, 'participant' => $participant->id]) }}"
+                                                        method="POST" class="inline-block">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus peserta ini?')"
+                                                            class="inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent text-red-600 hover:text-red-800 disabled:opacity-50 disabled:pointer-events-none dark:text-red-500 dark:hover:text-red-400">
+                                                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                            Hapus
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -428,7 +563,8 @@
 
             const bubbleSeries = bubbleData.browsers.map((browser, index) => {
                 return {
-                    name: browser,
+
+     name: browser,
                     data: [[index * 2 + 1, Math.random() * 10, (bubbleData.totals[index] / maxSize) * 50 + 10]]
                 };
             });

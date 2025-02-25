@@ -42,24 +42,6 @@
                         <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">
                             {{ number_format($totalEvents) }}
                         </h3>
-                        <span class="text-{{ $eventPercentageChange >= 0 ? 'green' : 'red' }}-600">
-                            @if ($eventPercentageChange >= 0)
-                            <svg class="inline-block size-4 self-center" xmlns="http://www.w3.org/2000/svg" width="24"
-                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
-                                <polyline points="16 7 22 7 22 13"></polyline>
-                            </svg>
-                            @else
-                            <svg class="inline-block size-4 self-center" xmlns="http://www.w3.org/2000/svg" width="24"
-                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
-                                <polyline points="16 17 22 17 22 11"></polyline>
-                            </svg>
-                            @endif
-                            {{ number_format(abs($eventPercentageChange), 1) }}%
-                        </span>
                     </div>
                 </div>
             </div>

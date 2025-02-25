@@ -18,6 +18,8 @@ class Event extends Model
         'creator_id',
         'location_name',
         'address',
+        'latitude',
+        'longitude',
         'body',
         'event_date',
         'start_time',
@@ -25,7 +27,9 @@ class Event extends Model
         'end_time',
         'ticket_quantity',
         'views',
-        'image'
+        'image',
+        'price_ticket',
+        'requires_approval'
     ];
 
     protected $with = ['category', 'cityCategory', 'creator'];

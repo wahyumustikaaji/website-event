@@ -9,7 +9,7 @@ class EventParticipant extends Model
 {
     use HasFactory;  // Pastikan ini ada
 
-    protected $fillable = ['event_id', 'user_id'];
+    protected $fillable = ['event_id', 'user_id', 'is_approved', 'payment_status', 'payment_receipt'];
 
     // Relasi ke Event
     public function event()

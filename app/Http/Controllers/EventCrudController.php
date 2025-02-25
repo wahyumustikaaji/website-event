@@ -32,7 +32,7 @@ class EventCrudController extends Controller
             : 0;
 
         // My Tickets (Events I've registered for)
-        $myTickets = EventParticipant::where('user_id', $user->id)->count();
+        $myTickets = EventParticipant::where('user_id', $user->id)->where('is_approved', true)->where('payment_status', true)->count();
         $yesterdayTickets = EventParticipant::where('user_id', $user->id)
             ->where('created_at', '<', $yesterday->format('Y-m-d 23:59:59'))
             ->count();
@@ -83,7 +83,9 @@ class EventCrudController extends Controller
     {
         $user = Auth::user();
         $myeventsregistered = Event::whereHas('participants', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
+            $query->where('user_id', $user->id)
+                ->where('is_approved', true)
+                ->where('payment_status', true);
         })->get();
 
         return view('dashboard.my-event', compact('myeventsregistered'));
@@ -183,7 +185,7 @@ class EventCrudController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'body' => 'required|string|max:2000',
+            'body' => 'required',
             'category_id' => 'required|exists:categories,id',
             'city_category_id' => 'required|exists:city_categories,id',
             'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -193,8 +195,15 @@ class EventCrudController extends Controller
             'end_time' => 'required',
             'location_name' => 'required|string|max:255',
             'address' => 'required|string',
-            'ticket_quantity' => 'nullable|integer|min:1|max:999999',
+            'ticket_quantity' => 'nullable|integer|min:1|max:100000',
+            'price_ticket' => 'nullable|numeric|min:0',
         ], $messages);
+
+        if ($request->has('price_ticket')) {
+            $priceTicket = str_replace('.', '', $request->price_ticket);
+        } else {
+            $priceTicket = null;
+        }
 
         // Handle image upload
         $imagePath = null;
@@ -219,6 +228,8 @@ class EventCrudController extends Controller
             'end_time' => $request->end_time,
             'ticket_quantity' => $request->ticket_quantity,
             'image' => $imagePath,
+            'price_ticket' => $priceTicket,
+            'requires_approval' => $request->has('requires_approval') ? 1 : 0,
         ]);
 
         return redirect()
@@ -274,8 +285,15 @@ class EventCrudController extends Controller
             'end_date' => 'required|date|after_or_equal:event_date',
             'end_time' => 'required',
             'location_name' => 'required|string|max:255',
-            'address' => 'required|string'
+            'address' => 'required|string',
+            'price_ticket' => 'nullable|numeric|min:0',
         ], $messages);
+
+        if ($request->has('price_ticket')) {
+            $priceTicket = str_replace('.', '', $request->price_ticket);
+        } else {
+            $priceTicket = null;
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -298,7 +316,9 @@ class EventCrudController extends Controller
             'end_date' => $validated['end_date'],
             'end_time' => $validated['end_time'],
             'location_name' => $validated['location_name'],
-            'address' => $validated['address']
+            'address' => $validated['address'],
+            'price_ticket' => $priceTicket,
+            'requires_approval' => $request->has('requires_approval') ? 1 : 0,
         ]);
 
         return redirect()->route('event-create')->with('success', 'Event berhasil diperbarui!');
@@ -331,13 +351,12 @@ class EventCrudController extends Controller
             'title.required' => 'Nama event wajib diisi',
             'title.max' => 'Nama event tidak boleh lebih dari 255 karakter',
             'body.required' => 'Deskripsi event wajib diisi',
-            'body.max' => 'Deskripsi tidak boleh lebih dari 2000 karakter',
             'image.required' => 'Poster event wajib diisi',
             'image.image' => 'File harus berupa gambar',
             'image.mimes' => 'Format gambar harus jpg, jpeg, atau png',
             'image.max' => 'Ukuran gambar tidak boleh lebih dari 2MB',
             'ticket_quantity.min' => 'Jumlah tiket minimal 1',
-            'ticket_quantity.max' => 'Jumlah tiket terlalu banyak',
+            'ticket_quantity.max' => 'Jumlah tiket maksimal 100.000',
             'event_date.required' => 'Tanggal event wajib diisi',
             'event_date.date' => 'Format tanggal tidak valid',
             'start_time.required' => 'Waktu mulai wajib diisi',
@@ -346,5 +365,84 @@ class EventCrudController extends Controller
             'location_name.required' => 'Nama lokasi wajib diisi',
             'address.required' => 'Alamat wajib diisi',
         ];
+    }
+
+    public function approveParticipant(Request $request, $slug, $participantId)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        // Check if current user is the event creator
+        if ($event->creator_id !== Auth::user()->id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menyetujui peserta.');
+        }
+
+        $participant = EventParticipant::findOrFail($participantId);
+
+        // Check if participant belongs to this event
+        if ($participant->event_id !== $event->id) {
+            return redirect()->back()->with('error', 'Peserta tidak terdaftar dalam event ini.');
+        }
+
+        // Update approval status
+        $participant->update([
+            'is_approved' => true
+        ]);
+
+        return redirect()->back()->with('success', 'Peserta berhasil disetujui.');
+    }
+
+    /**
+     * View participant details
+     */
+    public function participantDetail($slug, $participantId)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        // Check if current user is the event creator
+        if ($event->creator_id !== Auth::user()->id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk melihat detail peserta.');
+        }
+
+        $participant = EventParticipant::with('user')->findOrFail($participantId);
+
+        // Check if participant belongs to this event
+        if ($participant->event_id !== $event->id) {
+            return redirect()->back()->with('error', 'Peserta tidak terdaftar dalam event ini.');
+        }
+
+        return view('dashboard.participant-detail', [
+            'event' => $event,
+            'participant' => $participant
+        ]);
+    }
+
+    /**
+     * Remove a participant from an event
+     */
+    public function removeParticipant(Request $request, $slug, $participantId)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        // Check if current user is the event creator
+        if ($event->creator_id !== Auth::user()->id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menghapus peserta.');
+        }
+
+        $participant = EventParticipant::findOrFail($participantId);
+
+        // Check if participant belongs to this event
+        if ($participant->event_id !== $event->id) {
+            return redirect()->back()->with('error', 'Peserta tidak terdaftar dalam event ini.');
+        }
+
+        // Delete the participant
+        $participant->delete();
+
+        // Increment the ticket quantity back if this was a paid event
+        if ($event->price_ticket > 0) {
+            $event->increment('ticket_quantity');
+        }
+
+        return redirect()->back()->with('success', 'Peserta berhasil dihapus dari event.');
     }
 }

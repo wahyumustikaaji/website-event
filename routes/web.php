@@ -26,7 +26,8 @@ Route::get('/all-events', [EventController::class, 'search'])->name('search');
 Route::post('/event/{slug}/register', [EventController::class, 'register'])->name('event.register');
 Route::get('/category/{slug}', [EventController::class, 'showByCategory'])->name('category.show');
 Route::get('/city-category/{slug}', [EventController::class, 'showByCityCategory'])->name('city-category.show');
-Route::get('/ticket/{eventSlug}/{userName}', [EventController::class, 'ticket'])->middleware('auth')->name('ticket');
+Route::get('/ticket/{eventSlug}/{code}', [EventController::class, 'ticket'])->middleware('auth')->name('ticket');
+Route::get('/event/{slug}/cancel-registration', [EventController::class, 'cancelRegistration'])->name('event.cancel-registration');
 
 Route::controller(SocialiteController::class)->group(function () {
     Route::get('auth/google', 'googleLogin')->name('auth.google');
@@ -42,6 +43,9 @@ Route::post('/create-event', [EventCrudController::class, 'store'])->middleware(
 Route::get('/event/{slug}/edit', [EventCrudController::class, 'edit'])->middleware(['auth', 'verified'])->name('event.edit');
 Route::put('/event/{slug}', [EventCrudController::class, 'update'])->middleware(['auth', 'verified'])->name('event.update');
 Route::delete('/event/{slug}', [EventCrudController::class, 'destroy'])->middleware(['auth', 'verified'])->name('event.destroy');
+Route::post('/dashboard/event/{event}/participant/{participant}/approve', [EventCrudController::class, 'approveParticipant'])->name('event.approve-participant')->middleware('auth');
+Route::get('/dashboard/event/{event}/participant/{participant}', [EventCrudController::class, 'participantDetail'])->name('event.participant-detail')->middleware('auth');
+Route::delete('/dashboard/event/{event}/participant/{participant}', [EventCrudController::class, 'removeParticipant'])->name('event.remove-participant')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -6,9 +6,9 @@
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
                 <div class="col-span-full hidden lg:col-span-1 lg:block">
                     <a class="flex-none font-semibold text-xl focus:outline-none focus:opacity-80 text-white" href="#"
-                        aria-label="Brand">Brand</a>
+                        aria-label="Brand">Spherevent</a>
                     <p class="mt-3 text-xs sm:text-sm text-neutral-400">
-                        © 2025 Preline Labs.
+                        © 2025 Spherevent.
                     </p>
                 </div>
                 <!-- End Col -->

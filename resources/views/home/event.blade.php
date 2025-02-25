@@ -1,5 +1,85 @@
 <x-guest-layout title="{{ $event->title }}" description="{{ $event->body }}" keywords="{{$event->category->name}}"
     author="{{$event->creator->name}}" image="{{asset('storage/'.$event->image)}}">
+
+    <style>
+        #description-event h1 {
+            font-size: 1.5rem;
+            /* Ukuran besar untuk heading utama */
+            font-weight: bold;
+            color: #1a202c;
+            /* Warna gelap */
+            margin-bottom: 1rem;
+        }
+
+        #description-event h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2d3748;
+            /* Warna sedikit lebih terang */
+            margin-bottom: 0.75rem;
+        }
+
+        #description-event h3 {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        #description-event ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #description-event ol {
+            list-style-type: decimal;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #description-event li {
+            margin-bottom: 0.5rem;
+        }
+
+        #description-event a {
+            color: #3182ce;
+            /* Warna biru untuk tautan */
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+
+        #description-event a:hover {
+            color: #2b6cb0;
+            /* Warna lebih gelap saat hover */
+        }
+
+        #description-event blockquote {
+            font-style: italic;
+            border-left: 4px solid #3182ce;
+            padding-left: 1rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        #description-event img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        #description-event strong {
+            font-weight: bold;
+            color: #222;
+        }
+
+        #description-event em {
+            font-style: italic;
+        }
+    </style>
+
     <!-- Hero -->
     <div class="relative overflow-hidden">
         <!-- Gradients -->
@@ -312,7 +392,21 @@
                                     class="p-4 sm:p-7 flex flex-col bg-white border rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:bg-neutral-900">
                                     <div>
                                         <div class="flex items-center justify-between">
-                                            <p class="block text-xl font-bold text-gray-800 dark:text-white">Pendaftaran
+                                            <p
+                                                class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                                                @if ($isExpired)
+                                                <svg class="size-6" xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24">
+                                                    <path fill="currentColor" fill-rule="evenodd"
+                                                        d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1 1 5.925 1 12s4.925 11 11 11M7 10a2 2 0 1 0 0 4h10a2 2 0 1 0 0-4z">
+                                                    </path>
+                                                </svg>
+                                                Pendaftaran Ditutup
+                                                @elseif($event->price_ticket > 0)
+                                                Dapatkan Tiket
+                                                @else
+                                                Pendaftaran
+                                                @endif
                                             </p>
 
                                             <div>
@@ -348,55 +442,128 @@
                                     </div>
                                     <div class="border-t w-full mt-2 mb-3"></div>
                                     <p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">
+                                        @if ($isExpired)
+                                        Acara saat ini tidak menerima pendaftaran. Anda dapat menghubungi pihak
+                                        penyelenggara
+                                        atau berlangganan untuk menerima
+                                        pembaruan.
+                                        @elseif($event->price_ticket > 0)
+                                        Selamat datang! Untuk bergabung dengan acara, silakan dapatkan tiket Anda di
+                                        bawah ini.
+                                        @else
                                         Selamat datang! Untuk bergabung dengan acara, silakan mendaftar di bawah
                                         ini.
+                                        @endif
                                     </p>
+
+                                    @if(!$isExpired && $event->price_ticket > 0)
+                                    <div
+                                        class="w-full whitespace-nowrap my-2 py-2 px-2.5 gap-x-2 text-base font-semibold rounded-md border border-transparent bg-gray-100 text-gray-800 focus:outline-none disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 dark:hover:bg-neutral-200">
+                                        <div class="flex justify-between items-center">
+                                            <span>Harga Tiket</span>
+                                            <span>Rp {{ number_format($event->price_ticket, 0, ',', '.') }}</span>
+                                        </div>
+
+                                        <div
+                                            class="mt-2 text-sm font-medium flex items-center text-amber-600 dark:text-amber-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 mr-1"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Memerlukan persetujuan dari penyelenggara
+                                        </div>
+                                    </div>
+                                    @endif
+
+                                    @if(!$isExpired && $event->requires_approval && $event->price_ticket == 0 )
+                                    <div
+                                        class="mb-2 text-sm font-medium flex items-center text-amber-600 dark:text-amber-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 mr-1"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Memerlukan persetujuan dari penyelenggara
+                                    </div>
+                                    @endif
+
+                                    @if (!$isExpired && Auth::check())
+                                    <div class="flex items-center gap-2 mt-4">
+                                        <div class="shrink-0">
+                                            <img class="size-5 rounded-full"
+                                                src="{{ Auth::user()->profile ? asset(Auth::user()->profile) : asset('image/profile/default.png') }}"
+                                                alt="Avatar">
+                                        </div>
+
+                                        <div class="grow">
+                                            <p class="text-sm font-medium text-gray-800 dark:text-neutral-200">
+                                                {{ Auth::user()->name }}
+                                                <span class="text-gray-500 font-normal">{{ Auth::user()->email }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
 
-                                <div class="mt-5">
-                                    @if($isRegistered)
-                                    <button type="button"
-                                        class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
-                                        disabled>
-                                        Terdaftar
-                                    </button>
-                                    @elseif($isExpired)
-                                    <button type="button"
-                                        class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
-                                        disabled>
-                                        Event Selesai
-                                    </button>
-                                    @elseif($event->ticket_quantity == 0)
-                                    <button type="button"
-                                        class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
-                                        disabled>
-                                        Tiket Habis
-                                    </button>
-                                    @elseif(Auth::check())
-                                    @if($event->creator_id == Auth::id())
-                                    <button type="button"
-                                        class="w-full py-2.5 px-4 bg-gray-300 text-white rounded-lg cursor-not-allowed"
-                                        disabled>
-                                        Anda Pemilik Acara
-                                    </button>
-                                    @elseif($isOngoing)
-                                    <button type="submit" id="register-button"
-                                        class="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                                        Daftar
-                                    </button>
-                                    @else
-                                    <button type="submit" id="register-button"
-                                        class="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                                        Daftar
-                                    </button>
-                                    @endif
-                                    @else
-                                    <button onclick="window.location.href='{{ route('login') }}'" id="register-button"
-                                        class="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                                        Daftar
-                                    </button>
+                                @if($isRegistered)
+                                @if($isApproved)
+                                <button type="button"
+                                    onclick="window.location.href='{{ route('ticket', [$event->slug, app(App\Http\Controllers\EventController::class)->generateTicketCode(auth()->id(), $event->id)]) }}'"
+                                    class="w-full py-2.5 px-4 mt-2 bg-green-600 text-white text-center rounded-lg
+                                        hover:bg-green-700 transition-colors">
+                                    Lihat Tiket
+                                </button>
+                                @else
+                                <div class="flex flex-col gap-2">
+                                    @if($event->requires_approval)
+                                    <a href="{{ route('event.cancel-registration', $event->slug) }}"
+                                        class="w-full py-2.5 mt-2 px-4 bg-red-600 text-white text-center rounded-lg hover:bg-red-700 transition-colors">
+                                        Batalkan Pendaftaran
+                                    </a>
                                     @endif
                                 </div>
+                                @endif
+                                @elseif($isExpired)
+                                @elseif($event->ticket_quantity == 0)
+                                <button type="button"
+                                    class="w-full py-2.5 px-4 mt-2 bg-gray-300 text-white rounded-lg cursor-not-allowed"
+                                    disabled>
+                                    Tiket Habis
+                                </button>
+                                @elseif(Auth::check())
+                                @if($event->creator_id == Auth::id())
+                                <button type="button"
+                                    class="w-full py-2.5 px-4 mt-2 bg-gray-300 text-white rounded-lg cursor-not-allowed"
+                                    disabled>
+                                    Anda Pemilik Acara
+                                </button>
+                                @else
+                                {{-- Bagian ini diubah untuk mengatasi masalah --}}
+                                @if($event->price_ticket > 0)
+                                <button type="submit" id="register-button"
+                                    class="w-full py-2.5 px-4 bg-gray-800 text-white rounded-lg mt-2 hover:bg-gray-900 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                    </svg>
+                                    Pesan Tiket
+                                </button>
+                                @else
+                                <button type="submit" id="register-button"
+                                    class="w-full py-2.5 px-4 mt-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                    Daftar
+                                </button>
+                                @endif
+                                {{-- Menghapus kondisi pengecekan $isOngoing yang menyebabkan masalah --}}
+                                @endif
+                                @else
+                                <button onclick="window.location.href='{{ route('login') }}'" id="register-button"
+                                    class="w-full py-2.5 px-4 mt-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                    Daftar
+                                </button>
+                                @endif
                             </div>
                     </div>
                     </form>
@@ -407,7 +574,9 @@
                             </h2>
                             <div class="border-t w-full mt-2 mb-3"></div>
                         </div>
-                        <p class="text-base text-gray-800 dark:text-neutral-200">{{ $event->body }}</p>
+                        <div id="description-event" class="text-base text-gray-800 dark:text-neutral-200">
+                            {!! $event->body !!}
+                        </div>
                     </div>
 
                     <div class="mt-8">
@@ -473,12 +642,6 @@
                                                                     </p>
                                                                 </div>
                                                             </div>
-                                                            <p class="text-sm text-gray-400 dark:text-neutral-400">
-                                                                Leyla is a Customer Success Specialist at
-                                                                Preline
-                                                                and spends her time speaking
-                                                                to in-house recruiters all over the world.
-                                                            </p>
                                                         </div>
                                                         <!-- End Body -->
                                                     </div>
@@ -540,28 +703,25 @@
         </div>
 
         <script>
-            window.addEventListener('load', () => {
-            (function () {
-              const map = L.map('hs-grayscale-leaflet', {
-                center: [-6.2088, 106.8456],
-                zoom: 14,
-                // Prevent dragging over the limit
-                maxBounds: [
-                  [-7.5, 105.5], // Southwest bound
-                [-5.5, 107.5] // Northeast bound
-                ],
-                maxBoundsViscosity: 1.0
-              });
+            document.addEventListener('DOMContentLoaded', () => {
+            const latitude = {{ $event->latitude ?? '-6.2088' }};
+            const longitude = {{ $event->longitude ?? '106.8456' }};
+            const locationName = "{{ $event->location_name }}";
+            const address = "{{ $event->address }}";
 
-              L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            const map = L.map('event-map', {
+                center: [latitude, longitude],
+                zoom: 15
+            });
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 19,
-                minZoom: 2,
                 attribution: '© <a href="https://carto.com/attributions">CARTO</a>'
-              }).addTo(map);
+            }).addTo(map);
 
-              L.marker([-6.2088, 106.8456]).bindPopup('Ini Jakarta!').addTo(map);
-            })();
-          });
+            const marker = L.marker([latitude, longitude]).addTo(map);
+            marker.bindPopup(`<b>${locationName}</b><br>${address}`).openPopup();
+        });
         </script>
 
         <script>

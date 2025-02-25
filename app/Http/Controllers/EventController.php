@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Jenssegers\Agent\Agent;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPdf\Facade\Pdf;
+use Illuminate\Support\Facades\Crypt;
 
 class EventController extends Controller
 {
@@ -70,10 +71,19 @@ class EventController extends Controller
         $isOngoing = $now >= $startDate && $now < $endDate;
 
         $isRegistered = false;
+        $isApproved = false;
+        $participant = null;
+
         if ($user) {
-            $isRegistered = EventParticipant::where('event_id', $event->id)
+            $participant = EventParticipant::where('event_id', $event->id)
                 ->where('user_id', $user->id)
-                ->exists();
+                ->first();
+
+            if ($participant) {
+                $isRegistered = true;
+                // Ubah kondisi isApproved untuk memeriksa is_approved DAN payment_status
+                $isApproved = $participant->is_approved && $participant->payment_status;
+            }
         }
 
         $event->increment('views');
@@ -92,13 +102,32 @@ class EventController extends Controller
             'browser' => $agent->browser(),
         ]);
 
+        // Jika latitude & longitude belum ada, coba dapatkan dari alamat
+        if (!$event->latitude || !$event->longitude) {
+            try {
+                $address = urlencode($event->location_name . ' ' . $event->address);
+                $geocode = Http::get("https://nominatim.openstreetmap.org/search?format=json&q={$address}")->json();
+
+                if (!empty($geocode)) {
+                    $event->update([
+                        'latitude' => $geocode[0]['lat'],
+                        'longitude' => $geocode[0]['lon']
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Handle error
+            }
+        }
+
         return view('home.event', [
             'event' => $event,
+            'user' => $user,
             'category' => $category,
             'citycategory' => $citycategory,
             'isRegistered' => $isRegistered,
             'isExpired' => $isExpired,
             'isOngoing' => $isOngoing,
+            'isApproved' => $isApproved,
         ]);
     }
 
@@ -167,9 +196,17 @@ class EventController extends Controller
             return redirect()->back()->with('error', 'Anda sudah terdaftar dalam event ini.');
         }
 
+        // Set payment_status to true if the event is free
+        $paymentStatus = ($event->price_ticket == 0) ? true : false;
+
+        // Set is_approved to true if the event doesn't require approval
+        $isApproved = ($event->requires_approval == false) ? true : false;
+
         EventParticipant::create([
             'event_id' => $event->id,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'payment_status' => $paymentStatus, // Set payment status based on price
+            'is_approved' => $isApproved // Set approval status based on requires_approval
         ]);
 
         $event->decrement('ticket_quantity');
@@ -177,26 +214,76 @@ class EventController extends Controller
         return redirect()->back()->with('success', 'Berhasil Mendaftar Event!');
     }
 
-    public function ticket($eventSlug, $userName)
+    public function ticket($eventSlug, $code)
     {
-        $user = User::where('name', $userName)->firstOrFail();
-        $event = Event::where('slug', $eventSlug)->firstOrFail();
+        try {
+            $decrypted = Crypt::decryptString($code);
+            $parts = explode('-', $decrypted);
 
-        $isParticipant = EventParticipant::where('event_id', $event->id)
-            ->where('user_id', $user->id)
-            ->exists();
+            if (count($parts) !== 2) {
+                abort(404);
+            }
 
-        if (!$isParticipant) {
-            abort(403, 'Anda belum mendaftar di event ini.');
+            $userId = $parts[0];
+            $eventId = $parts[1];
+
+            $user = User::findOrFail($userId);
+            $event = Event::where('slug', $eventSlug)->where('id', $eventId)->firstOrFail();
+
+            if (Auth::id() != $userId) {
+                abort(403, 'Unauthorized access');
+            }
+
+            $isParticipant = EventParticipant::where('event_id', $event->id)
+                ->where('user_id', $user->id)
+                ->where('is_approved', true)
+                ->where('payment_status', true)
+                ->exists();
+
+            if (!$isParticipant) {
+                return redirect()->route('event.show', $event->slug)
+                    ->with('error', 'Anda belum terdaftar atau belum menyelesaikan pembayaran.');
+            }
+
+            $fileName = $user->id . '-' . $event->id . '.svg';
+            $qrCodePath = 'public/qrcodes/' . $fileName;
+            $storagePath = storage_path('app/' . $qrCodePath);
+
+            QrCode::format('svg')->size(250)->generate(route('ticket', [$event->slug, $code]), $storagePath);
+
+            return view('home.ticket', compact('event', 'user', 'fileName'));
+        } catch (\Exception $e) {
+            abort(404);
+        }
+    }
+
+    public function generateTicketCode($userId, $eventId)
+    {
+        $data = $userId . '-' . $eventId;
+        return Crypt::encryptString($data);
+    }
+
+    public function cancelRegistration($slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Silakan login untuk membatalkan pendaftaran.');
         }
 
-        $fileName = $user->id . '-' . $event->id . '.svg';
-        $qrCodePath = 'public/qrcodes/' . $fileName;
-        $storagePath = storage_path('app/' . $qrCodePath);
+        $participant = EventParticipant::where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->first();
 
-        // Generate QR Code
-        QrCode::format('svg')->size(250)->generate(route('ticket', [$event->slug, $user->name]), $storagePath);
+        if (!$participant) {
+            return redirect()->back()->with('error', 'Anda tidak terdaftar dalam event ini.');
+        }
 
-        return view('home.ticket', compact('event', 'user', 'fileName'));
+        $participant->delete();
+
+        $event->increment('ticket_quantity');
+
+        return redirect()->back()->with('success', 'Pendaftaran event berhasil dibatalkan.');
     }
 }

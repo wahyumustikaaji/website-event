@@ -15,7 +15,8 @@
         "laravel/tinker": "^2.9",
         "midtrans/midtrans-php": "^2.6",
         "nesbot/carbon": "^3.8",
-        "simplesoftwareio/simple-qrcode": "^4.2"
+        "simplesoftwareio/simple-qrcode": "^4.2",
+        "tonysm/rich-text-laravel": "^3.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

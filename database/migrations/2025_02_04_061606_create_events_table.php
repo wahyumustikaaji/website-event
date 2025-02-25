@@ -16,17 +16,21 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('image')->nullable();
-            $table->foreignId('creator_id')->constrained('users')->onDelete('cascade'); // Relasi ke users (Pembuat event)
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Relasi ke categories (Kategori event)
-            $table->foreignId('city_category_id')->constrained('city_categories')->onDelete('cascade'); // Relasi ke city_categories (Kategori kota)
-            $table->string('location_name'); // Nama lokasi
-            $table->string('address'); // Alamat lokasi
+            $table->foreignId('creator_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('city_category_id')->constrained('city_categories')->onDelete('cascade');
+            $table->string('location_name');
+            $table->string('address');
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 10, 8)->nullable();
             $table->text('body');
-            $table->dateTime('event_date'); // Tanggal dan waktu acara
+            $table->dateTime('event_date');
             $table->dateTime('end_date')->nullable();
-            $table->time('start_time'); // Jam mulai
-            $table->time('end_time'); // Jam berakhir
-            $table->integer('ticket_quantity')->default(0); // Jumlah tiket tersedia
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->integer('ticket_quantity')->nullable();
+            $table->decimal('price_ticket', 10, 2)->nullable();
+            $table->boolean('requires_approval')->default(false);
             $table->unsignedBigInteger('views')->default(0);
             $table->timestamps();
         });

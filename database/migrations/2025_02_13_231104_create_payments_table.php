@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('tax_amount', 10, 2);
             $table->decimal('total_amount', 10, 2);
             $table->string('payment_type')->nullable();
-            $table->string('status');  // pending, success, failed, expired
+            $table->string('status'); 
             $table->string('snap_token')->nullable();
             $table->json('payment_details')->nullable();
             $table->timestamp('paid_at')->nullable();
