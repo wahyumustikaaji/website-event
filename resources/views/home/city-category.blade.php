@@ -192,7 +192,7 @@
                             {{ $events->title }}
                         </h3>
                         <p class="mt-3 text-gray-600 dark:text-neutral-400">
-                            {{ $events->formatted_event_date_and_time }}
+                            {{ $events->formatted_event_date }}, {{ $events->formatted_event_time_start }}
                         </p>
                         <p class="mt-1 text-gray-600 dark:text-neutral-400">
                             {{ $events->location_name }}

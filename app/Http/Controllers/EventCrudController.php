@@ -7,6 +7,7 @@ use App\Models\CityCategory;
 use App\Models\Event;
 use App\Models\EventParticipant;
 use App\Models\EventVisitor;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +76,12 @@ class EventCrudController extends Controller
     public function eventCreate()
     {
         $user = Auth::user();
-        $myevents = Event::where('creator_id', $user->id)->get();
+        $currentDateTime = now();
+
+        $myevents = Event::where('creator_id', $user->id)
+            ->where('end_date', '>=', $currentDateTime)
+            ->get();
+
         return view('dashboard.event-create', compact('myevents'));
     }
 
@@ -89,6 +95,28 @@ class EventCrudController extends Controller
         })->get();
 
         return view('dashboard.my-event', compact('myeventsregistered'));
+    }
+
+    public function eventFinished()
+    {
+        $user = Auth::user();
+        $currentDateTime = now();
+
+        $myeventsfinished = Event::where('creator_id', $user->id)
+            ->where('end_date', '<', $currentDateTime)
+            ->get();
+
+        return view('dashboard.event-finished', compact('myeventsfinished'));
+    }
+
+    public function historyPayment()
+    {
+        $user = Auth::user();
+        $payments = Payment::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('dashboard.history-payment', compact('user', 'payments'));
     }
 
     public function detailEvent($slug)
@@ -122,9 +150,6 @@ class EventCrudController extends Controller
         ]);
     }
 
-    /**
-     * Get monthly views data for the last 12 months
-     */
     private function getEventViewsData(int $eventId): array
     {
         // Get the current date and one year later
@@ -159,9 +184,6 @@ class EventCrudController extends Controller
         return $completeViewsData;
     }
 
-    /**
-     * Get browser statistics for the event
-     */
     private function getBrowserStatistics(int $eventId): array
     {
         return EventVisitor::select('device', DB::raw('COUNT(*) as total'))

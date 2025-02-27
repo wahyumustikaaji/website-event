@@ -35,9 +35,11 @@ Route::controller(SocialiteController::class)->group(function () {
 });
 
 Route::get('/dashboard', [EventCrudController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/history-payment', [EventCrudController::class, 'historyPayment'])->middleware(['auth', 'verified'])->name('history-payment');
 Route::get('/event-create', [EventCrudController::class, 'eventCreate'])->middleware(['auth', 'verified'])->name('event-create');
 Route::get('/create-event', [EventCrudController::class, 'createEvent'])->middleware(['auth', 'verified'])->name('create-event');
 Route::get('/my-event', [EventCrudController::class, 'myEvent'])->middleware(['auth', 'verified'])->name('my-event');
+Route::get('/event-finished', [EventCrudController::class, 'eventFinished'])->middleware(['auth', 'verified'])->name('event-finished');
 Route::get('/detail-event/{slug}', [EventCrudController::class, 'detailEvent'])->middleware(['auth', 'verified'])->name('detail-event');
 Route::post('/create-event', [EventCrudController::class, 'store'])->middleware(['auth', 'verified'])->name('events.store');
 Route::get('/event/{slug}/edit', [EventCrudController::class, 'edit'])->middleware(['auth', 'verified'])->name('event.edit');

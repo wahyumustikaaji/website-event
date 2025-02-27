@@ -230,6 +230,22 @@
                         </svg>
                         Buat Event
                     </x-sidebar-link>
+                    <x-sidebar-link href="/event-finished" :active="request()->is('event-finished')">
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M3 6.25A3.25 3.25 0 0 1 6.25 3h11.5A3.25 3.25 0 0 1 21 6.25v2.76a3 3 0 0 0-.25-.01H19.5v-.5h-15v9.25c0 .966.784 1.75 1.75 1.75H9v1.25q0 .127.01.25H6.25A3.25 3.25 0 0 1 3 17.75zm9.25 9.25h3.25v-3.25A2.25 2.25 0 0 1 17.75 10h3A2.25 2.25 0 0 1 23 12.25v7.5A3.25 3.25 0 0 1 19.75 23h-7.5A2.25 2.25 0 0 1 10 20.75v-3a2.25 2.25 0 0 1 2.25-2.25M17 12.25v3.25h4.5v-3.25a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75m-1.5 9.25V17h-3.25a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75zM17 17v4.5h2.75a1.75 1.75 0 0 0 1.75-1.75V17z" />
+                        </svg>
+                        Event Selesai
+                    </x-sidebar-link>
+                    <x-sidebar-link href="/history-payment" :active="request()->is('history-payment')">
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M14 13q-1.25 0-2.125-.875T11 10t.875-2.125T14 7t2.125.875T17 10t-.875 2.125T14 13m-7 3q-.825 0-1.412-.587T5 14V6q0-.825.588-1.412T7 4h14q.825 0 1.413.588T23 6v8q0 .825-.587 1.413T21 16zm2-2h10q0-.825.588-1.412T21 12V8q-.825 0-1.412-.587T19 6H9q0 .825-.587 1.413T7 8v4q.825 0 1.413.588T9 14m10 6H3q-.825 0-1.412-.587T1 18V8q0-.425.288-.712T2 7t.713.288T3 8v10h16q.425 0 .713.288T20 19t-.288.713T19 20M7 14V6z" />
+                        </svg>
+                        History Pembayaran
+                    </x-sidebar-link>
                 </ul>
             </nav>
         </div>

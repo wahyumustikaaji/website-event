@@ -30,8 +30,8 @@
                         </a>
                     </h2>
 
-                    <p class="text-sm text-gray-400 mt-2">{{ \Carbon\Carbon::parse($event->event_date)->format('d M Y,
-                        H:i') }} WIB</p>
+                    <p class="text-sm text-gray-400 mt-2">{{ \Carbon\Carbon::parse($event->event_date)->format('d M Y')
+                        }}, {{\Carbon\Carbon::parse($event->start_time)->format('H:i') }} WIB</p>
                     <p class="text-sm text-gray-400 mt-1">{{ $event->location_name }}, {{ $event->address }}</p>
 
                     <div class="border-t border-[1px] border-gray-300 border-opacity-70 border-dashed my-6"></div>

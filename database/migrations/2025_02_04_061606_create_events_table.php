@@ -24,8 +24,8 @@ return new class extends Migration
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 10, 8)->nullable();
             $table->text('body');
-            $table->dateTime('event_date');
-            $table->dateTime('end_date')->nullable();
+            $table->date('event_date');
+            $table->date('end_date')->nullable();
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('ticket_quantity')->nullable();

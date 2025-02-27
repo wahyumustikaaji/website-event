@@ -385,6 +385,15 @@
                         </div>
                         @endif
 
+                        @php
+                        $endDateTime = \Carbon\Carbon::parse($event->end_date . ' ' . $event->end_time);
+                        $startDateTime = \Carbon\Carbon::parse($event->event_date . ' ' . $event->start_time);
+                        $now = \Carbon\Carbon::now();
+
+                        $isExpired = $endDateTime->isPast();
+                        $isOngoing = $now->greaterThanOrEqualTo($startDateTime) && $now->lessThan($endDateTime);
+                        @endphp
+
                         <form action="{{ route('event.register', $event->slug) }}" method="POST">
                             @csrf
                             <div class="mt-8">
@@ -394,7 +403,7 @@
                                         <div class="flex items-center justify-between">
                                             <p
                                                 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                                                @if ($isExpired)
+                                                @if ($isExpired || $event->ticket_quantity == 0)
                                                 <svg class="size-6" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 24 24">
                                                     <path fill="currentColor" fill-rule="evenodd"
@@ -404,6 +413,21 @@
                                                 Pendaftaran Ditutup
                                                 @elseif($event->price_ticket > 0)
                                                 Dapatkan Tiket
+                                                @elseif($event->requires_approval && $event->price_ticket == 0)
+                                                <span class="bg-gray-100 p-2 rounded-full">
+                                                    <svg class="size-4 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 16 16">
+                                                        <g fill="none" fill-rule="evenodd">
+                                                            <path fill="currentColor" fill-rule="nonzero"
+                                                                d="m5.029 8.556-.001-.003C5.028 7.5 3.3 7 3.3 4.4 3.3 1.987 5.164 0 7.5 0s4.2 1.987 4.2 4.4c0 2.041-1.065 3.437-1.523 3.943.285-.292.69-.707-.028.031q-.104.111-.15.154l-.027.028C8.666 9.896 6.5 10.5 7.5 13s.86 3 0 3c-2.036 0-7 .066-7-3.09 0-2.745 4.529-2.823 4.529-4.354">
+                                                            </path>
+                                                            <path stroke="currentColor" stroke-linecap="round"
+                                                                stroke-linejoin="round" stroke-width="1.5"
+                                                                d="m9.5 11.722 1.454 1.778 3.546-4"></path>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                                Persetujuan Diperlukan
                                                 @else
                                                 Pendaftaran
                                                 @endif
@@ -421,7 +445,13 @@
                                                 <div>
                                                     <span
                                                         class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium bg-yellow-100 text-yellow-600 rounded-md dark:bg-yellow-100 dark:text-yellow-600">
-                                                        Event Berlangsung
+                                                        <span class="relative flex size-2">
+                                                            <span
+                                                                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-500 opacity-75"></span>
+                                                            <span
+                                                                class="relative inline-flex size-2 rounded-full bg-yellow-600"></span>
+                                                        </span>
+                                                        Berlangsung
                                                     </span>
                                                 </div>
                                                 @elseif ($event->ticket_quantity == 0)
@@ -442,7 +472,7 @@
                                     </div>
                                     <div class="border-t w-full mt-2 mb-3"></div>
                                     <p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">
-                                        @if ($isExpired)
+                                        @if ($isExpired || $event->ticket_quantity == 0)
                                         Acara saat ini tidak menerima pendaftaran. Anda dapat menghubungi pihak
                                         penyelenggara
                                         atau berlangganan untuk menerima
@@ -456,7 +486,8 @@
                                         @endif
                                     </p>
 
-                                    @if(!$isExpired && $event->price_ticket > 0)
+                                    @if(!$isExpired && $event->price_ticket > 0 && $event->requires_approval == 1 &&
+                                    $event->ticket_quantity > 0)
                                     <div
                                         class="w-full whitespace-nowrap my-2 py-2 px-2.5 gap-x-2 text-base font-semibold rounded-md border border-transparent bg-gray-100 text-gray-800 focus:outline-none disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 dark:hover:bg-neutral-200">
                                         <div class="flex justify-between items-center">
@@ -472,6 +503,21 @@
                                                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             Memerlukan persetujuan dari penyelenggara
+                                        </div>
+                                    </div>
+                                    @endif
+
+                                    @if(
+                                    !$isExpired &&
+                                    $event->price_ticket > 0 &&
+                                    $event->requires_approval == 0 &&
+                                    $event->ticket_quantity > 0
+                                    )
+                                    <div
+                                        class="w-full whitespace-nowrap my-2 py-2 px-2.5 gap-x-2 text-base font-semibold rounded-md border border-transparent bg-gray-100 text-gray-800 focus:outline-none disabled:opacity-50 disabled:pointer-events-none dark:bg-white dark:text-neutral-800 dark:hover:bg-neutral-200">
+                                        <div class="flex justify-between items-center">
+                                            <span>Harga Tiket</span>
+                                            <span>Rp {{ number_format($event->price_ticket, 0, ',', '.') }}</span>
                                         </div>
                                     </div>
                                     @endif
@@ -506,17 +552,16 @@
                                     @endif
                                 </div>
 
-                                @if($isRegistered)
-                                @if($isApproved)
+                                @if ($isRegistered)
+                                @if ($isApproved)
                                 <button type="button"
                                     onclick="window.location.href='{{ route('ticket', [$event->slug, app(App\Http\Controllers\EventController::class)->generateTicketCode(auth()->id(), $event->id)]) }}'"
-                                    class="w-full py-2.5 px-4 mt-2 bg-green-600 text-white text-center rounded-lg
-                                        hover:bg-green-700 transition-colors">
+                                    class="w-full py-2.5 px-4 mt-2 bg-green-600 text-white text-center rounded-lg hover:bg-green-700 transition-colors">
                                     Lihat Tiket
                                 </button>
                                 @else
                                 <div class="flex flex-col gap-2">
-                                    @if($event->requires_approval)
+                                    @if ($event->requires_approval)
                                     <a href="{{ route('event.cancel-registration', $event->slug) }}"
                                         class="w-full py-2.5 mt-2 px-4 bg-red-600 text-white text-center rounded-lg hover:bg-red-700 transition-colors">
                                         Batalkan Pendaftaran
@@ -524,23 +569,19 @@
                                     @endif
                                 </div>
                                 @endif
-                                @elseif($isExpired)
-                                @elseif($event->ticket_quantity == 0)
-                                <button type="button"
-                                    class="w-full py-2.5 px-4 mt-2 bg-gray-300 text-white rounded-lg cursor-not-allowed"
-                                    disabled>
-                                    Tiket Habis
-                                </button>
-                                @elseif(Auth::check())
-                                @if($event->creator_id == Auth::id())
+                                @elseif ($isExpired)
+                                {{-- Tidak menampilkan tombol jika event sudah berakhir --}}
+                                @elseif ($event->ticket_quantity == 0)
+                                {{-- Tidak menampilkan tombol jika tiket habis --}}
+                                @elseif (Auth::check())
+                                @if ($event->creator_id == Auth::id())
                                 <button type="button"
                                     class="w-full py-2.5 px-4 mt-2 bg-gray-300 text-white rounded-lg cursor-not-allowed"
                                     disabled>
                                     Anda Pemilik Acara
                                 </button>
                                 @else
-                                {{-- Bagian ini diubah untuk mengatasi masalah --}}
-                                @if($event->price_ticket > 0)
+                                @if ($event->price_ticket > 0)
                                 <button type="submit" id="register-button"
                                     class="w-full py-2.5 px-4 bg-gray-800 text-white rounded-lg mt-2 hover:bg-gray-900 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
@@ -556,13 +597,26 @@
                                     Daftar
                                 </button>
                                 @endif
-                                {{-- Menghapus kondisi pengecekan $isOngoing yang menyebabkan masalah --}}
                                 @endif
                                 @else
+                                @if ($event->price_ticket > 0)
+                                {{-- Jika belum login & harga tiket > 0, tampilkan tombol "Pesan Tiket" --}}
+                                <button onclick="window.location.href='{{ route('login') }}'" id="register-button"
+                                    class="w-full py-2.5 px-4 bg-gray-800 text-white rounded-lg mt-2 hover:bg-gray-900 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                    </svg>
+                                    Pesan Tiket
+                                </button>
+                                @else
+                                {{-- Jika belum login & harga tiket = 0, tampilkan tombol "Daftar" --}}
                                 <button onclick="window.location.href='{{ route('login') }}'" id="register-button"
                                     class="w-full py-2.5 px-4 mt-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                     Daftar
                                 </button>
+                                @endif
                                 @endif
                             </div>
                     </div>
@@ -590,7 +644,11 @@
                             $event->location_name }}
                         </p>
                         <p class="text-base text-gray-800 dark:text-neutral-200 mb-3">{{ $event->address }}</p>
-                        <div id="hs-grayscale-leaflet" class="h-[250px] hs-leaflet z-10"></div>
+                        {{-- <div id="hs-grayscale-leaflet" class="h-[250px] hs-leaflet z-10"></div> --}}
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126920.24102053!2d106.74711678874282!3d-6.229740108041162!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2sJakarta%2C%20Daerah%20Khusus%20Ibukota%20Jakarta!5e0!3m2!1sid!2sid!4v1740546658082!5m2!1sid!2sid"
+                            width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
 

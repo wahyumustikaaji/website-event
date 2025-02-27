@@ -235,4 +235,67 @@
         <!-- End Grid -->
 
     </div>
+
+    @if(session('success'))
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        function tostifyCustomClose(el) {
+            const parent = el.closest('.toastify');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            Toastify({
+                text: `
+                    <!-- Toast -->
+                    <div id="dismiss-toast"
+                        class="hs-removing:translate-x-5 hs-removing:opacity-0 transition duration-300 max-w-xs bg-green-500 border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
+                        role="alert" tabindex="-1" aria-labelledby="hs-toast-dismiss-button-label">
+                        <div class="flex p-4">
+                            <p id="hs-toast-dismiss-button-label" class="text-sm text-white dark:text-neutral-400">
+                                {{ session('success') }}
+                            </p>
+                        </div>
+                    </div>
+                    <!-- End Toast -->
+                `,
+                className: "hs-toastify-on:opacity-100 opacity-0 fixed left-1/2 -translate-x-1/2 z-[90] transition-all duration-300 ease-in-out",
+                duration: 3000,
+                escapeMarkup: false,
+                gravity: "top",
+                position: "right",
+            }).showToast();
+        });
+    </script>
+    @endif
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function showDeleteModal(button) {
+            let slug = button.getAttribute("data-id");
+            let deleteForm = document.getElementById("delete-form");
+
+            if (deleteForm) {
+            deleteForm.action = `/event/${slug}`;
+            }
+
+            let modal = document.getElementById("hs-danger-alert");
+            if (modal) {
+            modal.classList.remove("hidden");
+            }
+            }
+
+            let cancelButton = document.getElementById("cancel-delete");
+            if (cancelButton) {
+            cancelButton.addEventListener("click", function () {
+            let modal = document.getElementById("hs-danger-alert");
+            if (modal) {
+            modal.classList.add("hidden");
+            }
+            });
+            }
+
+            window.showDeleteModal = showDeleteModal;
+            });
+    </script>
 </x-app-layout>

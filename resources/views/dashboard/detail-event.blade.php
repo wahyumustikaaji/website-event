@@ -13,7 +13,8 @@
             <!-- Grid -->
             <div class="mb-5 pb-5 flex justify-between items-center border-b border-gray-200 dark:border-neutral-700">
                 <div>
-                    <h2 class="text-2xl font-semibold text-gray-800 dark:text-neutral-200">{{$event->title}}</h2>
+                    <h2 class="text-2xl max-w-2xl font-semibold text-gray-800 dark:text-neutral-200">{{$event->title}}
+                    </h2>
                 </div>
                 <!-- Col -->
 

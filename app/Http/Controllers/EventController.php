@@ -38,6 +38,7 @@ class EventController extends Controller
         $events = $this->getActiveEventsQuery()->get();
 
         $threeDaysAgo = date('Y-m-d H:i:s', strtotime('-3 days'));
+
         $category = Category::withCount(['events' => function ($query) use ($threeDaysAgo) {
             $query->where('end_date', '>', $threeDaysAgo)
                 ->orWhereNull('end_date');
@@ -52,7 +53,7 @@ class EventController extends Controller
             'events' => $events,
             'popularEvents' => $popularEvents,
             'category' => $category,
-            'citycategory' => $citycategory
+            'citycategory' => $citycategory,
         ]);
     }
 
@@ -62,13 +63,6 @@ class EventController extends Controller
         $category = $event->category;
         $citycategory = $event->citycategory;
         $user = Auth::user();
-
-        $startDate = new \DateTime($event->event_date);
-        $endDate = new \DateTime($event->end_date);
-        $now = new \DateTime();
-
-        $isExpired = $now >= $endDate;
-        $isOngoing = $now >= $startDate && $now < $endDate;
 
         $isRegistered = false;
         $isApproved = false;
@@ -81,7 +75,6 @@ class EventController extends Controller
 
             if ($participant) {
                 $isRegistered = true;
-                // Ubah kondisi isApproved untuk memeriksa is_approved DAN payment_status
                 $isApproved = $participant->is_approved && $participant->payment_status;
             }
         }
@@ -125,8 +118,6 @@ class EventController extends Controller
             'category' => $category,
             'citycategory' => $citycategory,
             'isRegistered' => $isRegistered,
-            'isExpired' => $isExpired,
-            'isOngoing' => $isOngoing,
             'isApproved' => $isApproved,
         ]);
     }
@@ -162,12 +153,19 @@ class EventController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
+        $currentDateTime = now();
+        $threeDaysAgo = $currentDateTime->copy()->subDays(3);
 
         $query = Event::latest();
 
         if (!empty($search)) {
             $query->where('title', 'like', '%' . $search . '%');
         }
+
+        $query->where(function ($q) use ($threeDaysAgo) {
+            $q->where('end_date', '>=', $threeDaysAgo)
+                ->orWhereNull('end_date');
+        });
 
         $events = $query->paginate(20);
         $category = Category::all();

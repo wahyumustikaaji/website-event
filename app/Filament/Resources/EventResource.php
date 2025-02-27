@@ -12,9 +12,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use App\Filament\Resources\EventResource\RelationManagers\ParticipantsRelationManager;
@@ -48,6 +45,12 @@ class EventResource extends Resource
                                     ->maxLength(255)
                                     ->unique(ignoreRecord: true),
 
+                                Forms\Components\Select::make('creator_id')
+                                    ->relationship('creator', 'name')
+                                    ->required()
+                                    ->searchable()
+                                    ->preload(),
+
                                 Forms\Components\Select::make('category_id')
                                     ->relationship('category', 'name')
                                     ->required()
@@ -77,12 +80,24 @@ class EventResource extends Resource
                                 Forms\Components\TextInput::make('address')
                                     ->required(),
 
-                                Forms\Components\DateTimePicker::make('event_date')
-                                    ->required()
-                                    ->native(false),
+                                Forms\Components\TextInput::make('latitude')
+                                    ->numeric()
+                                    ->minValue(-90)
+                                    ->maxValue(90),
 
-                                Forms\Components\DateTimePicker::make('end_date')
-                                    ->native(false),
+                                Forms\Components\TextInput::make('longitude')
+                                    ->numeric()
+                                    ->minValue(-180)
+                                    ->maxValue(180),
+
+                                Forms\Components\DatePicker::make('event_date')
+                                    ->required()
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y'),
+
+                                Forms\Components\DatePicker::make('end_date')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y'),
 
                                 Forms\Components\TimePicker::make('start_time')
                                     ->required()
@@ -96,6 +111,16 @@ class EventResource extends Resource
                                     ->numeric()
                                     ->default(0)
                                     ->minValue(0),
+
+                                Forms\Components\TextInput::make('price_ticket')
+                                    ->label('Ticket Price')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->prefix('Rp'),
+
+                                Forms\Components\Toggle::make('requires_approval')
+                                    ->label('Requires Approval')
+                                    ->default(false),
                             ]),
 
                         Forms\Components\RichEditor::make('body')
@@ -117,6 +142,11 @@ class EventResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('creator.name')
+                    ->label('Creator')
+                    ->searchable()
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
                     ->sortable(),
@@ -126,11 +156,19 @@ class EventResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('event_date')
-                    ->dateTime()
+                    ->date('d/m/Y')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('price_ticket')
+                    ->money('IDR')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('ticket_quantity')
                     ->numeric()
+                    ->sortable(),
+
+                Tables\Columns\IconColumn::make('requires_approval')
+                    ->boolean()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('views')
@@ -148,6 +186,9 @@ class EventResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('creator')
+                    ->relationship('creator', 'name'),
+
                 Tables\Filters\SelectFilter::make('category')
                     ->relationship('category', 'name'),
 
@@ -159,6 +200,15 @@ class EventResource extends Resource
 
                 Tables\Filters\Filter::make('past')
                     ->query(fn(Builder $query): Builder => $query->where('event_date', '<', now())),
+
+                Tables\Filters\Filter::make('requires_approval')
+                    ->query(fn(Builder $query): Builder => $query->where('requires_approval', true)),
+
+                Tables\Filters\Filter::make('free_events')
+                    ->query(fn(Builder $query): Builder => $query->whereNull('price_ticket')->orWhere('price_ticket', 0)),
+
+                Tables\Filters\Filter::make('paid_events')
+                    ->query(fn(Builder $query): Builder => $query->where('price_ticket', '>', 0)),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -183,7 +233,6 @@ class EventResource extends Resource
     {
         return [
             'index' => Pages\ListEvents::route('/'),
-            'create' => Pages\CreateEvent::route('/create'),
             'edit' => Pages\EditEvent::route('/{record}/edit'),
         ];
     }

@@ -32,6 +32,8 @@ class Event extends Model
         'requires_approval'
     ];
 
+    protected $appends = ['isExpired', 'isOngoing'];
+
     protected $with = ['category', 'cityCategory', 'creator'];
 
     public function category()
@@ -79,5 +81,16 @@ class Event extends Model
     public function getFormattedEventTimeEndAttribute()
     {
         return \Carbon\Carbon::parse($this->end_time)->format('H:i');
+    }
+
+    public function getIsExpiredAttribute()
+    {
+        return \Carbon\Carbon::now()->isAfter(\Carbon\Carbon::parse($this->end_date));
+    }
+
+    public function getIsOngoingAttribute()
+    {
+        $now = \Carbon\Carbon::now();
+        return $now->between(\Carbon\Carbon::parse($this->event_date), \Carbon\Carbon::parse($this->end_date));
     }
 }
