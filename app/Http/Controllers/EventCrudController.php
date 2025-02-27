@@ -79,7 +79,7 @@ class EventCrudController extends Controller
         $currentDateTime = now();
 
         $myevents = Event::where('creator_id', $user->id)
-            ->where('end_date', '>=', $currentDateTime)
+            ->where('end_date', '>=', $currentDateTime->subDay(1))
             ->get();
 
         return view('dashboard.event-create', compact('myevents'));
@@ -100,14 +100,15 @@ class EventCrudController extends Controller
     public function eventFinished()
     {
         $user = Auth::user();
-        $currentDateTime = now();
+        $yesterday = now()->subDay(1)->startOfDay();
 
         $myeventsfinished = Event::where('creator_id', $user->id)
-            ->where('end_date', '<', $currentDateTime)
+            ->where('end_date', '<', $yesterday)
             ->get();
 
         return view('dashboard.event-finished', compact('myeventsfinished'));
     }
+
 
     public function historyPayment()
     {

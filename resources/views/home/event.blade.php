@@ -171,16 +171,22 @@
                             </div>
 
                             <div class="mt-8">
+                                @php
+                                $approvedParticipants = $event->participants->filter(function($participant) {
+                                return $participant->is_approved && $participant->payment_status;
+                                });
+                                @endphp
+
                                 <div>
                                     <h3 class="block text-xl font-bold text-gray-800 dark:text-white">{{
-                                        $event->participants->count() }} Peserta
+                                        $approvedParticipants->count() }} Peserta
                                         Terdaftar
                                     </h3>
                                     <div class="border-t w-full mt-2 mb-3"></div>
                                 </div>
 
                                 <div class="flex -space-x-2">
-                                    @foreach ($event->participants->take(7) as $participant)
+                                    @foreach ($approvedParticipants->take(7) as $participant)
                                     <div class="hs-tooltip inline-block">
                                         <img class="hs-tooltip-toggle relative inline-block size-10 rounded-full ring-2 ring-white hover:z-10 dark:ring-neutral-900"
                                             src="{{ $participant->user->profile ? asset($participant->user->profile) : asset('image/profile/default.png') }}"
@@ -194,16 +200,25 @@
                                     @endforeach
                                 </div>
                                 <p class="text-sm text-gray-500 dark:text-neutral-500 mt-3">
-                                    @if ($event->participants->count() > 2)
-                                    @foreach ($event->participants->take(2) as $index => $participant)
+                                    @if ($approvedParticipants->count() > 2)
+                                    @foreach ($approvedParticipants->take(2) as $index => $participant)
                                     <span>{{ $participant->user->name }}</span>
                                     @if ($index == 0)
                                     ,
                                     @endif
                                     @endforeach
-                                    @if ($event->participants->count() > 2)
-                                    dan {{ $event->participants->count() - 2 }} lainnya
+                                    @if ($approvedParticipants->count() > 2)
+                                    dan {{ $approvedParticipants->count() - 2 }} lainnya
                                     @endif
+                                    @elseif ($approvedParticipants->count() == 2)
+                                    @foreach ($approvedParticipants as $index => $participant)
+                                    <span>{{ $participant->user->name }}</span>
+                                    @if ($index == 0)
+                                    dan
+                                    @endif
+                                    @endforeach
+                                    @elseif ($approvedParticipants->count() == 1)
+                                    <span>{{ $approvedParticipants->first()->user->name }}</span>
                                     @endif
                                 </p>
                             </div>

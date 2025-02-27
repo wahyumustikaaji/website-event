@@ -29,16 +29,15 @@ class SocialiteController extends Controller
                 Auth::login($user);
                 return redirect()->route('events');
             } else {
-                // Assign a random profile image
-                $profileImages = File::files(public_path('image/profile'));
-                $randomImage = !empty($profileImages) ? 'image/profile/' . $profileImages[array_rand($profileImages)]->getFilename() : null;
+                // Use the Google profile image instead of a random one
+                $profileImage = $googleUser->avatar; // This gets the Google profile image URL
 
                 $userData = User::create([
                     'name' => $googleUser->name,
                     'email' => $googleUser->email,
                     'password' => Hash::make('Password@1234'),
                     'google_id' => $googleUser->id,
-                    'profile' => $randomImage
+                    'profile' => $profileImage
                 ]);
 
                 if ($userData) {

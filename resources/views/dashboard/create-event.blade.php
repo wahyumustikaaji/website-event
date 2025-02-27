@@ -97,7 +97,8 @@
                                 <div id="editor" style="min-height: 200px;">{!! old('body', $event ? $event->body : '')
                                     !!}</div>
                             </div>
-                            <input class="rounded-lg @error('body') border-red-500 @enderror" type="hidden" name="body"
+                            <input value="{!! old('body', $event ? $event->body : '') !!}"
+                                class="rounded-lg @error('body') border-red-500 @enderror" type="hidden" name="body"
                                 id="body">
                             @error('body')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

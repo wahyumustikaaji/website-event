@@ -55,7 +55,7 @@
                     <div class="grow">
                         <a href="/detail-event/{{ $events->slug }}" class=" text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-neutral-300
                                         dark:group-hover:text-white hover:underline">
-                            {{ $events->title }}
+                            {{ Str::limit($events->title, 60, '...') }}
                         </a>
                         <p class="mt-3 text-gray-600 dark:text-neutral-400">
                             {{ $events->formatted_event_date }}, {{ $events->formatted_event_time_start }}
@@ -63,6 +63,40 @@
                         <p class="mt-1 text-gray-600 dark:text-neutral-400">
                             {{ $events->location_name }}
                         </p>
+
+                        @php
+                        $now = now();
+                        $eventStart = \Carbon\Carbon::parse($events->event_date . ' ' . $events->start_time);
+                        $eventEnd = \Carbon\Carbon::parse($events->end_date . ' ' . $events->end_time);
+                        @endphp
+
+                        @if ($now->greaterThan($eventEnd))
+                        <div>
+                            <span
+                                class="py-1 mt-2 px-2 inline-flex items-center gap-x-1 text-sm font-medium bg-red-100 text-red-600 rounded-md dark:bg-red-500/10 dark:text-red-500">
+                                Event Selesai
+                            </span>
+                        </div>
+                        @elseif ($now->between($eventStart, $eventEnd))
+                        <div>
+                            <span
+                                class="py-1 px-2 mt-2 inline-flex items-center gap-x-1 text-sm font-medium bg-yellow-100 text-yellow-600 rounded-md dark:bg-yellow-100 dark:text-yellow-600">
+                                <span class="relative flex size-2">
+                                    <span
+                                        class="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-500 opacity-75"></span>
+                                    <span class="relative inline-flex size-2 rounded-full bg-yellow-600"></span>
+                                </span>
+                                Berlangsung
+                            </span>
+                        </div>
+                        @elseif ($events->ticket_quantity == 0)
+                        <div>
+                            <span
+                                class="py-1 px-2 mt-2 inline-flex items-center gap-x-1 text-sm font-medium bg-red-100 text-red-600 rounded-md dark:bg-red-500/10 dark:text-red-500">
+                                Tiket Habis
+                            </span>
+                        </div>
+                        @endif
                     </div>
                     <div class="absolute right-2 top-2 z-10">
                         <div

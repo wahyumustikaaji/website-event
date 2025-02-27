@@ -70,7 +70,14 @@ class Event extends Model
 
     public function getFormattedEventDateAttribute()
     {
-        return \Carbon\Carbon::parse($this->event_date)->locale('id')->isoFormat('dddd, D MMMM');
+        $eventDate = \Carbon\Carbon::parse($this->event_date)->startOfDay();
+        $today = \Carbon\Carbon::now()->startOfDay();
+
+        if ($eventDate->equalTo($today)) {
+            return 'Hari ini';
+        }
+
+        return $eventDate->locale('id')->isoFormat('dddd, D MMMM');
     }
 
     public function getFormattedEventTimeStartAttribute()
