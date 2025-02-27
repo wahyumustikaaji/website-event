@@ -116,7 +116,9 @@ class EventCrudController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('dashboard.history-payment', compact('user', 'payments'));
+        $totalPayments = Payment::where('user_id', $user->id)->count();
+
+        return view('dashboard.history-payment', compact('user', 'payments', 'totalPayments'));
     }
 
     public function detailEvent($slug)
