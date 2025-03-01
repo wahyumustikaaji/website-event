@@ -66,11 +66,12 @@
         <div class="mt-5 lg:mt-16 grid lg:grid-cols-3 gap-8 lg:gap-12">
             <div class="lg:col-span-1">
                 <h2 class="font-bold text-2xl md:text-3xl text-gray-800 dark:text-neutral-200">
-                    We tackle the challenges start-ups face
+                    Optimalkan Acara dengan Teknologi Terbaik
                 </h2>
                 <p class="mt-2 md:mt-4 text-gray-500 dark:text-neutral-500">
-                    Besides working with start-up enterprises as a partner for digitalization, we have built enterprise
-                    products for common pain points that we have encountered in various products and projects.
+                    Mengelola acara kini lebih mudah dan efisien dengan website manajemen event. Dengan fitur-fitur
+                    canggih, Anda dapat
+                    mengatur segala aspek acara dengan lebih cepat, praktis, dan tanpa hambatan.
                 </p>
             </div>
             <!-- End Col -->
@@ -90,10 +91,10 @@
                         </svg>
                         <div class="grow">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                                Creative minds
+                                Pendaftaran & Tiket Otomatis
                             </h3>
                             <p class="mt-1 text-gray-600 dark:text-neutral-400">
-                                We choose our teams carefully. Our people are the secret to great work.
+                                Peserta dapat mendaftar dan membeli tiket secara online tanpa antre panjang.
                             </p>
                         </div>
                     </div>
@@ -110,11 +111,10 @@
                         </svg>
                         <div class="grow">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                                Simple and affordable
+                                Manajemen Data Peserta
                             </h3>
                             <p class="mt-1 text-gray-600 dark:text-neutral-400">
-                                From boarding passes to movie tickets, there's pretty much nothing you can't store with
-                                Preline.
+                                Pantau daftar hadir, kelola data, dan kirim notifikasi otomatis.
                             </p>
                         </div>
                     </div>
@@ -130,11 +130,10 @@
                         </svg>
                         <div class="grow">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                                Industry-leading documentation
+                                Promosi & Publikasi Efektif
                             </h3>
                             <p class="mt-1 text-gray-600 dark:text-neutral-400">
-                                Our documentation and extensive Client libraries contain everything a business needs to
-                                build a custom integration.
+                                Sebarkan informasi acara dengan mudah melalui website dan media sosial.
                             </p>
                         </div>
                     </div>
@@ -152,11 +151,10 @@
                         </svg>
                         <div class="grow">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                                Designing for people
+                                Analisis & Laporan Real-Time
                             </h3>
                             <p class="mt-1 text-gray-600 dark:text-neutral-400">
-                                We actively pursue the right balance between functionality and aesthetics, creating
-                                delightful experiences.
+                                Dapatkan data peserta dan evaluasi acara untuk peningkatan di masa depan.
                             </p>
                         </div>
                     </div>
