@@ -183,6 +183,15 @@
         <div
             class="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
             <nav class="hs-accordion-group p-3 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
+                <a class="inline-flex justify-center mt-2 mb-3 items-center gap-x-3 text-center bg-gradient-to-tl from-blue-600 to-violet-600 hover:from-violet-600 hover:to-blue-600 border border-transparent text-white text-sm font-medium rounded-md focus:outline-none focus:from-violet-600 focus:to-blue-600 py-3 px-4"
+                    href="/create-event">
+                    Buat Event
+                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </a>
                 <ul class="flex flex-col space-y-1">
                     <x-sidebar-link href="/dashboard" :active="request()->is('dashboard')">
                         <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -213,7 +222,7 @@
                         </svg>
                         Tiket Saya
                     </x-sidebar-link>
-                    <x-sidebar-link href="/create-event" :active="request()->is('create-event')">
+                    {{-- <x-sidebar-link href="/create-event" :active="request()->is('create-event')">
                         <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -229,7 +238,7 @@
                             <path d="M16 18h.01" />
                         </svg>
                         Buat Event
-                    </x-sidebar-link>
+                    </x-sidebar-link> --}}
                     <x-sidebar-link href="/event-finished" :active="request()->is('event-finished')">
                         <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             viewBox="0 0 24 24">
