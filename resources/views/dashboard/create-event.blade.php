@@ -89,15 +89,31 @@
                                     Deskripsi Event
                                 </label>
                             </div>
+                            <div class="block mt-2">
+                                <button type="button"
+                                    class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-400 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    aria-haspopup="dialog" aria-expanded="false"
+                                    aria-controls="hs-focus-management-modal"
+                                    data-hs-overlay="#hs-focus-management-modal">
+                                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                                        </path>
+                                    </svg>
+                                    Sarankan dengan AI
+                                </button>
+                            </div>
                         </div>
                         <!-- End Col -->
 
                         <div class="sm:col-span-9">
                             <div id="editor-container">
-                                <div id="editor" style="min-height: 200px;">{!! old('body', $event ? $event->body : '')
-                                    !!}</div>
+                                <div id="editor" style="min-height: 200px;">{!! old('body', $event ? $event->body :
+                                    '')!!}</div>
                             </div>
-                            <input value="{!! old('body', $event ? $event->body : '') !!}"
+                            <input value="{{ old('body', $event ? $event->body : '') }}"
                                 class="rounded-lg @error('body') border-red-500 @enderror" type="hidden" name="body"
                                 id="body">
                             @error('body')

@@ -199,7 +199,7 @@
                         </p>
 
                         @php
-                        $now = now(); // Ambil waktu sekarang
+                        $now = now(); 
                         $eventStart = \Carbon\Carbon::parse($events->event_date . ' ' . $events->start_time);
                         $eventEnd = \Carbon\Carbon::parse($events->end_date . ' ' . $events->end_time);
                         @endphp
