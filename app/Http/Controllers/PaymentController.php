@@ -52,54 +52,78 @@ class PaymentController extends Controller
 
     public function createCharge(Request $request)
     {
-        $user = Auth::user();
-        $amount = self::PRO_PLAN_PRICE;
-        $taxAmount = $amount * self::TAX_RATE;
-        $totalAmount = $amount + $taxAmount;
-        $orderId = 'ORDER-' . time() . '-' . $user->id;
+        try {
+            $user = Auth::user();
+            $paymentType = $request->payment_type ?? 'pro_plan';
+            $orderId = 'ORDER-' . time() . '-' . $user->id;
+            
+            // Set default values for pro plan
+            $amount = self::PRO_PLAN_PRICE;
+            $taxAmount = $amount * self::TAX_RATE;
+            $totalAmount = $amount + $taxAmount;
+            $itemName = 'Pro Plan Subscription';
+            $itemId = 'PRO_PLAN';
+            
+            // If payment is for event ticket
+            if ($paymentType === 'event_ticket') {
+                $eventId = $request->event_id;
+                $event = \App\Models\Event::findOrFail($eventId);
+                
+                $amount = $event->price_ticket;
+                $taxAmount = $amount * self::TAX_RATE;
+                $totalAmount = $amount + $taxAmount;
+                $itemName = 'Ticket: ' . $event->title;
+                $itemId = 'EVENT_TICKET_' . $eventId;
+                $orderId = 'TICKET-' . time() . '-' . $user->id;
+            }
 
-        $payment = Payment::create([
-            'user_id'      => $user->id,
-            'order_id'     => $orderId,
-            'amount'       => $amount,
-            'tax_amount'   => $taxAmount,
-            'total_amount' => $totalAmount,
-            'status'       => 'pending'
-        ]);
-
-        $params = [
-            'transaction_details' => [
+            $payment = Payment::create([
+                'user_id'      => $user->id,
                 'order_id'     => $orderId,
-                'gross_amount' => (int) $totalAmount,
-            ],
-            'customer_details' => [
-                'first_name' => $user->name,
-                'email'      => $user->email,
-                'phone'      => $request->phone ?? '',
-            ],
-            'item_details' => [
-                [
-                    'id'       => 'PRO_PLAN',
-                    'price'    => $amount,
-                    'quantity' => 1,
-                    'name'     => 'Pro Plan Subscription',
+                'amount'       => $amount,
+                'tax_amount'   => $taxAmount,
+                'total_amount' => $totalAmount,
+                'status'       => 'pending',
+                'payment_type' => $paymentType,
+                'event_id'     => $paymentType === 'event_ticket' ? $request->event_id : null
+            ]);
+
+            $params = [
+                'transaction_details' => [
+                    'order_id'     => $orderId,
+                    'gross_amount' => (int) $totalAmount,
                 ],
-                [
-                    'id'       => 'TAX',
-                    'price'    => $taxAmount,
-                    'quantity' => 1,
-                    'name'     => 'Tax (10%)',
-                ]
-            ],
-        ];
+                'customer_details' => [
+                    'first_name' => $user->name,
+                    'email'      => $user->email,
+                    'phone'      => $request->phone ?? '',
+                ],
+                'item_details' => [
+                    [
+                        'id'       => $itemId,
+                        'price'    => $amount,
+                        'quantity' => 1,
+                        'name'     => $itemName,
+                    ],
+                    [
+                        'id'       => 'TAX',
+                        'price'    => $taxAmount,
+                        'quantity' => 1,
+                        'name'     => 'Tax (10%)',
+                    ]
+                ],
+            ];
 
-        $snapToken = Snap::getSnapToken($params);
-        $payment->update(['snap_token' => $snapToken]);
+            $snapToken = Snap::getSnapToken($params);
+            $payment->update(['snap_token' => $snapToken]);
 
-        return response()->json([
-            'snap_token' => $snapToken,
-            'order_id'   => $orderId
-        ]);
+            return response()->json([
+                'snap_token' => $snapToken,
+                'order_id'   => $orderId
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     public function handleCallback(Request $request)
@@ -127,17 +151,36 @@ class PaymentController extends Controller
                     $payment->status = 'success';
                     $payment->paid_at = (new DateTime())->format('Y-m-d H:i:s');
 
-                    $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
-                    if ($user) {
-                        $expiryDate = (new DateTime())->add(new DateInterval('P30D'));
-                        $user->is_premium = true;
-                        $user->subscription_expires_at = $expiryDate->format('Y-m-d H:i:s');
-                        $user->save();
+                    // Handle based on payment type
+                    if ($payment->payment_type === 'pro_plan') {
+                        // Update user premium status for pro plan
+                        $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
+                        if ($user) {
+                            $expiryDate = (new DateTime())->add(new DateInterval('P30D'));
+                            $user->is_premium = true;
+                            $user->subscription_expires_at = $expiryDate->format('Y-m-d H:i:s');
+                            $user->save();
 
-                        Log::info('User premium status updated:', [
-                            'user_id' => $user->id,
-                            'subscription_ends' => $user->subscription_expires_at,
-                            'status' => 'activated'
+                            Log::info('User premium status updated:', [
+                                'user_id' => $user->id,
+                                'subscription_ends' => $user->subscription_expires_at,
+                                'status' => 'activated'
+                            ]);
+                        }
+                    } elseif ($payment->payment_type === 'event_ticket') {
+                        // Create participant record for event ticket
+                        \App\Models\EventParticipant::create([
+                            'user_id' => $payment->user_id,
+                            'event_id' => $payment->event_id,
+                            'is_approved' => 1,
+                            'payment_status' => 1,
+                            'payment_receipt' => null
+                        ]);
+                        
+                        Log::info('Event participant created:', [
+                            'user_id' => $payment->user_id,
+                            'event_id' => $payment->event_id,
+                            'payment_id' => $payment->id
                         ]);
                     }
                 } elseif ($request->transaction_status == 'pending') {
@@ -145,17 +188,20 @@ class PaymentController extends Controller
                 } else {
                     $payment->status = 'failed';
 
-                    $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
-                    if ($user && $user->is_premium && new DateTime($user->subscription_expires_at) > new DateTime()) {
-                        $user->is_premium = false;
-                        $user->subscription_expires_at = null;
-                        $user->save();
+                    // Handle failed payment based on payment type
+                    if ($payment->payment_type === 'pro_plan') {
+                        $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
+                        if ($user && $user->is_premium && new DateTime($user->subscription_expires_at) > new DateTime()) {
+                            $user->is_premium = false;
+                            $user->subscription_expires_at = null;
+                            $user->save();
 
-                        Log::info('User premium status updated:', [
-                            'user_id' => $user->id,
-                            'status' => 'deactivated',
-                            'reason' => 'payment_failed'
-                        ]);
+                            Log::info('User premium status updated:', [
+                                'user_id' => $user->id,
+                                'status' => 'deactivated',
+                                'reason' => 'payment_failed'
+                            ]);
+                        }
                     }
                 }
 
@@ -218,18 +264,44 @@ class PaymentController extends Controller
                     $payment->status = 'success';
                     $payment->paid_at = (new DateTime())->format('Y-m-d H:i:s');
 
-                    $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
-                    if ($user && !$user->is_premium) {
-                        $expiryDate = (new DateTime())->add(new DateInterval('P30D'));
-                        $user->is_premium = true;
-                        $user->subscription_expires_at = $expiryDate->format('Y-m-d H:i:s');
-                        $user->save();
+                    // Handle based on payment type
+                    if ($payment->payment_type === 'pro_plan') {
+                        $user = User::where('id', $payment->user_id)->lockForUpdate()->first();
+                        if ($user && !$user->is_premium) {
+                            $expiryDate = (new DateTime())->add(new DateInterval('P30D'));
+                            $user->is_premium = true;
+                            $user->subscription_expires_at = $expiryDate->format('Y-m-d H:i:s');
+                            $user->save();
 
-                        Log::info('User premium status updated via success method:', [
-                            'user_id'   => $user->id,
-                            'is_premium' => $user->is_premium,
-                            'expires_at' => $user->subscription_expires_at
-                        ]);
+                            Log::info('User premium status updated via success method:', [
+                                'user_id'   => $user->id,
+                                'is_premium' => $user->is_premium,
+                                'expires_at' => $user->subscription_expires_at
+                            ]);
+                        }
+                    } elseif ($payment->payment_type === 'event_ticket') {
+                        // Create participant record for event ticket if not exists
+                        if ($payment->event_id) {
+                            $participant = \App\Models\EventParticipant::where('user_id', $payment->user_id)
+                                ->where('event_id', $payment->event_id)
+                                ->first();
+                                
+                            if (!$participant) {
+                                \App\Models\EventParticipant::create([
+                                    'user_id' => $payment->user_id,
+                                    'event_id' => $payment->event_id,
+                                    'is_approved' => 1,
+                                    'payment_status' => 1,
+                                    'payment_receipt' => null
+                                ]);
+                                
+                                Log::info('Event participant created via success method:', [
+                                    'user_id' => $payment->user_id,
+                                    'event_id' => $payment->event_id,
+                                    'payment_id' => $payment->id
+                                ]);
+                            }
+                        }
                     }
                 } elseif ($transactionStatus == 'pending') {
                     $payment->status = 'pending';
@@ -246,23 +318,38 @@ class PaymentController extends Controller
         }
 
         $payment->refresh();
-
         $user = Auth::user();
-        $amount = self::PRO_PLAN_PRICE;
-        $taxAmount = $amount * self::TAX_RATE;
-        $totalAmount = $amount + $taxAmount;
-        $orderId = 'ORDER-' . time() . '-' . $user->id;
-        $orderDate = (new DateTime())->format('F d, Y');
 
-        return view('payment.success', [
-            'payment' => $payment,
-            'user' => $user,
-            'amount' => $amount,
-            'taxAmount' => $taxAmount,
-            'totalAmount' => $totalAmount,
-            'orderId' => $orderId,
-            'orderDate' => $orderDate
-        ]);
+        // Prepare view data based on payment type
+        if ($payment->payment_type === 'event_ticket') {
+            $event = \App\Models\Event::find($payment->event_id);
+            
+            return view('payment.success', [
+                'payment' => $payment,
+                'user' => $user,
+                'event' => $event,
+                'amount' => $payment->amount,
+                'taxAmount' => $payment->tax_amount,
+                'totalAmount' => $payment->total_amount,
+                'orderId' => $payment->order_id,
+                'orderDate' => (new DateTime($payment->created_at))->format('F d, Y')
+            ]);
+        } else {
+            // Default pro plan success view
+            $amount = self::PRO_PLAN_PRICE;
+            $taxAmount = $amount * self::TAX_RATE;
+            $totalAmount = $amount + $taxAmount;
+            
+            return view('payment.success', [
+                'payment' => $payment,
+                'user' => $user,
+                'amount' => $amount,
+                'taxAmount' => $taxAmount,
+                'totalAmount' => $totalAmount,
+                'orderId' => $payment->order_id,
+                'orderDate' => (new DateTime($payment->created_at))->format('F d, Y')
+            ]);
+        }
     }
 
     public function notification(Request $request)
