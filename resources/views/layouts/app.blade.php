@@ -144,8 +144,9 @@
                 <div class="p-4 overflow-y-auto">
                     <label for="input-label" class="block text-sm font-medium mb-2 dark:text-white">Intruksi</label>
                     <textarea
-                        class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-                        rows="20" placeholder="Misalnya, Anda ingin membuat deskripsi yang detail tentang event ini."
+                        class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none resize-none"
+                        rows="20"
+                        placeholder="Misalnya, Anda ingin membuat deskripsi tentang event konser ataupun event workshop."
                         data-hs-textarea-auto-height=""></textarea>
                 </div>
                 <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-neutral-700">
@@ -162,13 +163,18 @@
         </div>
     </div>
 
-    <script type="module">
-        document.addEventListener('DOMContentLoaded', function () {
+</body>
+
+<script type="module">
+    document.addEventListener('DOMContentLoaded', function () {
         const textArea = document.querySelector('textarea');
         const generateButton = document.getElementById('generate-button');
         const retryButton = document.getElementById('retry-button');
         const editorElement = document.getElementById('editor');
         const bodyInput = document.getElementById('body');
+
+        // Add a flag to track generation state
+        let generationCompleted = false;
 
         const API_KEY = "{{ env('DEEPSEEK_API_KEY') }}";
         const API_URL = "https://api.deepseek.com/v1/chat/completions";
@@ -224,77 +230,98 @@
         function syncContent(content) {
             const contentWithBrTags = content.replace(/\n/g, '<br>');
 
-            if (textArea) textArea.value = content;
             if (bodyInput) bodyInput.value = contentWithBrTags;
             if (typeof quill !== 'undefined' && quill) quill.root.innerHTML = contentWithBrTags;
             else if (editorElement) editorElement.innerHTML = contentWithBrTags;
         }
 
-        if (generateButton) {
-            generateButton.addEventListener('click', async function () {
-                const userInput = textArea.value.trim();
-                if (!userInput) {
-                    alert('Silakan masukkan deskripsi singkat tentang event Anda terlebih dahulu.');
-                    return;
-                }
+        // Reset the generation state to initial
+        function resetGenerationState() {
+            generationCompleted = false;
+            if (generateButton) {
+                generateButton.textContent = 'Hasilkan';
+                // Restore the original click handler
+                generateButton.onclick = handleGenerate;
+                generateButton.disabled = false;
+            }
+            if (textArea) textArea.value = '';
+            if (retryButton) retryButton.disabled = true;
+        }
 
-                generateButton.disabled = true;
-                const originalButtonText = generateButton.textContent;
-                generateButton.textContent = 'Menghasilkan...';
+        // Handle generate button click
+        async function handleGenerate() {
+            const userInput = textArea.value.trim();
+            if (!userInput) {
+                alert('Silakan masukkan deskripsi singkat tentang event Anda terlebih dahulu.');
+                return;
+            }
 
-                try {
-                    const enhancedPrompt = `Buatkan deskripsi menarik untuk event berikut: ${userInput}.`;
-                    const generatedDescription = await generateEventDescription(enhancedPrompt);
-                    await typeEffectInTextarea(textArea, generatedDescription);
+            generateButton.disabled = true;
+            generateButton.textContent = 'Menghasilkan...';
 
-                    generateButton.textContent = 'Terima Saran';
-                    const oldClickHandler = generateButton.onclick;
-                    generateButton.onclick = function () {
-                        const descriptionText = textArea.value;
-                        generateButton.disabled = true;
-                        generateButton.textContent = 'Memproses...';
-                        syncContent(descriptionText);
+            try {
+                const enhancedPrompt = `Buatkan deskripsi menarik untuk event berikut: ${userInput}.`;
+                const generatedDescription = await generateEventDescription(enhancedPrompt);
+                await typeEffectInTextarea(textArea, generatedDescription);
 
-                        const modal = document.getElementById('hs-focus-management-modal');
-                        if (modal && window.HSOverlay) {
-                            HSOverlay.close(modal);
-                        } else {
-                            const closeButton = modal?.querySelector('[data-hs-overlay="#hs-focus-management-modal"]');
-                            if (closeButton) closeButton.click();
-                        }
+                generationCompleted = true;
+                generateButton.textContent = 'Terima Saran';
+                generateButton.onclick = handleAcceptSuggestion;
+                generateButton.disabled = false;
+                if (retryButton) retryButton.disabled = false;
+            } catch (err) {
+                alert('Terjadi kesalahan: ' + err.message);
+                resetGenerationState();
+            }
+        }
 
-                        setTimeout(() => {
-                            textArea.value = '';
-                        }, 500);
+        // Handle accept suggestion button click
+        function handleAcceptSuggestion() {
+            const descriptionText = textArea.value;
+            generateButton.disabled = true;
+            generateButton.textContent = 'Memproses...';
 
-                        generateButton.textContent = originalButtonText;
-                        generateButton.onclick = oldClickHandler;
-                        generateButton.disabled = false;
-                    };
-                    generateButton.disabled = false;
-                    if (retryButton) retryButton.disabled = false;
-                } catch (err) {
-                    alert('Terjadi kesalahan: ' + err.message);
-                    generateButton.textContent = originalButtonText;
-                    generateButton.disabled = false;
+            // Sync the content to the main editor
+            syncContent(descriptionText);
+
+            // Close the modal
+            const modal = document.getElementById('hs-focus-management-modal');
+            if (modal && window.HSOverlay) {
+                HSOverlay.close(modal);
+            } else {
+                const closeButton = modal?.querySelector('[data-hs-overlay="#hs-focus-management-modal"]');
+                if (closeButton) closeButton.click();
+            }
+
+            // Reset the generation state
+            resetGenerationState();
+        }
+
+        // Add modal open event listener to reset state when modal opens
+        const modalTriggers = document.querySelectorAll('[data-hs-overlay="#hs-focus-management-modal"]');
+        modalTriggers.forEach(trigger => {
+            trigger.addEventListener('click', function() {
+                // Only reset if the previous generation was completed and accepted
+                if (generationCompleted) {
+                    resetGenerationState();
                 }
             });
+        });
+
+        // Set up initial button handlers
+        if (generateButton) {
+            generateButton.onclick = handleGenerate;
         }
 
         if (retryButton) {
             retryButton.addEventListener('click', function () {
                 textArea.value = '';
                 textArea.focus();
-
-                if (generateButton) {
-                    const originalButtonText = 'Hasilkan';
-                    generateButton.textContent = originalButtonText;
-                }
-
-                retryButton.textContent = 'Coba Lagi';
+                resetGenerationState();
             });
         }
 
+        // Initialize content if available
         if (bodyInput && bodyInput.value) {
             syncContent(bodyInput.value);
         }
@@ -307,7 +334,6 @@
             textArea.style.height = (textArea.scrollHeight) + 'px';
         }
     }
-    </script>
-</body>
+</script>
 
 </html>

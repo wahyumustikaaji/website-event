@@ -91,7 +91,7 @@
                             </div>
                             <div class="block mt-2">
                                 <button type="button"
-                                    class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-400 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    class="inline-flex items-center gap-x-2 text-sm font-medium text-blue-400 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                                     aria-haspopup="dialog" aria-expanded="false"
                                     aria-controls="hs-focus-management-modal"
                                     data-hs-overlay="#hs-focus-management-modal">

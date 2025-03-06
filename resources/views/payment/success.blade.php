@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Spherevent - Pembayaran Berhasil">
     <div class="relative overflow-hidden">
         <!-- Gradients -->
         <div aria-hidden="true" class="flex absolute -top-96 start-1/2 transform -translate-x-1/2">
@@ -75,7 +75,11 @@
                                 <div class="hidden sm:grid sm:grid-cols-5">
                                     <div
                                         class="sm:col-span-2 text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-                                        Nama Fitur</div>
+                                        @if($payment->event_id)
+                                        Nama Event
+                                        @else
+                                        Nama Fitur
+                                        @endif</div>
                                     <div
                                         class="text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
                                         Qty
@@ -94,7 +98,13 @@
                                             class="sm:hidden text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
                                             Item
                                         </h5>
-                                        <p class="font-medium text-gray-800 dark:text-neutral-200">Pro Plan</p>
+                                        <p class="font-medium text-gray-800 dark:text-neutral-200">
+                                            @if($payment->event_id)
+                                            {{ $payment->event->title ?? 'Event' }}
+                                            @else
+                                            Pro Plan
+                                            @endif
+                                        </p>
                                     </div>
                                     <div>
                                         <h5
@@ -162,10 +172,20 @@
 
                         <!-- Buttons -->
                         <div class="flex justify-start gap-x-3 lg:w-fit w-full">
+                            @if($payment->event_id)
+                            <a class="py-2 px-3 lg:w-fit w-full inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none"
+                                href="{{ route('ticket', [
+                                        $event->slug,
+                                        app(App\Http\Controllers\EventController::class)->generateTicketCode(auth()->id(), $event->id)
+                                    ]) }}">
+                                Lihat Tiket
+                            </a>
+                            @else
                             <a class="py-2 px-3 lg:w-fit w-full inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                                 href="/events">
                                 Ke Halaman Utama
                             </a>
+                            @endif
                         </div>
                     </div>
                     <!-- End Buttons -->

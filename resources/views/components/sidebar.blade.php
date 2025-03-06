@@ -255,6 +255,16 @@
                         </svg>
                         History Pembayaran
                     </x-sidebar-link>
+                    <a href="/events"
+                        class="flex items-center gap-x-3.5 py-2 px-2.5  text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none">
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="48" height="48"
+                            viewBox="0 0 48 48">
+                            <path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="4"
+                                d="M44 40.836q-7.34-8.96-13.036-10.168t-10.846-.365V41L4 23.545L20.118 7v10.167q9.523.075 16.192 6.833q6.668 6.758 7.69 16.836Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Kembali ke Beranda
+                    </a>
                 </ul>
             </nav>
         </div>

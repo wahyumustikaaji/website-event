@@ -114,7 +114,6 @@
             min-height: auto;
         }
     </style>
-    <x-rich-text::styles theme="richtextlaravel" data-turbo-track="false" />
 </head>
 
 <body class="font-sans text-gray-900 antialiased">

@@ -597,7 +597,8 @@
                                 </button>
                                 @else
                                 @if ($event->price_ticket > 0)
-                                <button type="button" id="" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal" data-hs-overlay="#hs-scale-animation-modal"
+                                <button type="button" id="" aria-haspopup="dialog" aria-expanded="false"
+                                    aria-controls="hs-scale-animation-modal" data-hs-overlay="#hs-scale-animation-modal"
                                     class="w-full py-2.5 px-4 bg-gray-800 text-white rounded-lg mt-2 hover:bg-gray-900 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
@@ -774,36 +775,55 @@
                 </div>
             </div>
         </div>
-        <!-- Modal Confirmation Payment -->
-        <div id="hs-scale-animation-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-999999 overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" aria-labelledby="hs-scale-animation-modal-label">
-            <div class="hs-overlay-animation-target hs-overlay-open:scale-100 hs-overlay-open:opacity-100 scale-95 opacity-0 ease-in-out transition-all duration-200 sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-56px)] flex items-center">
-                <div class="w-full flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
-                <div class="flex justify-between items-center py-3 px-4 border-b border-gray-200 dark:border-neutral-700">
+    </div>
+
+    <!-- Modal Confirmation Payment -->
+    <div id="hs-scale-animation-modal"
+        class="hs-overlay hidden size-full fixed top-0 start-0 z-[60] overflow-x-hidden overflow-y-auto pointer-events-none"
+        role="dialog" tabindex="-1" aria-labelledby="hs-scale-animation-modal-label">
+        <div
+            class="hs-overlay-open:scale-100 hs-overlay-open:opacity-100 scale-95 opacity-0 ease-in-out transition-all duration-200 sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-56px)] flex items-center">
+            <div
+                class="w-full flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
+                <div
+                    class="flex justify-between items-center py-3 px-4 border-b border-gray-200 dark:border-neutral-700">
                     <h3 class="font-medium text-gray-800 dark:text-white">Konfirmasi Pembelian Tiket</h3>
-                    <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-scale-animation-modal">
-                    <span class="sr-only">Close</span>
-                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 6 6 18"></path>
-                        <path d="m6 6 12 12"></path>
-                    </svg>
+                    <button type="button"
+                        class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600"
+                        aria-label="Close" data-hs-overlay="#hs-scale-animation-modal">
+                        <span class="sr-only">Close</span>
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
                     </button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="flex flex-col items-center text-center mb-4">
-                        <svg class="size-12 text-amber-500 mb-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="size-12 text-amber-500 mb-2" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="8" x2="12" y2="12"></line>
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
-                        <h4 class="text-lg font-bold text-gray-800 dark:text-white">Anda akan melakukan pembayaran</h4>
+                        <h4 class="text-lg font-bold text-gray-800 dark:text-white">Anda akan melakukan pembayaran
+                        </h4>
                         <p class="mt-2 text-gray-600 dark:text-neutral-400">
-                            Dengan melanjutkan, pop up pembayaran akan muncul. Anda harus menyelesaikan transaksi sebesar <span class="font-semibold">Rp {{ number_format($event->price_ticket, 0, ',', '.') }}</span> untuk tiket acara ini.
+                            Dengan melanjutkan, pop up pembayaran akan muncul. Anda harus menyelesaikan transaksi
+                            sebesar <span class="font-semibold">Rp {{ number_format($event->price_ticket, 0, ',',
+                                '.') }}</span> untuk tiket acara ini.
                         </p>
                     </div>
-                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 dark:bg-amber-800/20 dark:border-amber-700">
+                    <div
+                        class="bg-amber-50 border border-amber-200 rounded-lg p-4 dark:bg-amber-800/20 dark:border-amber-700">
                         <div class="flex">
                             <div class="flex-shrink-0">
-                                <svg class="size-4 text-amber-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg class="size-4 text-amber-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="12" y1="8" x2="12" y2="12"></line>
                                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -811,25 +831,30 @@
                             </div>
                             <div class="ms-3">
                                 <p class="text-sm text-amber-700 dark:text-amber-400">
-                                    Pastikan Anda telah memeriksa detail acara dengan seksama. Pembayaran yang telah dilakukan tidak dapat dikembalikan.
+                                    Pastikan Anda telah memeriksa detail acara dengan seksama. Pembayaran yang telah
+                                    dilakukan tidak dapat dikembalikan.
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t border-gray-200 dark:border-neutral-700">
-                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" data-hs-overlay="#hs-scale-animation-modal">
+                <div
+                    class="flex justify-end items-center gap-x-2 py-3 px-4 border-t border-gray-200 dark:border-neutral-700">
+                    <button type="button"
+                        class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                        data-hs-overlay="#hs-scale-animation-modal">
                         Batal
                     </button>
-                    <button type="button" id="btnContinueToPay" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                    <button type="button" id="btnContinueToPay"
+                        class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
                         Lanjutkan ke Pembayaran
                     </button>
                 </div>
-                </div>
             </div>
         </div>
+    </div>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
         const payButton = document.getElementById('btnContinueToPay');
 
@@ -857,7 +882,7 @@
                 }
 
                 const data = await response.json();
-                
+
                 // Initialize Snap payment
                 window.snap.pay(data.snap_token, {
                     onSuccess: function(result) {
@@ -893,8 +918,8 @@
     });
     </script>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
             const latitude = {{ $event->latitude ?? '-6.2088' }};
             const longitude = {{ $event->longitude ?? '106.8456' }};
             const locationName = "{{ $event->location_name }}";
@@ -913,10 +938,10 @@
             const marker = L.marker([latitude, longitude]).addTo(map);
             marker.bindPopup(`<b>${locationName}</b><br>${address}`).openPopup();
         });
-        </script>
+    </script>
 
-        <script>
-            function copyLink() {
+    <script>
+        function copyLink() {
                 const currentUrl = window.location.href;
                 navigator.clipboard.writeText(currentUrl).then(() => {
                     const notification = document.getElementById("notification-success-copylink");
@@ -930,9 +955,9 @@
                     console.error("Gagal menyalin link: ", err);
                 });
             }
-        </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
                 const currentUrl = encodeURIComponent(window.location.href);
                 const text = encodeURIComponent("Cek event ini!");
 
@@ -940,10 +965,10 @@
                 document.getElementById("share-facebook").href = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
                 document.getElementById("share-linkedin").href = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
             });
-        </script>
+    </script>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
                     setTimeout(() => {
                         let successNotification = document.getElementById("notification-success");
                         let errorNotification = document.getElementById("notification-error");
@@ -963,10 +988,10 @@
                         }
                     }, 5000);
                 });
-        </script>
+    </script>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
             const registerButton = document.getElementById("register-button");
             if (registerButton) {
                 registerButton.addEventListener("click", function (event) {
@@ -990,5 +1015,5 @@
                 });
             }
         });
-        </script>
+    </script>
 </x-guest-layout>
