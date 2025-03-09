@@ -662,7 +662,7 @@
                         <p class="text-base text-gray-800 dark:text-neutral-200 mb-3">{{ $event->address }}</p>
                         {{-- <div id="hs-grayscale-leaflet" class="h-[250px] hs-leaflet z-10"></div> --}}
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126920.24102053!2d106.74711678874282!3d-6.229740108041162!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2sJakarta%2C%20Daerah%20Khusus%20Ibukota%20Jakarta!5e0!3m2!1sid!2sid!4v1740546658082!5m2!1sid!2sid"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.4!2d106.8!3d-6.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z{{ urlencode($event->location_name) }}+{{ urlencode($event->address) }}!5e0!3m2!1sid!2sid!4v1740546658082!5m2!1sid!2sid"
                             width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
